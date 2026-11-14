@@ -5,3 +5,5 @@ export { MockApiBadge } from './MockApiBadge';
 export { StatusBadge, type Status, type StatusBadgeProps } from './StatusBadge';
 export { SyntheticBadge } from './SyntheticBadge';
 export { PageHeader } from './PageHeader';
+export { DemoModeBadge } from './DemoModeBadge';
+export { Starfield } from './Starfield';

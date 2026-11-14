@@ -40,6 +40,29 @@ export default defineConfig({
   resolve: {
     alias: { '@': path.resolve(__dirname, 'src') },
   },
+  server: {
+    proxy: {
+      // AEGIS Mind Companion service (npm run mind-chat). MSW does not mock it.
+      '/api/v1/mind-chat': {
+        target: process.env.MIND_CHAT_PROXY_TARGET ?? 'http://127.0.0.1:8787',
+        changeOrigin: true,
+        configure: (proxy) => {
+          // Service not running: answer 503 with a clear reason instead of a bare 500.
+          proxy.on('error', (_err, _req, res) => {
+            if (!('writeHead' in res) || res.headersSent) return;
+            res.writeHead(503, { 'Content-Type': 'application/json' });
+            res.end(
+              JSON.stringify({
+                detail:
+                  'The AEGIS Mind Companion service is not running or not reachable (start it with npm run mind-chat).',
+                code: 'service_unreachable',
+              }),
+            );
+          });
+        },
+      },
+    },
+  },
   build: {
     // Mock-mode fixture chunks (src/mocks/fixtures/*.json) are generated from the
     // real CSVs and are loaded lazily, one table at a time. The largest
@@ -51,7 +74,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
-    include: ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.ts'],
+    include: ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.ts', 'server/**/*.test.ts'],
     css: false,
     testTimeout: 15_000,
   },

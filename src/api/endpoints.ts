@@ -17,6 +17,7 @@ export const ENDPOINTS = {
   'auth.logout': { method: 'POST', path: '/auth/logout' },
   'auth.me': { method: 'GET', path: '/auth/me' },
   'auth.demoAccounts': { method: 'GET', path: '/auth/demo-accounts' },
+  'auth.demoSession': { method: 'POST', path: '/auth/demo-session' },
 
   // missions
   'missions.currentState': { method: 'GET', path: '/missions/current/state' },
@@ -113,6 +114,11 @@ export const ENDPOINTS = {
   'recovery.recommend': { method: 'POST', path: '/recovery/recommend' },
   'recovery.recommendations': { method: 'GET', path: '/recovery/recommendations' },
   'recovery.scheduled': { method: 'GET', path: '/recovery/scheduled' },
+  'recovery.publish': {
+    method: 'POST',
+    path: '/recovery/recommendations/:recommendationId/publish',
+  },
+  'recovery.published': { method: 'GET', path: '/recovery/published' },
 
   // research
   'research.overview': { method: 'GET', path: '/research/overview' },
@@ -135,9 +141,29 @@ export const ENDPOINTS = {
   'simulation.listEvents': { method: 'GET', path: '/simulation/events' },
   'simulation.triggerEvent': { method: 'POST', path: '/simulation/events/:eventId/trigger' },
   'simulation.demoStory': { method: 'POST', path: '/simulation/demo-story' },
+
+  // mind chat: served by the AEGIS Mind Companion service (server/mind-chat), never
+  // by the MSW mock, so a reply can only ever come from the real model.
+  'mindChat.status': { method: 'GET', path: '/mind-chat/status' },
+  'mindChat.listConversations': { method: 'GET', path: '/mind-chat/conversations' },
+  'mindChat.createConversation': { method: 'POST', path: '/mind-chat/conversations' },
+  'mindChat.getConversation': { method: 'GET', path: '/mind-chat/conversations/:conversationId' },
+  'mindChat.deleteConversation': {
+    method: 'DELETE',
+    path: '/mind-chat/conversations/:conversationId',
+  },
+  'mindChat.sendMessage': {
+    method: 'POST',
+    path: '/mind-chat/conversations/:conversationId/messages',
+  },
 } as const satisfies Record<string, EndpointDef>;
 
 export type EndpointKey = keyof typeof ENDPOINTS;
+
+/** Endpoints with no MSW handler on purpose (see the mind chat block above). */
+export const UNMOCKED_ENDPOINTS: readonly EndpointKey[] = (
+  Object.keys(ENDPOINTS) as EndpointKey[]
+).filter((k) => k.startsWith('mindChat.'));
 
 /** Fill :params in a path template. Values are URI-encoded. */
 export function buildPath(template: string, params: Record<string, string> = {}): string {

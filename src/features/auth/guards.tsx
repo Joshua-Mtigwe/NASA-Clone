@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router';
-import type { Role } from '@/api/types';
-import { ROLE_HOME } from '@/app/roles';
+import { ROLE_HOME, type DashboardRole } from '@/app/roles';
 import { useSession } from './sessionStore';
 
 export interface RedirectState {
@@ -21,7 +20,13 @@ export function RequireAuth({ children }: { children: ReactNode }) {
 }
 
 /** Shows the 403 page when the session's role is not in `roles`. */
-export function RequireRole({ roles, children }: { roles: readonly Role[]; children: ReactNode }) {
+export function RequireRole({
+  roles,
+  children,
+}: {
+  roles: readonly DashboardRole[];
+  children: ReactNode;
+}) {
   const role = useSession((s) => s.role);
   const location = useLocation();
   if (!role || !roles.includes(role)) {

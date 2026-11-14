@@ -30,10 +30,17 @@ const RANGES: Array<{ key: Range; label: string }> = [
 const EXPORT_ROLES: readonly Role[] = ['astronaut', 'medical_researcher', 'medical_officer'];
 
 export function ResearchCognitionPage() {
-  return <CognitiveTrendsPage title="Cognition Comparison" />;
+  return <CognitiveTrendsPage title="Cognition Comparison" showDailyDetail />;
 }
 
-export function CognitiveTrendsPage({ title = 'Cognitive Trends' }: { title?: string }) {
+export function CognitiveTrendsPage({
+  title = 'Cognitive Trends',
+  showDailyDetail = false,
+}: {
+  title?: string;
+  /** The astronaut page omits the Daily Detail table; Cognition Comparison keeps it. */
+  showDailyDetail?: boolean;
+}) {
   const role = useSession((s) => s.role);
   const astronautId = useActiveAstronaut();
   const mission = useMissionState();
@@ -221,82 +228,84 @@ export function CognitiveTrendsPage({ title = 'Cognitive Trends' }: { title?: st
         </ChartFrame>
       </div>
 
-      <section aria-labelledby="detail-title" className="space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 id="detail-title" className="text-title">
-            Daily detail
-          </h2>
-          {canExport && rows.length > 0 && (
-            <Button variant="outline" size="sm" onClick={exportCsv}>
-              <Download aria-hidden="true" /> Export CSV
-            </Button>
-          )}
-        </div>
-        <DataState
-          status={statusOf(comparisons, rows.length === 0, 'no-data')}
-          error={comparisons.error}
-          noDataMessage="No data in this range."
-        >
-          <div className="overflow-x-auto rounded-md border">
-            <table className="w-full min-w-[48rem] text-left text-sm">
-              <caption className="sr-only">{label} daily results</caption>
-              <thead className="bg-navy-800 text-label text-ink-muted">
-                <tr>
-                  {[
-                    'Date',
-                    'Day',
-                    'Result',
-                    'Preflight reference',
-                    'Condition',
-                    'Quality',
-                    'Review',
-                  ].map((h) => (
-                    <th key={h} scope="col" className="px-3 py-2 font-medium">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((v) => (
-                  <tr
-                    key={v.comparison.comparison_id}
-                    className="border-t"
-                    data-testid="detail-row"
-                  >
-                    <td className="px-3 py-2">{formatDate(v.daily_result.assessment_date)}</td>
-                    <td className="px-3 py-2">{v.daily_result.mission_day}</td>
-                    <td className="px-3 py-2">
-                      {formatNumber(v.comparison.inflight_value, 1)}{' '}
-                      {formatUnit(v.daily_result.metric_unit)}
-                    </td>
-                    <td className="px-3 py-2">
-                      {v.baseline
-                        ? `${formatNumber(v.baseline.reference_lower, 1)}–${formatNumber(v.baseline.reference_upper, 1)}`
-                        : 'No reference'}
-                    </td>
-                    <td className="px-3 py-2">
-                      {humanise(v.baseline?.assessment_condition)} ·{' '}
-                      {humanise(v.comparison.comparison_method).toLowerCase()}
-                    </td>
-                    <td className="px-3 py-2">
-                      {v.daily_result.valid_trials} valid trials ·{' '}
-                      {v.daily_result.sessions_completed} session(s)
-                    </td>
-                    <td className="px-3 py-2">
-                      {v.comparison.reference_range_status === 'within_reference' ? (
-                        <span className="text-ink-muted">Within reference</span>
-                      ) : (
-                        <StatusBadge status="review" label="flagged for contextual review" />
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {showDailyDetail && (
+        <section aria-labelledby="detail-title" className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 id="detail-title" className="text-title">
+              Daily detail
+            </h2>
+            {canExport && rows.length > 0 && (
+              <Button variant="outline" size="sm" onClick={exportCsv}>
+                <Download aria-hidden="true" /> Export CSV
+              </Button>
+            )}
           </div>
-        </DataState>
-      </section>
+          <DataState
+            status={statusOf(comparisons, rows.length === 0, 'no-data')}
+            error={comparisons.error}
+            noDataMessage="No data in this range."
+          >
+            <div className="overflow-x-auto rounded-md border">
+              <table className="w-full min-w-[48rem] text-left text-sm">
+                <caption className="sr-only">{label} daily results</caption>
+                <thead className="bg-navy-800 text-label text-ink-muted">
+                  <tr>
+                    {[
+                      'Date',
+                      'Day',
+                      'Result',
+                      'Preflight reference',
+                      'Condition',
+                      'Quality',
+                      'Review',
+                    ].map((h) => (
+                      <th key={h} scope="col" className="px-3 py-2 font-medium">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((v) => (
+                    <tr
+                      key={v.comparison.comparison_id}
+                      className="border-t"
+                      data-testid="detail-row"
+                    >
+                      <td className="px-3 py-2">{formatDate(v.daily_result.assessment_date)}</td>
+                      <td className="px-3 py-2">{v.daily_result.mission_day}</td>
+                      <td className="px-3 py-2">
+                        {formatNumber(v.comparison.inflight_value, 1)}{' '}
+                        {formatUnit(v.daily_result.metric_unit)}
+                      </td>
+                      <td className="px-3 py-2">
+                        {v.baseline
+                          ? `${formatNumber(v.baseline.reference_lower, 1)}–${formatNumber(v.baseline.reference_upper, 1)}`
+                          : 'No reference'}
+                      </td>
+                      <td className="px-3 py-2">
+                        {humanise(v.baseline?.assessment_condition)} ·{' '}
+                        {humanise(v.comparison.comparison_method).toLowerCase()}
+                      </td>
+                      <td className="px-3 py-2">
+                        {v.daily_result.valid_trials} valid trials ·{' '}
+                        {v.daily_result.sessions_completed} session(s)
+                      </td>
+                      <td className="px-3 py-2">
+                        {v.comparison.reference_range_status === 'within_reference' ? (
+                          <span className="text-ink-muted">Within reference</span>
+                        ) : (
+                          <StatusBadge status="review" label="flagged for contextual review" />
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </DataState>
+        </section>
+      )}
     </div>
   );
 }

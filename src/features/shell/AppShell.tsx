@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Rocket } from 'lucide-react';
 import { Suspense, useEffect } from 'react';
-import { Navigate, Outlet } from 'react-router';
+import { Navigate, Outlet, useLocation } from 'react-router';
 import { authApi } from '@/api/auth';
 import { queryKeys } from '@/app/queryClient';
 import { ROLE_LABELS } from '@/app/roles';
@@ -33,6 +33,7 @@ export function AppShell() {
   const mobileOpen = useUi((s) => s.mobileNavOpen);
   const setMobileOpen = useUi((s) => s.setMobileNavOpen);
   const logout = useLogout();
+  const { pathname } = useLocation();
 
   // Validates a persisted token; a 401 here ends the session via the API client.
   useQuery({ queryKey: queryKeys.me, queryFn: () => authApi.me(), staleTime: 5 * 60_000 });
@@ -51,7 +52,7 @@ export function AppShell() {
         Skip to content
       </a>
 
-      <aside className="sticky top-0 hidden h-screen flex-col border-r bg-surface-raised lg:flex">
+      <aside className="sticky top-0 hidden h-screen flex-col border-r bg-gradient-to-b from-navy-850 via-navy-900 to-navy-950 lg:flex">
         <Brand />
         <p className="px-3 pb-3 text-caption uppercase text-ink-subtle">{ROLE_LABELS[role]}</p>
         <div className="flex-1 overflow-y-auto px-2 pb-4">
@@ -79,7 +80,10 @@ export function AppShell() {
         />
         <main id="main-content" tabIndex={-1} className="flex-1 px-4 py-6 lg:px-6">
           <Suspense fallback={<DataState status="loading" loadingMessage="Loading page…" />}>
-            <Outlet />
+            {/* Keyed by path so each page fades in once on navigation. */}
+            <div key={pathname} className="motion-safe:animate-fade-in">
+              <Outlet />
+            </div>
           </Suspense>
         </main>
       </div>

@@ -8,7 +8,7 @@ import { renderApp, setupMockApi, signInAs } from '@/test/appHarness';
 import { DOSE_RAMP } from './regions';
 
 const caps = vi.hoisted(() => ({ webgl: false, reducedMotion: false }));
-vi.mock('./capabilities', () => ({
+vi.mock('@/lib/capabilities', () => ({
   hasWebGL: () => caps.webgl,
   prefersReducedMotion: () => caps.reducedMotion,
 }));

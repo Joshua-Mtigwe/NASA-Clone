@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAstronautContext } from '@/features/health/hooks';
 import { BodyMap2D } from './BodyMap2D';
-import { hasWebGL, prefersReducedMotion } from './capabilities';
+import { hasWebGL, prefersReducedMotion } from '@/lib/capabilities';
 import { useOrganDose } from './hooks';
 import { buildOverlay } from './overlay';
 import { OverlayLegend } from './OverlayLegend';

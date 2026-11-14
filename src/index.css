@@ -54,3 +54,31 @@
     }
   }
 }
+
+@layer components {
+  /* Soft blue/violet nebula behind the landing page. Decorative. */
+  .nebula {
+    background:
+      radial-gradient(60rem 40rem at 15% 10%, rgba(56, 120, 220, 0.28), transparent 60%),
+      radial-gradient(50rem 36rem at 85% 30%, rgba(124, 92, 230, 0.24), transparent 60%),
+      radial-gradient(40rem 30rem at 50% 100%, rgba(34, 195, 221, 0.16), transparent 65%),
+      linear-gradient(180deg, #050a14 0%, #08122a 55%, #050a14 100%);
+    animation: nebula-drift 28s ease-in-out infinite;
+  }
+
+  .role-card:hover,
+  .role-card:focus-visible {
+    box-shadow:
+      0 0 0 1px rgba(34, 195, 221, 0.35),
+      0 18px 40px -18px rgba(34, 195, 221, 0.55);
+  }
+
+  /* Card surface used across the refreshed dashboards. */
+  .surface-glass {
+    @apply rounded-xl border border-white/[0.06] bg-gradient-to-b from-navy-850/90 to-navy-900/90 shadow-console;
+  }
+
+  .hover-lift {
+    @apply transition duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-glow motion-reduce:hover:translate-y-0;
+  }
+}

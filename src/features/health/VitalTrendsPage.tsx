@@ -81,7 +81,7 @@ function SensorChart({
   );
 }
 
-export function HealthMonitoringPage() {
+export function VitalTrendsPage() {
   const { astronautId, missionTime, launch } = useAstronautContext();
   const [range, setRange] = useState<TimeRange>('7d');
   const bounds = missionTime && launch ? rangeBounds(range, missionTime, launch) : null;

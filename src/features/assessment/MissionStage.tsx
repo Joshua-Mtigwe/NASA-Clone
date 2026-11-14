@@ -1,6 +1,6 @@
 import { lazy, Suspense, useState, type PointerEvent } from 'react';
 import type { InputDevice } from '@/api/types';
-import { hasWebGL, prefersReducedMotion } from '@/features/bodymap/capabilities';
+import { hasWebGL, prefersReducedMotion } from '@/lib/capabilities';
 import type { EngineState } from './engine/types';
 import { StimulusView } from './StimulusView';
 

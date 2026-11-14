@@ -132,10 +132,13 @@ export interface RequestOptions {
   query?: object;
   body?: unknown;
   signal?: AbortSignal;
+  /** Origin override for a service hosted apart from the main backend. */
+  origin?: string;
 }
 
-function buildUrl(path: string, query?: object): string {
+function buildUrl(path: string, query?: object, originOverride?: string): string {
   const origin =
+    originOverride ||
     options.baseUrl ||
     (typeof window !== 'undefined' ? window.location.origin : 'http://localhost');
   const url = new URL(`${origin}${API_PREFIX}${path}`);
@@ -165,7 +168,7 @@ async function readBody(response: Response): Promise<unknown> {
 export async function apiRequest<T>(
   method: string,
   path: string,
-  { query, body, signal }: RequestOptions = {},
+  { query, body, signal, origin }: RequestOptions = {},
 ): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' };
   const token = options.getToken();
@@ -175,7 +178,7 @@ export async function apiRequest<T>(
   const doFetch = options.fetchImpl ?? globalThis.fetch.bind(globalThis);
   let response: Response;
   try {
-    response = await doFetch(buildUrl(path, query), {
+    response = await doFetch(buildUrl(path, query, origin), {
       method,
       headers,
       body: body === undefined ? undefined : JSON.stringify(body),

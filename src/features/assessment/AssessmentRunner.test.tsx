@@ -16,7 +16,7 @@ import { buildSchedule } from './battery/registry';
 import { localDb } from './offline/db';
 
 const caps = vi.hoisted(() => ({ webgl: false }));
-vi.mock('@/features/bodymap/capabilities', () => ({
+vi.mock('@/lib/capabilities', () => ({
   hasWebGL: () => caps.webgl,
   prefersReducedMotion: () => false,
 }));

@@ -106,7 +106,9 @@ export function MissionMindPage() {
                           !g.completed_today &&
                           (canStart(d) ? (
                             <Button asChild size="sm" className="mt-auto self-start">
-                              <Link to={`/astronaut/mission-mind/${d.assignment.assignment_id}`}>
+                              <Link
+                                to={`/astronaut/cognition/mission-mind/${d.assignment.assignment_id}`}
+                              >
                                 Play
                               </Link>
                             </Button>
@@ -122,7 +124,9 @@ export function MissionMindPage() {
               </ul>
               {checkIn && canStart(checkIn) && (
                 <Button asChild variant="outline" size="sm">
-                  <Link to={`/astronaut/mission-mind/${checkIn.assignment.assignment_id}`}>
+                  <Link
+                    to={`/astronaut/cognition/mission-mind/${checkIn.assignment.assignment_id}`}
+                  >
                     Daily check-in
                   </Link>
                 </Button>

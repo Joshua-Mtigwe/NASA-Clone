@@ -1,8 +1,8 @@
-import { CalendarDays, Clock, LogOut, Menu, PlayCircle } from 'lucide-react';
+import { CalendarDays, Clock, Menu, PlayCircle, Repeat2 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import type { Role } from '@/api/types';
-import { ROLE_LABELS } from '@/app/roles';
-import { MockApiBadge, SyntheticBadge } from '@/components/shared';
+import { ROLE_LABELS, type DashboardRole } from '@/app/roles';
+import { DemoModeBadge, MockApiBadge, SyntheticBadge } from '@/components/shared';
+import { useSession } from '@/features/auth/sessionStore';
 import { Button } from '@/components/ui/button';
 import { formatTimestamp, humanise } from '@/lib/format';
 import { ActiveAstronaut } from './ActiveAstronaut';
@@ -11,7 +11,7 @@ import { useConnectionStatus } from './useConnectionStatus';
 import { useMissionState } from './useMissionState';
 
 interface HeaderProps {
-  role: Role;
+  role: DashboardRole;
   username: string;
   astronautId: string | null;
   onOpenMenu: () => void;
@@ -38,6 +38,7 @@ function Item({
 
 export function Header({ role, username, astronautId, onOpenMenu, onLogout }: HeaderProps) {
   const mission = useMissionState();
+  const demo = useSession((s) => s.mode === 'demo');
   const connection = useConnectionStatus();
   const state = mission.data;
   const run = state?.simulation_run;
@@ -90,14 +91,15 @@ export function Header({ role, username, astronautId, onOpenMenu, onLogout }: He
         <ActiveAstronaut role={role} astronautId={astronautId} />
 
         <div className="flex flex-wrap items-center gap-2 lg:ml-auto">
+          {demo && <DemoModeBadge />}
           <SyntheticBadge dataMode={state?.data_mode} isSynthetic={state?.is_synthetic} />
           <MockApiBadge />
           <span className="text-label text-ink-muted">
             <span className="text-ink">{username}</span> · {ROLE_LABELS[role]}
           </span>
           <Button variant="outline" size="sm" onClick={onLogout}>
-            <LogOut aria-hidden="true" />
-            Sign out
+            <Repeat2 aria-hidden="true" />
+            {demo ? 'Switch role' : 'Sign out'}
           </Button>
         </div>
       </div>

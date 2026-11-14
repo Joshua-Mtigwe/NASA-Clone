@@ -4,6 +4,7 @@
  */
 import type { TableName, Tables } from '@/types/tables';
 import { loadTable } from './fixtures/loader';
+import { applyDurableRows } from './persist';
 import { MOCK_SEEDS } from './seeds';
 
 const tables = new Map<TableName, Promise<unknown[]>>();
@@ -12,10 +13,14 @@ export function table<K extends TableName>(name: K): Promise<Tables[K][]> {
   let pending = tables.get(name);
   if (!pending) {
     const seeds: unknown[] = (MOCK_SEEDS as Partial<Record<TableName, unknown[]>>)[name] ?? [];
-    pending = loadTable(name).then((rows) => [
-      ...rows.map((row) => ({ ...row })),
-      ...seeds.map((row) => ({ ...(row as object) })),
-    ]);
+    pending = loadTable(name).then((rows) => {
+      const copy: unknown[] = [
+        ...rows.map((row) => ({ ...row })),
+        ...seeds.map((row) => ({ ...(row as object) })),
+      ];
+      applyDurableRows(name, copy);
+      return copy;
+    });
     tables.set(name, pending);
   }
   return pending as Promise<Tables[K][]>;

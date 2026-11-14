@@ -15,7 +15,8 @@
     "precheck": "npm run fixtures",
     "check": "tsc --noEmit && eslint . --max-warnings 0 && vitest run && vite build",
     "e2e": "playwright test",
-    "dev:live": "vite --mode live"
+    "dev:live": "vite --mode live",
+    "mind-chat": "tsx server/mind-chat/main.ts"
   },
   "msw": {
     "workerDirectory": [

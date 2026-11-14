@@ -20,7 +20,7 @@ export function AssessmentSessionPage({ theme }: { theme: Theme }) {
     if (found && !held && canStart(found)) setHeld(found);
   }, [found, held]);
   const item = held ?? found;
-  const back = theme === 'mission' ? '/astronaut/mission-mind' : '/astronaut/preflight';
+  const back = theme === 'mission' ? '/astronaut/cognition/mission-mind' : '/astronaut/preflight';
 
   return (
     <div className="space-y-6">

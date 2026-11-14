@@ -4,7 +4,7 @@ import { assessmentsApi } from '@/api/assessments';
 import { astronautsApi } from '@/api/astronauts';
 import { authApi } from '@/api/auth';
 import { configureApiClient } from '@/api/client';
-import { ENDPOINTS } from '@/api/endpoints';
+import { ENDPOINTS, UNMOCKED_ENDPOINTS } from '@/api/endpoints';
 import { missionsApi } from '@/api/missions';
 import { mockState, resetMockDb } from './db';
 import { handledEndpoints } from './handlers';
@@ -32,8 +32,12 @@ beforeEach(() => {
 afterAll(() => server.close());
 
 describe('mock API', () => {
-  it('has a handler for every endpoint in the contract', () => {
-    expect([...handledEndpoints].sort()).toEqual(Object.keys(ENDPOINTS).sort());
+  it('has a handler for every endpoint in the contract except the unmocked Mind Companion', () => {
+    const mocked = Object.keys(ENDPOINTS).filter(
+      (k) => !(UNMOCKED_ENDPOINTS as readonly string[]).includes(k),
+    );
+    expect([...handledEndpoints].sort()).toEqual(mocked.sort());
+    expect(UNMOCKED_ENDPOINTS.every((k) => k.startsWith('mindChat.'))).toBe(true);
   });
 
   it('logs in a CSV demo account, rejects a wrong password, and serves synthetic mission state', async () => {

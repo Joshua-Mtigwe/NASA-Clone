@@ -33,6 +33,11 @@ interface Observation {
 }
 
 async function observations(astronautId: string, measurement: string): Promise<Observation[]> {
+  if (measurement === 'radiation_dose_rate') {
+    return (await table('radiation_readings'))
+      .filter((r) => r.astronaut_id === astronautId)
+      .map((r) => ({ timestamp: r.timestamp_utc, value: r.dose_rate, unit: r.dose_rate_unit }));
+  }
   if (measurement === 'sleep_duration') {
     return (await table('sleep_records'))
       .filter((r) => r.astronaut_id === astronautId)
@@ -58,7 +63,9 @@ export async function physiologicalReference(
   const sample = (await observations(astronautId, measurement)).filter(
     (o) => o.timestamp >= mission.launch_date && o.timestamp < windowEnd && o.timestamp <= now,
   );
-  const minimum = measurement === 'sleep_duration' ? 3 : MIN_SAMPLES;
+  // Sleep and personal dosimetry are daily, so their windows hold far fewer samples.
+  const minimum =
+    measurement === 'sleep_duration' ? 3 : measurement === 'radiation_dose_rate' ? 5 : MIN_SAMPLES;
   if (sample.length < minimum) return null;
 
   const values = sample.map((o) => o.value);
@@ -97,7 +104,7 @@ export async function readinessSummary(astronautId: string): Promise<ReadinessSu
   const { mission_time: now } = await currentMissionState();
   const factors: ReadinessFactor[] = [];
 
-  for (const measure of [...SENSOR_MEASURES, 'sleep_duration'] as const) {
+  for (const measure of [...SENSOR_MEASURES, 'radiation_dose_rate', 'sleep_duration'] as const) {
     const latest = latestUpTo(await observations(astronautId, measure), now);
     const ref = await physiologicalReference(astronautId, measure);
     factors.push({
@@ -109,7 +116,12 @@ export async function readinessSummary(astronautId: string): Promise<ReadinessSu
       reference_lower: ref?.reference_lower ?? null,
       reference_upper: ref?.reference_upper ?? null,
       reference_range_status: status(latest?.value ?? null, ref),
-      source_table: measure === 'sleep_duration' ? 'sleep_records' : 'sensor_readings',
+      source_table:
+        measure === 'sleep_duration'
+          ? 'sleep_records'
+          : measure === 'radiation_dose_rate'
+            ? 'radiation_readings'
+            : 'sensor_readings',
     });
   }
 

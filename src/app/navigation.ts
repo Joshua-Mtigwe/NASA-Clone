@@ -1,15 +1,16 @@
 /**
- * Role menus. This single list drives both the sidebar and the guarded routes,
+ * Role menus. This single structure drives both the sidebar and the guarded routes,
  * so a menu item can never point at a page the role is not allowed to open.
+ * A menu entry is either a page link or a collapsible group of page links; groups
+ * are navigation categories only and have no page of their own.
  */
 import {
+  Activity,
   BarChart3,
-  Bell,
+  Brain,
   CalendarClock,
   CalendarRange,
   ClipboardList,
-  Cpu,
-  Database,
   FileText,
   FlaskConical,
   Gamepad2,
@@ -23,15 +24,12 @@ import {
   Microscope,
   Moon,
   PersonStanding,
-  PlayCircle,
-  Satellite,
-  ScrollText,
   Stethoscope,
+  TrendingUp,
   Users,
-  Zap,
   type LucideIcon,
 } from 'lucide-react';
-import type { Role } from '@/api/types';
+import type { DashboardRole } from './roles';
 
 export interface NavItem {
   label: string;
@@ -42,63 +40,91 @@ export interface NavItem {
   description: string;
 }
 
-export const NAV: Record<Role, NavItem[]> = {
+export interface NavGroup {
+  /** Stable id, used for the expand/collapse state. */
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  children: NavItem[];
+}
+
+export type NavEntry = NavItem | NavGroup;
+
+export function isNavGroup(entry: NavEntry): entry is NavGroup {
+  return 'children' in entry;
+}
+
+export const NAV: Record<DashboardRole, NavEntry[]> = {
   astronaut: [
     {
       label: 'Overview',
       path: '/astronaut',
       icon: LayoutDashboard,
-      phase: '2',
-      description: 'Measurement cards, daily readiness summary and cognitive snapshot.',
+      phase: '10',
+      description: 'Task readiness estimate, its insights, and the AEGIS Mind Companion.',
     },
     {
+      id: 'health',
       label: 'Health Monitoring',
-      path: '/astronaut/health',
       icon: HeartPulse,
-      phase: '2',
-      description: 'Time series for each measure, sleep and radiation.',
+      children: [
+        {
+          label: 'Current Vitals',
+          path: '/astronaut/health/vitals',
+          icon: Activity,
+          phase: '10',
+          description: 'The latest value of each measure.',
+        },
+        {
+          label: 'Vital Trends',
+          path: '/astronaut/health/trends',
+          icon: TrendingUp,
+          phase: '2',
+          description: 'Time series for each measure, sleep and radiation.',
+        },
+        {
+          label: 'Body Map',
+          path: '/astronaut/health/body-map',
+          icon: PersonStanding,
+          phase: '3',
+          description: 'Interactive body regions with their measurements.',
+        },
+      ],
     },
     {
-      label: 'Body Map',
-      path: '/astronaut/body-map',
-      icon: PersonStanding,
-      phase: '3',
-      description: 'Interactive body regions with their measurements.',
-    },
-    {
-      label: 'Mission Mind',
-      path: '/astronaut/mission-mind',
-      icon: Gamepad2,
-      phase: '4B',
-      description: 'Daily cognitive mission games.',
-    },
-    {
-      label: 'Cognitive Trends',
-      path: '/astronaut/cognitive-trends',
-      icon: LineChart,
-      phase: '5',
-      description: 'Inflight results against your preflight reference, per domain.',
+      id: 'cognition',
+      label: 'Cognitive Metrics',
+      icon: Brain,
+      children: [
+        {
+          label: 'Mission Mind',
+          path: '/astronaut/cognition/mission-mind',
+          icon: Gamepad2,
+          phase: '4B',
+          description: 'Daily cognitive mission games.',
+        },
+        {
+          label: 'Cognitive Trends',
+          path: '/astronaut/cognition/trends',
+          icon: LineChart,
+          phase: '5',
+          description: 'Inflight results against your preflight reference, per domain.',
+        },
+      ],
     },
     {
       label: 'My Schedule',
       path: '/astronaut/schedule',
       icon: CalendarClock,
-      phase: '2',
-      description: 'Tasks, assessments, exercise and sleep for the day.',
+      phase: '10',
+      description: 'Your day as a timetable, with published supportive routines.',
     },
     {
-      label: 'Recovery and Sleep',
+      label: 'Recovery & Sleep',
       path: '/astronaut/recovery',
       icon: Moon,
       phase: '2',
       description: 'Scheduled supportive routines and sleep protection windows.',
-    },
-    {
-      label: 'Alerts',
-      path: '/astronaut/alerts',
-      icon: Bell,
-      phase: '2',
-      description: 'Rule-generated alerts and their sync state.',
     },
   ],
   mission_leader: [
@@ -127,8 +153,8 @@ export const NAV: Record<Role, NavItem[]> = {
       label: 'Recovery Planning',
       path: '/planner/recovery',
       icon: Leaf,
-      phase: '6',
-      description: 'Supportive routine catalogue and recommendations.',
+      phase: '10',
+      description: 'Supportive routine recommendations, published to astronaut schedules.',
     },
     {
       label: 'Planning Effectiveness',
@@ -205,52 +231,26 @@ export const NAV: Record<Role, NavItem[]> = {
       description: 'Sessions and results flagged for contextual review.',
     },
   ],
-  mission_control_admin: [
-    {
-      label: 'Mission State',
-      path: '/control',
-      icon: Satellite,
-      phase: '8',
-      description: 'Mission clock, day and simulation status.',
-    },
-    {
-      label: 'Simulation',
-      path: '/control/simulation',
-      icon: PlayCircle,
-      phase: '8',
-      description: 'Start, pause and select simulation runs.',
-    },
-    {
-      label: 'Events',
-      path: '/control/events',
-      icon: Zap,
-      phase: '8',
-      description: 'Trigger and view predefined mission events.',
-    },
-    {
-      label: 'Data Integrity',
-      path: '/control/integrity',
-      icon: Database,
-      phase: '8',
-      description: 'Data lineage, sync queue and conflicts.',
-    },
-    {
-      label: 'AI Status',
-      path: '/control/ai',
-      icon: Cpu,
-      phase: '8',
-      description: 'Model status, response time and fallback state.',
-    },
-    {
-      label: 'Audit',
-      path: '/control/audit',
-      icon: ScrollText,
-      phase: '8',
-      description: 'Audit log of changes.',
-    },
-  ],
 };
 
-export function isPathAllowed(role: Role, pathname: string): boolean {
-  return NAV[role].some((item) => item.path === pathname);
+/** Every page link in a role's menu, groups flattened, in menu order. */
+export function navItems(role: DashboardRole): NavItem[] {
+  return NAV[role].flatMap((entry) => (isNavGroup(entry) ? entry.children : [entry]));
 }
+
+export function isPathAllowed(role: DashboardRole, pathname: string): boolean {
+  return navItems(role).some((item) => item.path === pathname);
+}
+
+/**
+ * Earlier astronaut paths, kept working as redirects so bookmarks and links from
+ * before the menu was regrouped still land on the right page.
+ */
+export const LEGACY_REDIRECTS: Array<{ from: string; to: string }> = [
+  { from: '/astronaut/health', to: '/astronaut/health/trends' },
+  { from: '/astronaut/body-map', to: '/astronaut/health/body-map' },
+  { from: '/astronaut/mission-mind', to: '/astronaut/cognition/mission-mind' },
+  { from: '/astronaut/cognitive-trends', to: '/astronaut/cognition/trends' },
+  // Alerts was removed from the astronaut dashboard.
+  { from: '/astronaut/alerts', to: '/astronaut' },
+];

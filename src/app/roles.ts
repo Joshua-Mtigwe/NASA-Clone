@@ -1,27 +1,39 @@
 import type { Role } from '@/api/types';
 
-export const ROLES: readonly Role[] = [
+/**
+ * Roles that have a dashboard. `mission_control_admin` remains a backend role (the
+ * simulation, audit and data-integrity endpoints still exist for it), but it has no
+ * dashboard and cannot be selected in this application.
+ */
+export type DashboardRole = Exclude<Role, 'mission_control_admin'>;
+
+export const ROLES: readonly DashboardRole[] = [
   'astronaut',
   'mission_leader',
   'medical_researcher',
   'medical_officer',
-  'mission_control_admin',
 ];
 
-export const ROLE_LABELS: Record<Role, string> = {
+export function isDashboardRole(role: Role | null | undefined): role is DashboardRole {
+  return !!role && (ROLES as readonly string[]).includes(role);
+}
+
+/**
+ * Display names. The internal id `medical_researcher` is kept for backend and
+ * permission compatibility; the role is presented as "Impact Reviewer".
+ */
+export const ROLE_LABELS: Record<DashboardRole, string> = {
   astronaut: 'Astronaut',
   mission_leader: 'Mission Planning Leader',
-  medical_researcher: 'Medical Researcher',
+  medical_researcher: 'Impact Reviewer',
   medical_officer: 'Medical Officer',
-  mission_control_admin: 'Mission Control Administrator',
 };
 
-export const ROLE_HOME: Record<Role, string> = {
+export const ROLE_HOME: Record<DashboardRole, string> = {
   astronaut: '/astronaut',
   mission_leader: '/planner',
   medical_researcher: '/research',
   medical_officer: '/medical',
-  mission_control_admin: '/control',
 };
 
 /** Roles that can switch the active astronaut in the header. */

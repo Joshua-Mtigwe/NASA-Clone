@@ -179,7 +179,7 @@ function HeadPanel() {
         </ul>
       </DataState>
       <Button asChild variant="link" className="h-auto p-0">
-        <Link to="/astronaut/cognitive-trends">
+        <Link to="/astronaut/cognition/trends">
           View cognitive trends <ArrowRight aria-hidden="true" />
         </Link>
       </Button>

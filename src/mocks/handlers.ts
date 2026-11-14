@@ -16,6 +16,7 @@ import type {
   CreateSimulationRunRequest,
   DataIntegritySummary,
   DemoAccount,
+  DemoSessionRequest,
   DueAssessment,
   GrantAccessRequest,
   LoginRequest,
@@ -23,6 +24,7 @@ import type {
   OptimizeRequest,
   ApproveScheduleRequest,
   PlanningTaskInput,
+  PublishRoutineRequest,
   RecoveryRecommendRequest,
   ResearchOverview,
   Role,
@@ -52,6 +54,8 @@ import {
 } from './compute/mission';
 import { broadcast, realtimeHandlers } from './realtime';
 import { crewOverview } from './compute/planning';
+import { publishedRoutines, publishRoutine } from './compute/recoveryPublish';
+import { clearDurableRows } from './persist';
 import {
   approveSchedule,
   ensureDayVersion,
@@ -79,6 +83,42 @@ import {
   type RouteSpec,
 } from './route';
 import { bearerToken, findUserByUsername, MOCK_DEMO_PASSWORD, tokenFor } from './session';
+
+const DASHBOARD_ROLES: readonly Role[] = [
+  'astronaut',
+  'mission_leader',
+  'medical_researcher',
+  'medical_officer',
+];
+
+/** Seeded accounts the demonstration role selector may open (no administrator). */
+async function demoAccounts(): Promise<DemoAccount[]> {
+  const [users, roles, astronauts] = await Promise.all([
+    table('users'),
+    table('roles'),
+    table('astronauts'),
+  ]);
+  return users.flatMap((u) => {
+    const role = roles.find((r) => r.role_id === u.role_id);
+    const roleName = role?.role_name as Role | undefined;
+    if (u.account_status !== 'active' || !roleName || !DASHBOARD_ROLES.includes(roleName)) {
+      return [];
+    }
+    const astronaut =
+      roleName === 'astronaut' ? astronauts.find((a) => a.user_id === u.user_id) : undefined;
+    return [
+      {
+        username: u.username,
+        role: roleName,
+        role_description: role?.description ?? '',
+        astronaut_id: astronaut?.astronaut_id ?? null,
+        astronaut_code: astronaut?.astronaut_code ?? null,
+        crew_role: astronaut?.crew_role ?? null,
+        specialization: astronaut?.specialization ?? null,
+      },
+    ];
+  });
+}
 
 /** Mission day the demo story starts on. */
 export const DEMO_STORY_DAY = 25;
@@ -132,7 +172,10 @@ async function analysisOrThrow(analysisId: string) {
   return analysis;
 }
 
-const routes: Record<EndpointKey, RouteSpec> = {
+/** Mind Companion endpoints are served by server/mind-chat and are never mocked. */
+type MockedEndpoint = Exclude<EndpointKey, `mindChat.${string}`>;
+
+const routes: Record<MockedEndpoint, RouteSpec> = {
   // ---------------- auth ----------------
   'auth.login': {
     public: true,
@@ -157,18 +200,19 @@ const routes: Record<EndpointKey, RouteSpec> = {
   'auth.me': { resolve: (ctx) => ctx.user },
   'auth.demoAccounts': {
     public: true,
-    resolve: async (): Promise<DemoAccount[]> => {
-      const [users, roles] = await Promise.all([table('users'), table('roles')]);
-      return users
-        .filter((u) => u.account_status === 'active')
-        .map((u) => {
-          const role = roles.find((r) => r.role_id === u.role_id);
-          return {
-            username: u.username,
-            role: (role?.role_name ?? 'astronaut') as Role,
-            role_description: role?.description ?? '',
-          };
-        });
+    // Demonstration roster: every active account whose role has a dashboard.
+    resolve: () => demoAccounts(),
+  },
+  'auth.demoSession': {
+    public: true,
+    resolve: async (ctx): Promise<LoginResponse> => {
+      const body = await ctx.body<Partial<DemoSessionRequest>>();
+      if (!body.username) throw fieldError('username', 'Field required');
+      // Only accounts on the demonstration roster can be opened without a password.
+      const account = (await demoAccounts()).find((a) => a.username === body.username);
+      const user = account ? await findUserByUsername(account.username) : null;
+      if (!user) throw new HttpError(404, 'No demonstration account has that name.');
+      return { access_token: tokenFor(user.user_id), token_type: 'bearer', user };
     },
   },
 
@@ -993,6 +1037,18 @@ const routes: Record<EndpointKey, RouteSpec> = {
       );
     },
   },
+  'recovery.publish': {
+    roles: ['mission_leader'],
+    resolve: async (ctx) => {
+      const body = await ctx.body<Partial<PublishRoutineRequest>>();
+      return publishRoutine(ctx.params.recommendationId!, body, ctx.user!);
+    },
+  },
+  'recovery.published': {
+    roles: ['astronaut', 'mission_leader', 'medical_officer'],
+    subject: queryAstronaut,
+    resolve: (ctx) => publishedRoutines(required(ctx, 'astronaut_id'), required(ctx, 'date')),
+  },
   'recovery.scheduled': {
     subject: queryAstronaut,
     resolve: async (ctx) => {
@@ -1300,6 +1356,7 @@ const routes: Record<EndpointKey, RouteSpec> = {
     roles: ADMIN,
     resolve: async (ctx) => {
       // Known presentation state: all mock writes discarded, clock at day 25 12:00, paused.
+      clearDurableRows();
       resetMockDb();
       mockState.missionDayOverride = DEMO_STORY_DAY;
       await audit(
@@ -1316,7 +1373,7 @@ const routes: Record<EndpointKey, RouteSpec> = {
   },
 };
 
-export const handledEndpoints = Object.keys(routes) as EndpointKey[];
+export const handledEndpoints = Object.keys(routes) as MockedEndpoint[];
 
 export const handlers = [
   ...handledEndpoints.map((key): HttpHandler => buildHandler(key, routes[key])),

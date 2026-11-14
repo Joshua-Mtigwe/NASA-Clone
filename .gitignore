@@ -12,3 +12,5 @@ src/mocks/fixtures/*.json
 # Playwright output
 test-results
 playwright-report
+# Mind Companion conversation store (local demo data)
+server/mind-chat/data/

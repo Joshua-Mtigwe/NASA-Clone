@@ -28,6 +28,8 @@ import type {
   MissionsRow,
   OptimizationRunsRow,
   PlanningEffectivenessRow,
+  RecoveryActivitiesRow,
+  RecoveryRecommendationsRow,
   ResearchAnalysesRow,
   ScheduleVersionsRow,
   SimulationEventsRow,
@@ -68,8 +70,9 @@ export interface ApiErrorBody {
 // ---------- auth ----------
 
 /**
- * role_name values from roles.csv, plus mission_control_admin, which the build plan
- * requires but roles.csv does not yet contain.
+ * role_name values from roles.csv, plus mission_control_admin. The administrator is
+ * a backend-only role: it keeps its API permissions but has no dashboard (see
+ * DashboardRole in src/app/roles.ts).
  */
 export type Role =
   | 'astronaut'
@@ -102,6 +105,19 @@ export interface DemoAccount {
   username: string;
   role: Role;
   role_description: string;
+  /** Set for astronaut accounts, so the role selector can ask which astronaut. */
+  astronaut_id: string | null;
+  astronaut_code: string | null;
+  crew_role: string | null;
+  specialization: string | null;
+}
+
+/**
+ * Demonstration mode only: open a session for one seeded demo account without a
+ * password. The backend must refuse this outside a demonstration deployment.
+ */
+export interface DemoSessionRequest {
+  username: string;
 }
 
 // ---------- missions ----------
@@ -568,6 +584,61 @@ export interface ScheduleOverrideRequest {
 export interface RecoveryRecommendRequest {
   astronaut_id: string;
   mission_day: number;
+}
+
+/**
+ * Publication state of a supportive-routine recommendation (no medical-review step):
+ * recommended -> ready_to_publish (checks pass for the proposed time) -> published,
+ * or unable_to_schedule (a check failed; see `reasons` and `conflicts`).
+ */
+export type RoutinePublicationState =
+  'recommended' | 'ready_to_publish' | 'published' | 'unable_to_schedule';
+
+export interface PublishRoutineRequest {
+  /**
+   * ISO start time; the end follows from the routine's recommended duration. Omit to
+   * use the slot the backend proposed with the recommendation.
+   */
+  scheduled_start?: string;
+  /** true = run every check and report, but write nothing. */
+  dry_run?: boolean;
+}
+
+export interface RoutineConflict {
+  kind: ScheduleItemKind;
+  title: string;
+  start_time: string;
+  end_time: string | null;
+}
+
+export interface RoutinePublication {
+  recommendation: RecoveryRecommendationsRow;
+  activity: RecoveryActivitiesRow;
+  state: RoutinePublicationState;
+  scheduled_start: string;
+  scheduled_end: string;
+  duration_minutes: number;
+  conflicts: RoutineConflict[];
+  /** Why the routine cannot be scheduled. Empty when it can. */
+  reasons: string[];
+  /** daily_schedules / scheduled_recovery rows, once published. */
+  schedule_id: string | null;
+  scheduled_recovery_id: string | null;
+  /** True when this call found it already published and changed nothing. */
+  already_published: boolean;
+}
+
+/** A routine the Mission Planning Leader has published to an astronaut's schedule. */
+export interface PublishedRoutine {
+  schedule_id: string;
+  scheduled_recovery_id: string | null;
+  recommendation_id: string;
+  astronaut_id: string;
+  scheduled_start: string;
+  scheduled_end: string;
+  completion_status: string;
+  activity: RecoveryActivitiesRow | null;
+  published_by_user_id: string | null;
 }
 
 // ---------- research ----------

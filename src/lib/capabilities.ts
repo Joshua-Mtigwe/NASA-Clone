@@ -1,4 +1,4 @@
-/** Browser capability checks that decide between the 3D and 2D body map. */
+/** Browser capability checks: WebGL (3D body map, Pixi stages) and reduced motion. */
 
 export function hasWebGL(): boolean {
   if (typeof window === 'undefined' || typeof WebGLRenderingContext === 'undefined') return false;
