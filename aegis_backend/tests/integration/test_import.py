@@ -116,5 +116,16 @@ def test_duplicate_upload_files_are_ignored_with_warning(tmp_path):
 
 
 def test_fatigue_direction_is_flagged(tmp_path):
+    # The shipped seed has the corrected direction, so it must not warn.
     report = validate_seed_directory(SEED_DIR)
+    assert not any(i["check"] == "metric_direction" for i in report["issues"])
+
+    # A seed that marks fatigue as higher_is_better must be flagged.
+    seed = _seed_copy(tmp_path)
+    path = seed / "metric_definitions.csv"
+    with path.open(newline="", encoding="utf-8-sig") as fh:
+        rows = list(csv.DictReader(fh))
+    fatigue_index = next(i for i, r in enumerate(rows) if "fatigue" in r["metric_name"])
+    _edit_csv(path, fatigue_index, "better_direction", "higher_is_better")
+    report = validate_seed_directory(seed)
     assert any(i["check"] == "metric_direction" for i in report["issues"])

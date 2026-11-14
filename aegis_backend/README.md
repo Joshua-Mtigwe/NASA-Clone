@@ -118,7 +118,7 @@ can call them directly.
 ## Data notes the importer reports (warnings, not errors)
 
 1. **76 radiation readings are in µGy/h.** These are NASA Mars-rover reference data with no astronaut, so keep them out of crew dose totals.
-2. **`metric_definitions` MET-003 marks `fatigue_score` as `higher_is_better`.** A higher fatigue score normally means worse, so confirm this before the cognitive scoring phase uses it.
+2. **Fatigue direction.** The seed now marks MET-003 `fatigue_score` as `lower_is_better`, so this warning no longer fires on the shipped data. The importer still warns if any fatigue metric is marked `higher_is_better`.
 
 ## Phase 2 (Health)
 
@@ -186,4 +186,4 @@ worse sleep quality, more fatigue), while the other four astronauts show only mi
 
 ## Next: Phase 3 (Cognition)
 Assessments, scoring, baselines and metric definitions: `assessment_service`, `cognitive_scoring`,
-`baseline_service` and `cognitive_comparison_service`. Resolve the fatigue-direction warning first.
+`baseline_service` and `cognitive_comparison_service`.
