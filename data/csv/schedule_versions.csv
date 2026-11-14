@@ -1,0 +1,2 @@
+schedule_version_id,simulation_run_id,mission_id,task_set_id,version_number,status,created_by_user_id,approved_by_user_id,created_at,approved_at,optimization_run_id
+SV-DEMO-001,RUN-DEMO-001,MIS-001,,1,demo_unapproved,,,2026-11-13T00:00:00Z,,

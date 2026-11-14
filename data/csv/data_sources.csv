@@ -1,0 +1,18 @@
+source_id,title,organization,url,source_class,usage_note
+NASA-HRP-HAZARDS,NASA Human Research Program - Hazards,NASA,https://www.nasa.gov/hrp/hazards/,scientific_context,NASA hazards overview; no astronaut-level records imported
+NASA-HRP-RISKS,NASA Human Research Program - Risks,NASA,https://www.nasa.gov/hrp/risks/,scientific_context,Health risk framework; no numerical astronaut-level records imported
+NASA-HRP-RESEARCH,NASA Ongoing HRP Research,NASA,https://www.nasa.gov/hrp/ongoing-hrp-research/,scientific_context,Research background; no numerical data imported
+NASA-PVT-001,NASA PVT on ISS,NASA,https://nlsp.nasa.gov/search/data/details/f39b0243-b8f5-5a2a-8905-e5c694b44c22?dataType=EXPERIMENTS,protocol_reference_restricted,Real astronaut PVT data restricted and not downloaded
+NASA-TLX-001,NASA Task Load Index,NASA,https://www.nasa.gov/human-systems-integration-division/nasa-task-load-index-tlx/,instrument_reference,Workload instrument reference only
+NASA-OSDR-EDA,NASA Environmental Data App,NASA,https://visualization.osdr.nasa.gov/eda/,potential_numerical_source,Raw tables reportedly available; not downloaded into package
+NASA-OSDR,NASA Open Science Data Repository,NASA,https://osdr.nasa.gov/bio/repo/,potential_numerical_source,"Catalog, not imported"
+NASA-PHYS,NASA Flight Crew Physiological Data,NASA,https://data.nasa.gov/dataset/flight-crew-physiological-data-for-crew-state-monitoring,potential_numerical_source,Catalog record only; not downloaded
+CSA-RAD,Canadian Space Agency Radiation Monitoring,CSA,https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp,scientific_context,Radiation detector context only
+CSA-SCIENCE,CSA Space Science Research,CSA,https://www.asc-csa.gc.ca/eng/iss/science/why-do-we-conduct-science-experiments-in-space.asp,scientific_context,Background only
+HF-SLEEP,Heart-Breath Sleep Stage Dataset,Hugging Face,https://huggingface.co/datasets/abmallick/heart-breath-sleep-stage-dataset,candidate_not_imported,MIT listed; no raw records downloaded
+HF-LIFESTYLE,Sleep Health and Lifestyle Dataset,Hugging Face,https://huggingface.co/datasets/DATA-Asimov/health-and-sleep-relation,candidate_not_imported,Dataset identified; download failed in this environment
+KAGGLE-NASA,NASA Kaggle Organization Datasets,Kaggle,https://www.kaggle.com/organizations/nasa,catalog_not_imported,Catalog inspected; no applicable raw records imported
+AEGIS-SYN-001,AEGIS Synthetic Demo Generator,AEGIS,local:build_aegis.py,synthetic,Deterministic random seed 20261113; five fictional crew; 90-day mission; 28-day baseline
+NASA-PDS-MSL-RAD-SOL0874,"Mars Science Laboratory RAD calibrated RDR dosimetry, sol 874",NASA / PDS Planetary Plasma Interactions node,https://search-pdsppi.igpp.ucla.edu/search/view/?f=no&id=pds%3A%2F%2FPPI%2FMSL-M-RAD-3-RDR-V1.0%2FDATA%2FSOL_00805_00938%2FRAD_RDR_2015_020_14_24_0874_V00,measured_environment_reference,"76 measured dose-rate values uGy/h from detectors B/E, 38 of 39 observations valid; NASA Mars rover, NOT fictional crew; raw HTML-wrapped TXT and PDS LBL uploaded by user"
+NASA-DONKI-GST-MAY2024,NASA DONKI May 2024 geomagnetic storm events,NASA CCMC DONKI,https://ccmc.gsfc.nasa.gov/tools/DONKI/,historical_space_weather_event_reference,"5 historical DONKI GST event objects from user-supplied JSON; recorded original 2024 timestamps, not 2027 demo event"
+NASA-DONKI-SEP-MAY2024,NASA DONKI May 2024 solar energetic particle events,NASA CCMC DONKI,https://ccmc.gsfc.nasa.gov/tools/DONKI/,historical_space_weather_event_reference,14 historical DONKI SEP event objects from user-supplied JSON; models/instruments may be involved; not astronaut dose observations

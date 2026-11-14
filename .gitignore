@@ -1,0 +1,14 @@
+node_modules
+dist
+coverage
+*.local
+.env
+.env.*
+!.env.example
+!.env.development
+!.env.live
+# Generated from data/csv by `npm run fixtures`
+src/mocks/fixtures/*.json
+# Playwright output
+test-results
+playwright-report

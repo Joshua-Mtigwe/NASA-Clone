@@ -1,0 +1,91 @@
+task_set_id,mission_id,mission_day,task_date,scenario_code,scenario_name,origin,status
+SET-001,MIS-001,1,2027-03-01,normal,Routine operations,preloaded,ready
+SET-002,MIS-001,2,2027-03-02,normal,Routine operations,preloaded,ready
+SET-003,MIS-001,3,2027-03-03,normal,Routine operations,preloaded,ready
+SET-004,MIS-001,4,2027-03-04,normal,Routine operations,preloaded,ready
+SET-005,MIS-001,5,2027-03-05,science,Research-intensive day,preloaded,ready
+SET-006,MIS-001,6,2027-03-06,science,Research-intensive day,preloaded,ready
+SET-007,MIS-001,7,2027-03-07,science,Research-intensive day,preloaded,ready
+SET-008,MIS-001,8,2027-03-08,science,Research-intensive day,preloaded,ready
+SET-009,MIS-001,9,2027-03-09,maintenance,Maintenance operations,preloaded,ready
+SET-010,MIS-001,10,2027-03-10,maintenance,Maintenance operations,preloaded,ready
+SET-011,MIS-001,11,2027-03-11,maintenance,Maintenance operations,preloaded,ready
+SET-012,MIS-001,12,2027-03-12,maintenance,Maintenance operations,preloaded,ready
+SET-013,MIS-001,13,2027-03-13,high_workload,High cognitive workload,preloaded,ready
+SET-014,MIS-001,14,2027-03-14,high_workload,High cognitive workload,preloaded,ready
+SET-015,MIS-001,15,2027-03-15,high_workload,High cognitive workload,preloaded,ready
+SET-016,MIS-001,16,2027-03-16,high_workload,High cognitive workload,preloaded,ready
+SET-017,MIS-001,17,2027-03-17,physical,Physical activity emphasis,preloaded,ready
+SET-018,MIS-001,18,2027-03-18,physical,Physical activity emphasis,preloaded,ready
+SET-019,MIS-001,19,2027-03-19,physical,Physical activity emphasis,preloaded,ready
+SET-020,MIS-001,20,2027-03-20,physical,Physical activity emphasis,preloaded,ready
+SET-021,MIS-001,21,2027-03-21,reduced_crew,Reduced crew availability,preloaded,ready
+SET-022,MIS-001,22,2027-03-22,reduced_crew,Reduced crew availability,preloaded,ready
+SET-023,MIS-001,23,2027-03-23,reduced_crew,Reduced crew availability,preloaded,ready
+SET-024,MIS-001,24,2027-03-24,reduced_crew,Reduced crew availability,preloaded,ready
+SET-025,MIS-001,25,2027-03-25,radiation,Radiation shelter drill,preloaded,ready
+SET-026,MIS-001,26,2027-03-26,radiation,Radiation shelter drill,preloaded,ready
+SET-027,MIS-001,27,2027-03-27,radiation,Radiation shelter drill,preloaded,ready
+SET-028,MIS-001,28,2027-03-28,radiation,Radiation shelter drill,preloaded,ready
+SET-029,MIS-001,29,2027-03-29,recovery,Recovery-aware day,preloaded,ready
+SET-030,MIS-001,30,2027-03-30,recovery,Recovery-aware day,preloaded,ready
+SET-031,MIS-001,31,2027-03-31,recovery,Recovery-aware day,preloaded,ready
+SET-032,MIS-001,32,2027-04-01,recovery,Recovery-aware day,preloaded,ready
+SET-033,MIS-001,33,2027-04-02,normal,Routine operations,preloaded,ready
+SET-034,MIS-001,34,2027-04-03,normal,Routine operations,preloaded,ready
+SET-035,MIS-001,35,2027-04-04,normal,Routine operations,preloaded,ready
+SET-036,MIS-001,36,2027-04-05,normal,Routine operations,preloaded,ready
+SET-037,MIS-001,37,2027-04-06,science,Research-intensive day,preloaded,ready
+SET-038,MIS-001,38,2027-04-07,science,Research-intensive day,preloaded,ready
+SET-039,MIS-001,39,2027-04-08,science,Research-intensive day,preloaded,ready
+SET-040,MIS-001,40,2027-04-09,science,Research-intensive day,preloaded,ready
+SET-041,MIS-001,41,2027-04-10,maintenance,Maintenance operations,preloaded,ready
+SET-042,MIS-001,42,2027-04-11,maintenance,Maintenance operations,preloaded,ready
+SET-043,MIS-001,43,2027-04-12,maintenance,Maintenance operations,preloaded,ready
+SET-044,MIS-001,44,2027-04-13,maintenance,Maintenance operations,preloaded,ready
+SET-045,MIS-001,45,2027-04-14,high_workload,High cognitive workload,preloaded,ready
+SET-046,MIS-001,46,2027-04-15,high_workload,High cognitive workload,preloaded,ready
+SET-047,MIS-001,47,2027-04-16,high_workload,High cognitive workload,preloaded,ready
+SET-048,MIS-001,48,2027-04-17,high_workload,High cognitive workload,preloaded,ready
+SET-049,MIS-001,49,2027-04-18,physical,Physical activity emphasis,preloaded,ready
+SET-050,MIS-001,50,2027-04-19,physical,Physical activity emphasis,preloaded,ready
+SET-051,MIS-001,51,2027-04-20,physical,Physical activity emphasis,preloaded,ready
+SET-052,MIS-001,52,2027-04-21,physical,Physical activity emphasis,preloaded,ready
+SET-053,MIS-001,53,2027-04-22,reduced_crew,Reduced crew availability,preloaded,ready
+SET-054,MIS-001,54,2027-04-23,reduced_crew,Reduced crew availability,preloaded,ready
+SET-055,MIS-001,55,2027-04-24,reduced_crew,Reduced crew availability,preloaded,ready
+SET-056,MIS-001,56,2027-04-25,reduced_crew,Reduced crew availability,preloaded,ready
+SET-057,MIS-001,57,2027-04-26,radiation,Radiation shelter drill,preloaded,ready
+SET-058,MIS-001,58,2027-04-27,radiation,Radiation shelter drill,preloaded,ready
+SET-059,MIS-001,59,2027-04-28,radiation,Radiation shelter drill,preloaded,ready
+SET-060,MIS-001,60,2027-04-29,radiation,Radiation shelter drill,preloaded,ready
+SET-061,MIS-001,61,2027-04-30,recovery,Recovery-aware day,preloaded,ready
+SET-062,MIS-001,62,2027-05-01,recovery,Recovery-aware day,preloaded,ready
+SET-063,MIS-001,63,2027-05-02,recovery,Recovery-aware day,preloaded,ready
+SET-064,MIS-001,64,2027-05-03,recovery,Recovery-aware day,preloaded,ready
+SET-065,MIS-001,65,2027-05-04,normal,Routine operations,preloaded,ready
+SET-066,MIS-001,66,2027-05-05,normal,Routine operations,preloaded,ready
+SET-067,MIS-001,67,2027-05-06,normal,Routine operations,preloaded,ready
+SET-068,MIS-001,68,2027-05-07,normal,Routine operations,preloaded,ready
+SET-069,MIS-001,69,2027-05-08,science,Research-intensive day,preloaded,ready
+SET-070,MIS-001,70,2027-05-09,science,Research-intensive day,preloaded,ready
+SET-071,MIS-001,71,2027-05-10,science,Research-intensive day,preloaded,ready
+SET-072,MIS-001,72,2027-05-11,science,Research-intensive day,preloaded,ready
+SET-073,MIS-001,73,2027-05-12,maintenance,Maintenance operations,preloaded,ready
+SET-074,MIS-001,74,2027-05-13,maintenance,Maintenance operations,preloaded,ready
+SET-075,MIS-001,75,2027-05-14,maintenance,Maintenance operations,preloaded,ready
+SET-076,MIS-001,76,2027-05-15,maintenance,Maintenance operations,preloaded,ready
+SET-077,MIS-001,77,2027-05-16,high_workload,High cognitive workload,preloaded,ready
+SET-078,MIS-001,78,2027-05-17,high_workload,High cognitive workload,preloaded,ready
+SET-079,MIS-001,79,2027-05-18,high_workload,High cognitive workload,preloaded,ready
+SET-080,MIS-001,80,2027-05-19,high_workload,High cognitive workload,preloaded,ready
+SET-081,MIS-001,81,2027-05-20,physical,Physical activity emphasis,preloaded,ready
+SET-082,MIS-001,82,2027-05-21,physical,Physical activity emphasis,preloaded,ready
+SET-083,MIS-001,83,2027-05-22,physical,Physical activity emphasis,preloaded,ready
+SET-084,MIS-001,84,2027-05-23,physical,Physical activity emphasis,preloaded,ready
+SET-085,MIS-001,85,2027-05-24,reduced_crew,Reduced crew availability,preloaded,ready
+SET-086,MIS-001,86,2027-05-25,reduced_crew,Reduced crew availability,preloaded,ready
+SET-087,MIS-001,87,2027-05-26,reduced_crew,Reduced crew availability,preloaded,ready
+SET-088,MIS-001,88,2027-05-27,reduced_crew,Reduced crew availability,preloaded,ready
+SET-089,MIS-001,89,2027-05-28,radiation,Radiation shelter drill,preloaded,ready
+SET-090,MIS-001,90,2027-05-29,radiation,Radiation shelter drill,preloaded,ready

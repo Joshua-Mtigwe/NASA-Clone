@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root,
+  .dark {
+    /* shadcn/ui semantic tokens mapped to the AEGIS navy console palette */
+    --background: 219 57% 9%; /* navy-900 #0a1324 */
+    --foreground: 215 52% 94%; /* ink #e6edf7 */
+    --card: 218 55% 12%; /* navy-850 */
+    --card-foreground: 215 52% 94%;
+    --popover: 219 51% 15%; /* navy-800 */
+    --popover-foreground: 215 52% 94%;
+    --primary: 188 73% 50%; /* accent cyan #22c3dd */
+    --primary-foreground: 195 69% 5%;
+    --secondary: 219 47% 21%; /* navy-700 */
+    --secondary-foreground: 215 52% 94%;
+    --muted: 219 47% 21%;
+    --muted-foreground: 217 28% 72%; /* ink-muted */
+    --destructive: 0 91% 71%; /* status action */
+    --destructive-foreground: 219 57% 9%;
+    --border: 219 45% 24%; /* surface-border */
+    --input: 219 45% 24%;
+    --ring: 188 73% 50%;
+    --radius: 0.625rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-surface font-sans text-body text-ink antialiased;
+    min-height: 100vh;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-navy-900;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

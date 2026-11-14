@@ -1,0 +1,6 @@
+protocol_id,protocol_name,test_type,protocol_version,duration_seconds,instructions,scoring_method,is_active
+PVT,Signal Response,PVT,v1,180,Respond to randomized signals,median_reaction_time_ms,True
+NBACK,Working Memory,NBACK,v1,180,Match 2-back items,accuracy_percent,True
+STROOP,System Scanner,STROOP,v1,120,Respond to relevant stimulus,accuracy_percent,True
+SWITCH,Command Switch,SWITCH,v1,180,Switch response rules,accuracy_percent,True
+SURVEY,Fatigue and Workload,SURVEY,v1,60,Report fatigue and workload,fatigue_score,True

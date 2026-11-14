@@ -1,0 +1,98 @@
+event_id,simulation_run_id,mission_id,mission_day,event_timestamp,event_type,event_title,description,severity,source_type
+EVT-001,RUN-DEMO-001,MIS-001,5,2027-03-05T08:00:00Z,science,Research-intensive day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-002,RUN-DEMO-001,MIS-001,6,2027-03-06T08:00:00Z,science,Research-intensive day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-003,RUN-DEMO-001,MIS-001,7,2027-03-07T08:00:00Z,science,Research-intensive day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-004,RUN-DEMO-001,MIS-001,8,2027-03-08T08:00:00Z,science,Research-intensive day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-005,RUN-DEMO-001,MIS-001,9,2027-03-09T08:00:00Z,maintenance,Maintenance operations,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-006,RUN-DEMO-001,MIS-001,10,2027-03-10T08:00:00Z,maintenance,Maintenance operations,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-007,RUN-DEMO-001,MIS-001,11,2027-03-11T08:00:00Z,maintenance,Maintenance operations,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-008,RUN-DEMO-001,MIS-001,12,2027-03-12T08:00:00Z,maintenance,Maintenance operations,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-009,RUN-DEMO-001,MIS-001,13,2027-03-13T08:00:00Z,high_workload,High cognitive workload,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-010,RUN-DEMO-001,MIS-001,14,2027-03-14T08:00:00Z,high_workload,High cognitive workload,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-011,RUN-DEMO-001,MIS-001,15,2027-03-15T08:00:00Z,high_workload,High cognitive workload,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-012,RUN-DEMO-001,MIS-001,16,2027-03-16T08:00:00Z,high_workload,High cognitive workload,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-013,RUN-DEMO-001,MIS-001,17,2027-03-17T08:00:00Z,physical,Physical activity emphasis,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-014,RUN-DEMO-001,MIS-001,18,2027-03-18T08:00:00Z,physical,Physical activity emphasis,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-015,RUN-DEMO-001,MIS-001,19,2027-03-19T08:00:00Z,physical,Physical activity emphasis,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-016,RUN-DEMO-001,MIS-001,20,2027-03-20T08:00:00Z,physical,Physical activity emphasis,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-017,RUN-DEMO-001,MIS-001,21,2027-03-21T08:00:00Z,reduced_crew,Reduced crew availability,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-018,RUN-DEMO-001,MIS-001,22,2027-03-22T08:00:00Z,reduced_crew,Reduced crew availability,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-019,RUN-DEMO-001,MIS-001,23,2027-03-23T08:00:00Z,reduced_crew,Reduced crew availability,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-020,RUN-DEMO-001,MIS-001,24,2027-03-24T08:00:00Z,reduced_crew,Reduced crew availability,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-021,RUN-DEMO-001,MIS-001,25,2027-03-25T08:00:00Z,radiation,Radiation shelter drill,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-022,RUN-DEMO-001,MIS-001,26,2027-03-26T08:00:00Z,radiation,Radiation shelter drill,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-023,RUN-DEMO-001,MIS-001,27,2027-03-27T08:00:00Z,radiation,Radiation shelter drill,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-024,RUN-DEMO-001,MIS-001,28,2027-03-28T08:00:00Z,radiation,Radiation shelter drill,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-025,RUN-DEMO-001,MIS-001,29,2027-03-29T08:00:00Z,recovery,Recovery-aware day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-026,RUN-DEMO-001,MIS-001,30,2027-03-30T08:00:00Z,recovery,Recovery-aware day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-027,RUN-DEMO-001,MIS-001,31,2027-03-31T08:00:00Z,recovery,Recovery-aware day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-028,RUN-DEMO-001,MIS-001,32,2027-04-01T08:00:00Z,recovery,Recovery-aware day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-029,RUN-DEMO-001,MIS-001,37,2027-04-06T08:00:00Z,science,Research-intensive day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-030,RUN-DEMO-001,MIS-001,38,2027-04-07T08:00:00Z,science,Research-intensive day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-031,RUN-DEMO-001,MIS-001,39,2027-04-08T08:00:00Z,science,Research-intensive day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-032,RUN-DEMO-001,MIS-001,40,2027-04-09T08:00:00Z,science,Research-intensive day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-033,RUN-DEMO-001,MIS-001,41,2027-04-10T08:00:00Z,maintenance,Maintenance operations,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-034,RUN-DEMO-001,MIS-001,42,2027-04-11T08:00:00Z,maintenance,Maintenance operations,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-035,RUN-DEMO-001,MIS-001,43,2027-04-12T08:00:00Z,maintenance,Maintenance operations,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-036,RUN-DEMO-001,MIS-001,44,2027-04-13T08:00:00Z,maintenance,Maintenance operations,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-037,RUN-DEMO-001,MIS-001,45,2027-04-14T08:00:00Z,high_workload,High cognitive workload,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-038,RUN-DEMO-001,MIS-001,46,2027-04-15T08:00:00Z,high_workload,High cognitive workload,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-039,RUN-DEMO-001,MIS-001,47,2027-04-16T08:00:00Z,high_workload,High cognitive workload,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-040,RUN-DEMO-001,MIS-001,48,2027-04-17T08:00:00Z,high_workload,High cognitive workload,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-041,RUN-DEMO-001,MIS-001,49,2027-04-18T08:00:00Z,physical,Physical activity emphasis,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-042,RUN-DEMO-001,MIS-001,50,2027-04-19T08:00:00Z,physical,Physical activity emphasis,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-043,RUN-DEMO-001,MIS-001,51,2027-04-20T08:00:00Z,physical,Physical activity emphasis,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-044,RUN-DEMO-001,MIS-001,52,2027-04-21T08:00:00Z,physical,Physical activity emphasis,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-045,RUN-DEMO-001,MIS-001,53,2027-04-22T08:00:00Z,reduced_crew,Reduced crew availability,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-046,RUN-DEMO-001,MIS-001,54,2027-04-23T08:00:00Z,reduced_crew,Reduced crew availability,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-047,RUN-DEMO-001,MIS-001,55,2027-04-24T08:00:00Z,reduced_crew,Reduced crew availability,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-048,RUN-DEMO-001,MIS-001,56,2027-04-25T08:00:00Z,reduced_crew,Reduced crew availability,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-049,RUN-DEMO-001,MIS-001,57,2027-04-26T08:00:00Z,radiation,Radiation shelter drill,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-050,RUN-DEMO-001,MIS-001,58,2027-04-27T08:00:00Z,radiation,Radiation shelter drill,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-051,RUN-DEMO-001,MIS-001,59,2027-04-28T08:00:00Z,radiation,Radiation shelter drill,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-052,RUN-DEMO-001,MIS-001,60,2027-04-29T08:00:00Z,radiation,Radiation shelter drill,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-053,RUN-DEMO-001,MIS-001,61,2027-04-30T08:00:00Z,recovery,Recovery-aware day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-054,RUN-DEMO-001,MIS-001,62,2027-05-01T08:00:00Z,recovery,Recovery-aware day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-055,RUN-DEMO-001,MIS-001,63,2027-05-02T08:00:00Z,recovery,Recovery-aware day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-056,RUN-DEMO-001,MIS-001,64,2027-05-03T08:00:00Z,recovery,Recovery-aware day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-057,RUN-DEMO-001,MIS-001,69,2027-05-08T08:00:00Z,science,Research-intensive day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-058,RUN-DEMO-001,MIS-001,70,2027-05-09T08:00:00Z,science,Research-intensive day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-059,RUN-DEMO-001,MIS-001,71,2027-05-10T08:00:00Z,science,Research-intensive day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-060,RUN-DEMO-001,MIS-001,72,2027-05-11T08:00:00Z,science,Research-intensive day,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-061,RUN-DEMO-001,MIS-001,73,2027-05-12T08:00:00Z,maintenance,Maintenance operations,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-062,RUN-DEMO-001,MIS-001,74,2027-05-13T08:00:00Z,maintenance,Maintenance operations,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-063,RUN-DEMO-001,MIS-001,75,2027-05-14T08:00:00Z,maintenance,Maintenance operations,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-064,RUN-DEMO-001,MIS-001,76,2027-05-15T08:00:00Z,maintenance,Maintenance operations,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-065,RUN-DEMO-001,MIS-001,77,2027-05-16T08:00:00Z,high_workload,High cognitive workload,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-066,RUN-DEMO-001,MIS-001,78,2027-05-17T08:00:00Z,high_workload,High cognitive workload,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-067,RUN-DEMO-001,MIS-001,79,2027-05-18T08:00:00Z,high_workload,High cognitive workload,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-068,RUN-DEMO-001,MIS-001,80,2027-05-19T08:00:00Z,high_workload,High cognitive workload,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-069,RUN-DEMO-001,MIS-001,81,2027-05-20T08:00:00Z,physical,Physical activity emphasis,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-070,RUN-DEMO-001,MIS-001,82,2027-05-21T08:00:00Z,physical,Physical activity emphasis,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-071,RUN-DEMO-001,MIS-001,83,2027-05-22T08:00:00Z,physical,Physical activity emphasis,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-072,RUN-DEMO-001,MIS-001,84,2027-05-23T08:00:00Z,physical,Physical activity emphasis,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-073,RUN-DEMO-001,MIS-001,85,2027-05-24T08:00:00Z,reduced_crew,Reduced crew availability,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-074,RUN-DEMO-001,MIS-001,86,2027-05-25T08:00:00Z,reduced_crew,Reduced crew availability,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-075,RUN-DEMO-001,MIS-001,87,2027-05-26T08:00:00Z,reduced_crew,Reduced crew availability,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-076,RUN-DEMO-001,MIS-001,88,2027-05-27T08:00:00Z,reduced_crew,Reduced crew availability,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-077,RUN-DEMO-001,MIS-001,89,2027-05-28T08:00:00Z,radiation,Radiation shelter drill,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+EVT-078,RUN-DEMO-001,MIS-001,90,2027-05-29T08:00:00Z,radiation,Radiation shelter drill,Preloaded fictional mission scenario; not a NASA event,demo,synthetic_demo
+NASA-DONKI-GST-001,,,,2024-05-02T15:00:00Z,space_weather_gst,NASA DONKI geomagnetic storm,NASA DONKI historical GST record 2024-05-02T15:00:00-GST-001; max reported Kp: 6.67; original event time: 2024-05-02T15:00:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/GST/30399/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-GST-002,,,,2024-05-10T15:00:00Z,space_weather_gst,NASA DONKI geomagnetic storm,NASA DONKI historical GST record 2024-05-10T15:00:00-GST-001; max reported Kp: 9.00; original event time: 2024-05-10T15:00:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/GST/30693/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-GST-003,,,,2024-05-12T21:00:00Z,space_weather_gst,NASA DONKI geomagnetic storm,NASA DONKI historical GST record 2024-05-12T21:00:00-GST-001; max reported Kp: 6.33; original event time: 2024-05-12T21:00:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/GST/30798/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-GST-004,,,,2024-05-16T06:00:00Z,space_weather_gst,NASA DONKI geomagnetic storm,NASA DONKI historical GST record 2024-05-16T06:00:00-GST-001; max reported Kp: 6.00; original event time: 2024-05-16T06:00:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/GST/30929/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-GST-005,,,,2024-05-17T18:00:00Z,space_weather_gst,NASA DONKI geomagnetic storm,NASA DONKI historical GST record 2024-05-17T18:00:00-GST-001; max reported Kp: 6.00; original event time: 2024-05-17T18:00:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/GST/30993/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-001,,,,2024-05-09T13:59:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-09T13:59:00-SEP-001; instrument/model: MODEL: REleASE:ACE/EPAM 15.8-39.8 MeV; original event time: 2024-05-09T13:59:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30609/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-002,,,,2024-05-09T14:25:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-09T14:25:00-SEP-001; instrument/model: MODEL: REleASE:SOHO/EPHIN 15.8-39.8 MeV; original event time: 2024-05-09T14:25:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30610/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-003,,,,2024-05-10T12:59:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-10T12:59:00-SEP-001; instrument/model: SOHO: COSTEP 15.8-39.8 MeV; original event time: 2024-05-10T12:59:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30675/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-004,,,,2024-05-10T13:02:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-10T13:02:00-SEP-001; instrument/model: SOHO: COSTEP 28.2-50.1 MeV; original event time: 2024-05-10T13:02:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30676/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-005,,,,2024-05-10T13:35:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-10T13:35:00-SEP-001; instrument/model: GOES-P: SEISS >10 MeV; original event time: 2024-05-10T13:35:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30677/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-006,,,,2024-05-10T14:50:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-10T14:50:00-SEP-001; instrument/model: STEREO A: IMPACT 13-100 MeV; original event time: 2024-05-10T14:50:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30684/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-007,,,,2024-05-11T02:10:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-11T02:10:00-SEP-001; instrument/model: GOES-P: SEISS >100 MeV; original event time: 2024-05-11T02:10:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30714/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-008,,,,2024-05-11T04:07:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-11T04:07:00-SEP-001; instrument/model: STEREO A: IMPACT 13-100 MeV; original event time: 2024-05-11T04:07:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30717/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-009,,,,2024-05-13T12:44:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-13T12:44:00-SEP-001; instrument/model: STEREO A: IMPACT 13-100 MeV; original event time: 2024-05-13T12:44:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30811/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-010,,,,2024-05-13T13:10:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-13T13:10:00-SEP-001; instrument/model: MODEL: REleASE:SOHO/EPHIN 15.8-39.8 MeV; original event time: 2024-05-13T13:10:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30807/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-011,,,,2024-05-13T14:00:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-13T14:00:00-SEP-001; instrument/model: GOES-P: SEISS >10 MeV; original event time: 2024-05-13T14:00:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30817/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-012,,,,2024-05-13T16:19:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-13T16:19:00-SEP-001; instrument/model: MODEL: REleASE:ACE/EPAM 15.8-39.8 MeV; original event time: 2024-05-13T16:19:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30820/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-013,,,,2024-05-13T18:07:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-13T18:07:00-SEP-001; instrument/model: SOHO: COSTEP 15.8-39.8 MeV; original event time: 2024-05-13T18:07:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30824/-1,historical_reference,nasa_donki_historical_reference
+NASA-DONKI-SEP-014,,,,2024-05-13T18:07:00Z,space_weather_sep,NASA DONKI solar energetic particle event,NASA DONKI historical SEP record 2024-05-13T18:07:00-SEP-002; instrument/model: SOHO: COSTEP 28.2-50.1 MeV; original event time: 2024-05-13T18:07:00Z; source: https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30825/-1,historical_reference,nasa_donki_historical_reference
