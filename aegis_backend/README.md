@@ -138,9 +138,10 @@ app/
                task_service, crew_readiness_service, scheduling_optimizer, schedule_service,
                research_service, research_report_service, planning_effectiveness_service,
                recovery_service, task_execution_service, account_service,
-               gemma_client, ai_service, sync_service
+               gemma_client, ai_service, sync_service,
+               coach_service, wellbeing_service, wellbeing_risk_service, journal_service
   api/         auth, missions, simulation, health, environment, assessments, planning, recovery, research, ai, sync, admin,
-               websocket routes
+               wellbeing, journal, websocket routes
   schemas/     Pydantic request/response models
   utils/       timestamps, units, statistics
 scripts/       import_csvs, validate_seed_data, set_demo_passwords
@@ -697,75 +698,104 @@ The new runtime table `sync_event_details` holds each event's action, sender and
   refused if the record changed again.
 * **Tests:** 24 new tests in `tests/integration/test_sync.py` and `tests/api/test_sync_api.py`.
 
-## Wellbeing chat
+## Reflective Coach: wellbeing chat and mission journal
 
-An astronaut tells the assistant how they feel, in their own words. The reply draws on **their own
-current metrics** and suggests **approved recovery activities**. Every message and every reply is
-stored. It is general wellbeing support, not medical advice, and every reply comes with that note.
+Two places where an astronaut writes in their own words: a **chat** ("how I feel right now") and a
+private **journal**. Behind both is the same coach (`coach_service`). It reflects back what they
+wrote, compares things only with **their own** usual, asks one reframing question, suggests approved
+recovery activities, and always points them back to their crewmates and the medical officer.
 
-### What happens to a message (`wellbeing_service`)
-1. **Stored** in `wellbeing_messages`, in a conversation that belongs to that astronaut.
-2. **Urgent messages never go to the model.** Chest pain, trouble breathing, fainting or thoughts of
-   self-harm get a fixed reply: contact the medical officer now. The self-harm reply also points a
-   real person to their local emergency number or a crisis line. The conversation is **flagged** for
-   the medical officer.
-3. **Otherwise a fact packet is built** from the astronaut's own data at the current mission time,
-   each item compared with *their own* usual values:
-   * sleep, self-reported fatigue and workload, and this morning's cognitive tests;
-   * vitals against their personal range, radiation, and notable changes this week;
-   * today's schedule;
-   * the approved activities.
-4. **Gemma replies** (`ai_service`, purpose `wellbeing_chat`, prompt `wellbeing_v2`). The model is shown:
-   * only what is unusual, with values; everything normal is summed up as one phrase, because a small
-     model invents values for anything it is named;
-   * what the person wrote, and the last few messages.
+It is a guided-reflection tool. It is not a therapist or a doctor, it never names an illness or a
+medication, and it is not a substitute for the crew. Every reply carries that note.
 
-   Code adds specific instructions:
-   * a medication question: don't name it, say you can't advise, point to the medical officer;
-   * a radiation question: give the reading, the medical officer tracks dose;
-   * "what's wrong with me": you can't say, the medical officer can;
-   * nothing unusual: give no numbers.
-5. **The reply is checked.** It must contain:
-   * no number that isn't in the facts or the person's message;
-   * no illness words;
-   * **no medication, ever, even if the person asked about it**;
-   * no activity outside the approved catalogue.
+### Step 1: analyse (labels that code can check)
+Gemma fills a fixed JSON form (structured output, temperature 0) with a mood, themes, stress
+triggers, thinking patterns and crisis markers.
+* Every label must come from a **fixed list** and carry a **quote** from the text. Code keeps a label
+  only if its quote is really in the text, and drops the rest. (In a trial with the real model it
+  invented a "work" theme that was not in the text; this check removes that.)
+* A plain **keyword detector** runs alongside. For crisis markers it can only **add** to what the
+  model found, never remove, so safety never rests on the model alone. With the model off, the
+  keyword analysis is used by itself.
+* The theme list starts from the most frequent categories in NASA's study of ISS crew journals
+  (Stuster 2010).
 
-   What the person typed never counts as an allowed fact for these word checks. If the model is off,
-   or its answer fails a check, a rule-based reply is used instead.
-6. **The reply is stored** with the full facts and exactly what the model was shown, so a reviewer can
-   see why it said what it said.
+### Step 2: respond
+* The reply is written from the checked analysis, the astronaut's own metrics (chat) or their own
+  journal patterns (journal), and a **reframing question chosen by code** from the detected thinking
+  pattern, not by the model.
+* The reply is checked: no number that is not in the facts, no illness words, no medication ever, no
+  "therapy" framing, only approved activities. If the model is off or its text fails a check, a
+  rule-based reply is used.
+* Code then makes sure every reply points to the crew and to the medical officer.
 
-### Who can see what
-* **Astronauts** chat about themselves only, and see only their own conversations.
-* **The medical officer** can list and read every conversation (each read is written to the audit
-  log) and record a follow-up on flagged ones.
-* **The mission leader and researcher** cannot read them: they are personal health conversations.
+### Urgent writing
+* Chest pain, trouble breathing, fainting or thoughts of self-harm are caught by keywords and **never
+  sent to the model**, not even for analysis. A fixed reply says to contact the medical officer now;
+  the self-harm reply also points a real person to their local emergency number or a crisis line.
+* If the model's analysis finds self-harm or a safety risk in wording the keywords missed (with a
+  real quote), the same fixed reply is used and the model writes nothing.
+
+### Privacy and break-glass (`wellbeing_risk_service`)
+* **What an astronaut writes is private.** The medical officer can see that a conversation exists
+  but reads its messages only if the astronaut **shares** that conversation. Journal entries are
+  invisible to the medical officer unless the astronaut shares that entry. Sharing can be taken
+  back. Every read of shared writing is audited. The mission leader and researcher see nothing.
+* **Two exceptions raise a risk flag for the medical officer:**
+  * *immediate*: the writing points to immediate danger (self-harm, a risk to someone's safety, an
+    urgent physical symptom);
+  * *persistent*: the same crisis marker appears in **3 of that astronaut's last 5 writings**
+    (chat and journal together). One open flag per marker; a new one only after it is acknowledged.
+* **A flag carries the indicator only** (for example "hopelessness, 3 of the last 5"), never the
+  words. The medical officer acknowledges it with a follow-up note.
+* **Nothing happens behind the astronaut's back.** Every reply includes a privacy note explaining
+  this, the response says when the medical officer was alerted, and astronauts can see their own flags.
+
+### The journal (`journal_service`)
+* Writing an entry returns the coach's **reflection**, a short summary of what it noticed, and a
+  **writing prompt** for next time.
+* **Patterns against your own baseline:** themes in the last 5 entries are compared with the same
+  astronaut's earlier entries. A theme is "rising" when it is clearly more common lately. Counts
+  only; the reflection may mention a rising theme using exactly those counts. `GET /journal/trends`
+  shows themes and mood by mission week. Trends are the astronaut's alone.
+* **Research with consent:** an astronaut can allow the **themes** of their entries (never the text)
+  to be counted in crew-level figures, and can withdraw at any time. The researcher and medical
+  officer see totals only, never per person, and **nothing at all unless at least 3 crew members
+  consent**, because small counts could point to one person.
+* **Demo entries:** an astronaut can fill their own journal with fictional entries labelled
+  `synthetic_demo` so the trend screens have data. They never raise flags and are left out of
+  research counts unless asked for.
 
 ### Endpoints (prefix `/api/v1`)
 | Method | Path | Who |
 |---|---|---|
 | POST | `/wellbeing/chat` `{"message", "conversation_id"?}` | astronaut |
-| GET | `/wellbeing/conversations` (`?flagged=true` for the medical officer) | astronaut (own), medical officer (all) |
-| GET | `/wellbeing/conversations/{id}` | that astronaut, medical officer |
+| GET | `/wellbeing/conversations`, `/wellbeing/conversations/{id}` | astronaut (own); medical officer (text only if shared) |
+| POST | `/wellbeing/conversations/{id}/share` `{"shared"}` | that astronaut |
 | POST | `/wellbeing/conversations/{id}/review` `{"note"}` | medical officer |
+| GET | `/wellbeing/risk-flags` (`?open_only=true`) | medical officer (all), astronaut (own) |
+| POST | `/wellbeing/risk-flags/{id}/acknowledge` `{"note"}` | medical officer |
+| POST | `/journal/entries` `{"text"}` | astronaut |
+| GET | `/journal/entries`, `/journal/entries/{id}` | astronaut (own); medical officer (shared only) |
+| POST | `/journal/entries/{id}/share` `{"shared"}` | that astronaut |
+| GET | `/journal/trends` | astronaut (own) |
+| GET, PUT | `/journal/consent` | astronaut (own) |
+| GET | `/journal/research-summary` | researcher, medical officer |
+| POST | `/journal/demo-entries` `{"days"}` | astronaut (own journal) |
 
-`reply.source` is `gemma`, `rules` (model off, or its answer failed a check) or `escalation` (urgent).
+`reply.source` (chat) and `entry.reflection_source` (journal) are `gemma`, `rules` (model off, or its
+text failed a check) or `escalation` (urgent). `medical_officer_alerted` is `immediate`, `persistent`
+or empty.
 
-### Tried with the real model
-Messages were tried with `gemma3:4b` running locally:
-* tiredness;
-* a sleeping-pill question;
-* boredom;
-* a "tell me my diagnosis" injection attempt;
-* radiation worry;
-* loneliness;
-* a good day.
-
-All passed the checks, responded to what the person said, used only real values, never named
-medication, and pointed to the medical officer. Earlier prompt versions failed in ways that shaped the
-design above, for example by inventing "typical" vitals. The checker caught those, and the rule-based
-reply was shown instead.
+### Tested, and not tested
+* 67 tests in `test_wellbeing.py`, `test_journal.py` and their API files use a stand-in model. They
+  cover the quote checks, the keyword union, escalation, the 3-of-5 rule, privacy and sharing, consent
+  and the minimum-crew rule, and that the model can be off throughout.
+* The analysis step and the model switch to `gemma4:e4b` were tried against the real model. **The
+  full coach replies and journal reflections have not yet been read through with the real model**;
+  that is the next thing to do before a demo. Prompts are in `ai_service._TASKS`.
+* The crisis keyword lists are short and English-only. They are a safety net for a prototype on
+  synthetic data, not a validated screening tool, and would need clinical review before real use.
 
 ## All plan phases are now built
 Suggested next steps: one full demo run end to end on a fresh database, and a security pass

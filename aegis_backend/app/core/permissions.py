@@ -51,3 +51,7 @@ WELLBEING_REVIEW_ROLES = (MEDICAL_OFFICER,)
 AI_TASK_EXPLAIN_ROLES = (MISSION_LEADER,)
 AI_RECOVERY_EXPLAIN_ROLES = RECOVERY_PLAN_ROLES
 AI_REPORT_ROLES = RESEARCH_RUN_ROLES
+
+# Mission journal. Writing and reading follow the chat rules above (astronaut writes; the medical officer
+# reads only what an astronaut shares). Crew-level THEME counts from consenting astronauts, never text:
+JOURNAL_RESEARCH_ROLES = (MEDICAL_RESEARCHER, MEDICAL_OFFICER)

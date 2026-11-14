@@ -1,26 +1,28 @@
-"""Wellbeing chat: an astronaut says how they feel; the reply draws on their own current metrics.
+"""Wellbeing chat with the AEGIS Reflective Coach: an astronaut says how they feel; the reply reflects it
+back, draws on their own current metrics, and points them to their crew and the medical officer.
+
+The coach is a guided-reflection tool, not a therapist or a doctor.
 
 What happens to each message
 ----------------------------
 1. The message is stored (wellbeing_messages), in a conversation that belongs to that astronaut.
-2. URGENT messages (e.g. chest pain, trouble breathing, fainting, thoughts of self-harm) are NEVER sent
-   to the model. A fixed reply tells them to contact the medical officer now, and the conversation is
-   flagged for the medical officer to review.
-3. Otherwise a fact packet is built from the astronaut's own data at the current mission time:
-   sleep, self-reported fatigue and workload, today's cognitive tests, vitals against their personal
-   range, radiation, notable changes over the last week, today's schedule, and the approved recovery
-   activities. Everything is compared with THEIR OWN usual values.
-4. Gemma writes a short supportive reply from those facts and what they wrote (ai_service, purpose
-   'wellbeing_chat'). The reply is checked: no new numbers, no illness names, no medication, no
-   activities outside the approved catalogue. If the model is off or its answer fails a check, a
-   rule-based reply is used instead.
-5. The reply is stored with the facts it was based on, so a reviewer can see why it said what it said.
+2. URGENT messages (chest pain, trouble breathing, fainting, thoughts of self-harm...) are caught by
+   keywords and NEVER sent to the model. A fixed reply tells them to contact the medical officer now.
+3. Otherwise the coach ANALYSES the message first (coach_service): labels from fixed lists, each backed
+   by a quote that code checks is really in the text. The analysis is stored with the message.
+4. BREAK-GLASS checks (wellbeing_risk_service): immediate danger, or the same crisis marker in 3 of the
+   last 5 writings, raises a risk flag for the medical officer. The flag carries the indicator only.
+5. A fact packet is built from the astronaut's own data at the current mission time, compared with THEIR
+   OWN usual values, plus the checked summary of what they wrote and one reframing question chosen by code.
+6. Gemma writes the reply (ai_service, purpose 'wellbeing_chat'). It is checked: no new numbers, no
+   illness names, no medication, no "therapy" framing, only approved activities. If the model is off or
+   its answer fails a check, a rule-based reply is used. Code then makes sure the reply points to the
+   crew and to the medical officer.
+7. The reply is stored with the facts it was based on.
 
-This is general support for a crew member, not medical advice: every reply comes with SAFETY_NOTE,
-and the model can only suggest activities the medical officer has approved.
-
-Access: an astronaut chats about themselves only. The medical officer can read every conversation
-(each read of someone else's conversation is audited) and mark flagged ones as reviewed.
+Privacy: the TEXT of a conversation is private to the astronaut. The medical officer sees that a
+conversation exists, and any risk flags, but reads the messages only if the astronaut shares the
+conversation (every such read is audited). The astronaut is told this with every reply (PRIVACY_NOTE).
 """
 from __future__ import annotations
 
@@ -34,8 +36,8 @@ from typing import Any
 from app.core import permissions
 from app.core.config import get_settings
 from app.core.errors import NotFound, PermissionDenied, ServiceError, ValidationFailed
-from app.services import ai_service, auth_service, health_changes_service, physiology_service
-from app.services import radiation_service, recovery_service, sleep_activity_service
+from app.services import ai_service, auth_service, coach_service, health_changes_service, physiology_service
+from app.services import radiation_service, recovery_service, sleep_activity_service, wellbeing_risk_service
 from app.services.audit_service import write_audit
 from app.services.health_context import resolve_as_of
 from app.utils.timestamps import to_iso, utcnow
@@ -43,8 +45,9 @@ from app.utils.timestamps import to_iso, utcnow
 MAX_MESSAGE_CHARS = 1000
 HISTORY_MESSAGES = 6  # earlier messages given to the model for context
 
-SAFETY_NOTE = ("This is general wellbeing support, not medical advice. If you feel worse or unsure, "
-               "contact the medical officer.")
+SAFETY_NOTE = ("This is a guided-reflection tool, not medical advice and not a substitute for your crew. "
+               "If you feel worse or unsure, contact the medical officer.")
+PRIVACY_NOTE = wellbeing_risk_service.PRIVACY_NOTE
 
 # Messages that must reach a person, not a model. Matched case-insensitively.
 _URGENT_PHYSICAL = [re.compile(p, re.IGNORECASE) for p in (
@@ -59,12 +62,13 @@ _URGENT_SELF_HARM = [re.compile(p, re.IGNORECASE) for p in (
 
 ESCALATION_PHYSICAL = (
     "Thank you for telling me. What you describe needs a person, not this assistant: please contact the "
-    "medical officer now, or alert a crew member near you straight away. This conversation has been flagged "
-    "so the medical officer can follow up.")
+    "medical officer now, or alert a crew member near you straight away. The medical officer has been "
+    "alerted that you reported an urgent physical symptom; they are told the reason, not your words.")
 ESCALATION_SELF_HARM = (
     "Thank you for telling me, and I'm glad you said it. You don't have to handle this alone: please talk to "
-    "the medical officer now, or reach out to a crew member you trust straight away. This conversation has "
-    "been flagged so the medical officer can follow up. If you are a real person outside this simulation and "
+    "the medical officer now, or reach out to a crew member you trust straight away. The medical officer has "
+    "been alerted that you may need support; they are told the reason, not your words, unless you choose to "
+    "share them. If you are a real person outside this simulation and "
     "you are in danger or thinking about ending your life, please contact your local emergency number or a "
     "crisis line now.")
 
@@ -220,7 +224,7 @@ def _instructions(text: str, seen: dict[str, Any]) -> list[str]:
 _SCORE_UNITS = {"1-9", "score"}  # read as plain numbers: "5.81", not "5.81 1-9"
 
 
-def rule_based_reply(facts: dict[str, Any]) -> str:
+def rule_based_reply(facts: dict[str, Any], reframe_question: str | None = None) -> str:
     """The reply used when the model is off or its answer failed a check. Built only from the facts."""
     unusual = []
     for m in (facts.get("measurements") or {}).values():
@@ -242,6 +246,8 @@ def rule_based_reply(facts: dict[str, Any]) -> str:
         article = "An" if str(minutes).startswith(("8", "11", "18")) else "A"
         parts.append(f"{article} {minutes}-minute {suggestion} could be a good fit right now." if minutes
                      else f"{suggestion} could be a good fit right now.")
+    if reframe_question:
+        parts.append(f"One question to sit with: {reframe_question}")
     parts.append("If you feel worse or unsure, please talk to the medical officer.")
     return " ".join(parts)
 
@@ -260,10 +266,12 @@ def _store_message(conn: sqlite3.Connection, conversation_id: str, sender: str, 
     message_id = _id("MSG")
     conn.execute(
         """INSERT INTO wellbeing_messages (message_id, conversation_id, sender, text, created_at, mission_time,
-               source, inference_id, facts_json, check_problems_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+               source, inference_id, facts_json, check_problems_json, analysis_json)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
         (message_id, conversation_id, sender, text, to_iso(utcnow()), mission_time, extra.get("source"),
          extra.get("inference_id"), json.dumps(extra["facts"]) if extra.get("facts") is not None else None,
-         json.dumps(extra["problems"]) if extra.get("problems") else None))
+         json.dumps(extra["problems"]) if extra.get("problems") else None,
+         json.dumps(extra["analysis"]) if extra.get("analysis") is not None else None))
     return _message(conn.execute("SELECT * FROM wellbeing_messages WHERE message_id = ?", (message_id,)).fetchone())
 
 
@@ -271,6 +279,9 @@ def _message(row: sqlite3.Row) -> dict[str, Any]:
     m = dict(row)
     m["facts"] = json.loads(m.pop("facts_json")) if m.get("facts_json") else None
     m["check_problems"] = json.loads(m.pop("check_problems_json")) if m.get("check_problems_json") else []
+    analysis = json.loads(m.pop("analysis_json")) if m.get("analysis_json") else None
+    # The astronaut's own message carries the coach's checked summary (plain words, no crisis labels).
+    m["coach_summary"] = coach_service.coach_brief(analysis) if analysis else None
     return m
 
 
@@ -301,23 +312,34 @@ def send_message(conn: sqlite3.Connection, user: dict[str, Any], text: str, *, c
     history = [{"from": r["sender"], "text": r["text"]} for r in conn.execute(
         "SELECT sender, text FROM wellbeing_messages WHERE conversation_id = ? ORDER BY created_at DESC, rowid DESC "
         "LIMIT ?", (conversation_id, HISTORY_MESSAGES))][::-1]
-    mine = _store_message(conn, conversation_id, "astronaut", text, mission_time)
+    kind = urgent_kind(text)
+    if kind:  # caught by keywords: the model is not used at all, not even to analyse
+        analysis = {**coach_service.keyword_analysis(text), "source": "keywords"}
+    else:
+        analysis = coach_service.analyse(conn, text, simulation_run_id=run_id, purpose="chat_analysis")
+    mine = _store_message(conn, conversation_id, "astronaut", text, mission_time, analysis=analysis)
+    risk = wellbeing_risk_service.evaluate(conn, astronaut_id, analysis, source="chat", mission_time=mission_time,
+                                           urgent_physical=kind == "physical")
     conn.commit()
 
-    kind = urgent_kind(text)
-    if kind:
-        reply_text = ESCALATION_SELF_HARM if kind == "self_harm" else ESCALATION_PHYSICAL
+    if risk["level"] == "immediate":
+        self_harm = kind == "self_harm" or "self_harm" in coach_service.labels(analysis, "crisis_markers")
+        reason = "self_harm" if self_harm else "physical" if kind == "physical" else "safety_risk"
+        reply_text = ESCALATION_PHYSICAL if reason == "physical" else ESCALATION_SELF_HARM
         reply = _store_message(conn, conversation_id, "assistant", reply_text, mission_time, source="escalation")
         conn.execute("UPDATE wellbeing_conversations SET flagged = 1, flag_reason = ?, reviewed_by_user_id = NULL, "
                      "reviewed_at = NULL, review_note = NULL WHERE conversation_id = ?",
-                     (f"urgent: {kind}", conversation_id))
+                     (f"urgent: {reason}", conversation_id))
         write_audit(conn, user_id=user["user_id"], action_type="wellbeing_escalation",
                     entity_type="wellbeing_conversation", entity_id=conversation_id, action_result="flagged",
-                    change_summary=f"urgent message ({kind}) from {astronaut_id}; model not used", commit=False)
+                    change_summary=f"urgent message ({reason}) from {astronaut_id}; no model-written reply",
+                    commit=False)
     else:
         facts = build_facts(conn, astronaut_id, now, run_id)
         seen = model_facts(facts, text)
-        packet = {**seen, "astronaut_says": text, "recent_conversation": history}
+        question = coach_service.reframe_question(analysis)
+        packet = {**seen, "coach_brief": coach_service.coach_brief(analysis), "reframe_question": question,
+                  "astronaut_says": text, "recent_conversation": history}
         unapproved = {a["activity_name"] for a in recovery_service.list_activities(conn, include_unapproved=True)
                       if a["approval_status"] != "approved"}
         result = ai_service.run_inference(conn, purpose="wellbeing_chat", packet=packet, simulation_run_id=run_id,
@@ -326,7 +348,9 @@ def send_message(conn: sqlite3.Connection, user: dict[str, Any], text: str, *, c
         if result["status"] == "succeeded":
             reply_text, source = result["text"], "gemma"
         else:
-            reply_text, source = rule_based_reply(facts), "rules"
+            reply_text, source = rule_based_reply(facts, question), "rules"
+        # Deterministic last step: every reply points to the crew and to the medical officer.
+        reply_text = coach_service.finish_reply(reply_text, analysis)
         reply = _store_message(conn, conversation_id, "assistant", reply_text, mission_time, source=source,
                                inference_id=result["inference_id"], facts={"all": facts, "shown_to_model": seen},
                                problems=result["problems"])
@@ -335,7 +359,8 @@ def send_message(conn: sqlite3.Connection, user: dict[str, Any], text: str, *, c
     conn.commit()
     conversation = _conversation(conn, conversation_id)
     return {"conversation_id": conversation_id, "flagged": bool(conversation["flagged"]),
-            "message": mine, "reply": reply, "safety_note": SAFETY_NOTE}
+            "message": mine, "reply": reply, "medical_officer_alerted": risk["level"],
+            "safety_note": SAFETY_NOTE, "privacy_note": PRIVACY_NOTE}
 
 
 def list_conversations(conn: sqlite3.Connection, user: dict[str, Any], *, astronaut_id: str | None = None,
@@ -356,26 +381,55 @@ def list_conversations(conn: sqlite3.Connection, user: dict[str, Any], *, astron
            WHERE (? IS NULL OR c.astronaut_id = ?) AND (? IS NULL OR c.flagged = ?)
            ORDER BY c.flagged DESC, c.last_message_at DESC""",
         (target, target, None if flagged is None else int(flagged), None if flagged is None else int(flagged)))
-    return [{**dict(r), "flagged": bool(r["flagged"])} for r in rows]
+    out = []
+    for r in rows:
+        c = {**dict(r), "flagged": bool(r["flagged"]), "shared_with_medical_officer": bool(r["shared_with_medical_officer"])}
+        if user.get("role_name") in permissions.WELLBEING_REVIEW_ROLES and not c["shared_with_medical_officer"]:
+            c["last_message"] = None  # private unless the astronaut shares the conversation
+        out.append(c)
+    return out
 
 
 def get_conversation(conn: sqlite3.Connection, user: dict[str, Any], conversation_id: str) -> dict[str, Any]:
     conversation = _conversation(conn, conversation_id)
+    shared = bool(conversation["shared_with_medical_officer"])
+    base = {**conversation, "flagged": bool(conversation["flagged"]), "shared_with_medical_officer": shared,
+            "safety_note": SAFETY_NOTE, "privacy_note": PRIVACY_NOTE}
     is_reviewer = user.get("role_name") in permissions.WELLBEING_REVIEW_ROLES
     if not is_reviewer:
         if _astronaut_for(conn, user) != conversation["astronaut_id"]:
             raise PermissionDenied("This conversation belongs to someone else")
-    else:  # personal conversation read by staff: always on record
+    elif not shared:  # the medical officer knows it exists, but the words stay with the astronaut
+        count = conn.execute("SELECT COUNT(*) FROM wellbeing_messages WHERE conversation_id = ?",
+                             (conversation_id,)).fetchone()[0]
+        return {**base, "private": True, "message_count": count, "messages": [],
+                "note": "The astronaut has not shared this conversation, so its messages are private. "
+                        "Risk flags, if any, are listed under /wellbeing/risk-flags."}
+    else:  # shared personal conversation read by staff: always on record
         write_audit(conn, user_id=user["user_id"], action_type="read_wellbeing_conversation",
                     entity_type="wellbeing_conversation", entity_id=conversation_id, action_result="success",
-                    change_summary=f"conversation of {conversation['astronaut_id']}")
+                    change_summary=f"shared conversation of {conversation['astronaut_id']}")
     messages = [_message(r) for r in conn.execute(
         "SELECT * FROM wellbeing_messages WHERE conversation_id = ? ORDER BY created_at, rowid", (conversation_id,))]
     if not is_reviewer:  # the astronaut sees the conversation, not the internal check details
         for m in messages:
             m.pop("check_problems", None)
-    return {**conversation, "flagged": bool(conversation["flagged"]), "messages": messages,
-            "safety_note": SAFETY_NOTE}
+    return {**base, "private": False, "message_count": len(messages), "messages": messages}
+
+
+def share_conversation(conn: sqlite3.Connection, user: dict[str, Any], conversation_id: str,
+                       shared: bool) -> dict[str, Any]:
+    """The astronaut lets the medical officer read this conversation, or takes that back."""
+    conversation = _conversation(conn, conversation_id)
+    if _astronaut_for(conn, user) != conversation["astronaut_id"]:
+        raise PermissionDenied("This conversation belongs to someone else")
+    conn.execute("UPDATE wellbeing_conversations SET shared_with_medical_officer = ?, shared_at = ? "
+                 "WHERE conversation_id = ?", (int(shared), to_iso(utcnow()) if shared else None, conversation_id))
+    write_audit(conn, user_id=user["user_id"], action_type="share_wellbeing_conversation" if shared
+                else "unshare_wellbeing_conversation", entity_type="wellbeing_conversation",
+                entity_id=conversation_id, action_result="success", commit=False)
+    conn.commit()
+    return get_conversation(conn, user, conversation_id)
 
 
 def review_conversation(conn: sqlite3.Connection, user: dict[str, Any], conversation_id: str,

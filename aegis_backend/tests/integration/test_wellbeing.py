@@ -21,7 +21,15 @@ class FakeModel:
     model = "gemma-test:1b"
 
     def __init__(self):
-        self.reply, self.error, self.calls = None, None, []
+        self.reply, self.error, self.calls, self.json_calls = None, None, [], []
+        self.analysis = {"mood_valence": "neutral", "themes": [], "stress_triggers": [],
+                         "cognitive_distortions": [], "crisis_markers": []}
+
+    def generate_json(self, system, prompt, schema, max_tokens=500):
+        self.json_calls.append((system, prompt))
+        if self.error:
+            raise self.error
+        return self.analysis
 
     def generate(self, system, prompt, max_tokens=400):
         self.calls.append((system, prompt))
@@ -68,7 +76,7 @@ def test_urgent_detection(text, kind):
 
 def test_urgent_message_never_reaches_the_model(day10, model):
     out = wb.send_message(day10, CREW4, "I have chest pain and feel dizzy")
-    assert model.calls == []
+    assert model.calls == [] and model.json_calls == []  # not even the analysis step
     assert out["reply"]["source"] == "escalation" and "medical officer now" in out["reply"]["text"]
     assert out["flagged"] is True
     audit = day10.execute("SELECT action_type FROM audit_logs WHERE action_type = 'wellbeing_escalation'").fetchall()
@@ -113,8 +121,10 @@ def test_reply_is_checked_stored_with_its_facts(day10, model):
     assert out["safety_note"] == wb.SAFETY_NOTE
     stored = day10.execute("SELECT sender, source FROM wellbeing_messages ORDER BY rowid").fetchall()
     assert [tuple(r) for r in stored] == [("astronaut", None), ("assistant", "gemma")]
-    log = day10.execute("SELECT purpose, prompt_template_version, status FROM ai_inference_logs").fetchone()
-    assert tuple(log) == ("wellbeing_chat", "wellbeing_v2", "succeeded")
+    logs = day10.execute("SELECT purpose, prompt_template_version, status FROM ai_inference_logs ORDER BY rowid")
+    assert [tuple(r) for r in logs] == [("chat_analysis", "analysis_v1", "succeeded"),
+                                        ("wellbeing_chat", "coach_chat_v3", "succeeded")]
+    assert out["privacy_note"] == wb.PRIVACY_NOTE and out["medical_officer_alerted"] is None
 
 
 def test_conversation_continues_with_history(day10, model):
@@ -180,21 +190,40 @@ def test_privacy_between_astronauts_and_staff(day10, model):
     assert "check_problems" not in mine["messages"][1]  # internal check details stay with staff
 
 
-def test_medical_officer_reads_are_audited_and_reviews_flags(day10, model):
+def test_medical_officer_cannot_read_unshared_text_but_sees_the_flag(day10, model):
     cid = wb.send_message(day10, CREW4, "I feel faint")["conversation_id"]
     seen = wb.get_conversation(day10, OFFICER, cid)
-    assert seen["flagged"] and seen["messages"][1]["source"] == "escalation"
+    assert seen["flagged"] and seen["private"] is True and seen["messages"] == [] and seen["message_count"] == 2
+    listed = wb.list_conversations(day10, OFFICER, flagged=True)
+    assert listed[0]["conversation_id"] == cid and listed[0]["last_message"] is None
     reads = day10.execute("SELECT COUNT(*) FROM audit_logs WHERE action_type = 'read_wellbeing_conversation'").fetchone()
-    assert reads[0] == 1
+    assert reads[0] == 0  # nothing private was read, so nothing to record
     with pytest.raises(ValidationFailed):
         wb.review_conversation(day10, OFFICER, cid, " ")
     with pytest.raises(PermissionDenied):
         wb.review_conversation(day10, LEADER, cid, "checked")
     done = wb.review_conversation(day10, OFFICER, cid, "Spoke with the crew member; resting.")
-    assert done["reviewed_by_user_id"] == "USR-008"
+    assert done["reviewed_by_user_id"] == "USR-008" and done["messages"] == []
     calm = wb.send_message(day10, CREW4, "I feel calmer.")["conversation_id"]
     with pytest.raises(ValidationFailed):
         wb.review_conversation(day10, OFFICER, calm, "nothing to review")
+
+
+def test_sharing_lets_the_medical_officer_read_and_can_be_taken_back(day10, model):
+    cid = wb.send_message(day10, CREW4, "I feel tired and foggy.")["conversation_id"]
+    with pytest.raises(PermissionDenied):
+        wb.share_conversation(day10, CREW1, cid, True)  # only the owner shares
+    with pytest.raises(PermissionDenied):
+        wb.share_conversation(day10, OFFICER, cid, True)
+    assert wb.share_conversation(day10, CREW4, cid, True)["shared_with_medical_officer"] is True
+    seen = wb.get_conversation(day10, OFFICER, cid)
+    assert seen["private"] is False and seen["messages"][0]["text"] == "I feel tired and foggy."
+    assert seen["messages"][1]["facts"]["shown_to_model"] is not None  # staff also see what the reply used
+    reads = day10.execute("SELECT COUNT(*) FROM audit_logs WHERE action_type = 'read_wellbeing_conversation'").fetchone()
+    assert reads[0] == 1
+    assert wb.list_conversations(day10, OFFICER)[0]["last_message"] is not None
+    wb.share_conversation(day10, CREW4, cid, False)
+    assert wb.get_conversation(day10, OFFICER, cid)["messages"] == []
 
 
 # --------------------------------------------------------------------------- what the model is shown
@@ -244,3 +273,58 @@ def test_nothing_unusual_instruction(day10, model):
     calm = {**wb.model_facts(facts, "I feel fine"), "unusual_today": []}
     assert wb.NOTHING_UNUSUAL in wb._instructions("I feel fine", calm)
     assert wb.NOTHING_UNUSUAL not in wb._instructions("I feel fine", {"unusual_today": [{"what": "x"}]})
+
+
+# --------------------------------------------------------------------------- the coach in the chat
+
+def test_reply_gets_the_checked_summary_and_a_reframing_question_chosen_by_code(day10, model):
+    text = "I always mess up the checklist, I am useless at this."
+    model.analysis = {"mood_valence": "negative", "themes": [{"label": "work", "quote": "checklist"}],
+                      "stress_triggers": [], "crisis_markers": [],
+                      "cognitive_distortions": [{"label": "labeling", "quote": "I am useless"},
+                                                {"label": "catastrophizing", "quote": "everything will fail"}]}
+    out = wb.send_message(day10, CREW4, text)
+    facts = json.loads(model.calls[0][1].split("Facts (JSON):\n", 1)[1])
+    assert facts["coach_brief"]["thinking_patterns"] == ["harsh self-labelling"]  # the invented quote was dropped
+    assert facts["coach_brief"]["themes"] == ["work and tasks"] and facts["coach_brief"]["mood"] == "negative"
+    from app.services import coach_service
+    assert facts["reframe_question"] == coach_service.REFRAMES["labeling"]
+    assert out["message"]["coach_summary"]["thinking_patterns"] == ["harsh self-labelling"]
+    # code guarantees the nudge toward the crew, whatever the model wrote
+    assert "crewmate" in out["reply"]["text"] and "medical officer" in out["reply"]["text"]
+
+
+def test_rule_reply_carries_the_reframing_question_and_the_crew_nudge(day10, model):
+    model.reply = "You have a disorder."  # fails the check, so rules write the reply
+    model.analysis = {"mood_valence": "negative", "themes": [], "stress_triggers": [], "crisis_markers": [],
+                      "cognitive_distortions": [{"label": "fortune_telling", "quote": "it will go wrong"}]}
+    out = wb.send_message(day10, CREW4, "I just know it will go wrong tomorrow.")
+    assert out["reply"]["source"] == "rules"
+    assert "What do you know for certain right now" in out["reply"]["text"]
+    assert "crewmate" in out["reply"]["text"]
+
+
+def test_therapy_framing_is_rejected(day10, model):
+    model.reply = "As your therapist, I think this therapy session is going well. Please talk to the medical officer."
+    out = wb.send_message(day10, CREW4, "Feeling low.")
+    assert out["reply"]["source"] == "rules" and any("therapy" in p for p in out["reply"]["check_problems"])
+
+
+def test_model_found_self_harm_is_escalated_without_a_model_reply(day10, model):
+    """Wording the keyword list misses, but the model labels with a real quote."""
+    text = "Lately I keep picturing not being around anymore."
+    assert wb.urgent_kind(text) is None
+    model.analysis = {"mood_valence": "negative", "themes": [], "stress_triggers": [], "cognitive_distortions": [],
+                      "crisis_markers": [{"label": "self_harm", "quote": "not being around anymore"}]}
+    out = wb.send_message(day10, CREW4, text)
+    assert model.calls == []  # analysed, but no model-written reply
+    assert out["reply"]["source"] == "escalation" and "crisis line" in out["reply"]["text"]
+    assert out["flagged"] is True and out["medical_officer_alerted"] == "immediate"
+
+
+def test_model_cannot_remove_a_crisis_marker_the_keywords_found(day10, model):
+    out = wb.send_message(day10, CREW4, "Honestly it all feels hopeless today.")  # model says: nothing
+    stored = json.loads(day10.execute("SELECT analysis_json FROM wellbeing_messages WHERE sender = 'astronaut'")
+                        .fetchone()[0])
+    assert [m["label"] for m in stored["crisis_markers"]] == ["hopelessness"]
+    assert out["medical_officer_alerted"] is None  # one mention is not yet a pattern
