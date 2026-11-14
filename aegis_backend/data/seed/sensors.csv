@@ -1,0 +1,13 @@
+sensor_id,sensor_name,sensor_type,device_model,serial_number,measurement_unit,sampling_rate_hz,calibration_date,sensor_status
+SEN-001,heart_rate,synthetic_device,AEGIS_SIM,SIM-1,bpm,0.0002777777777777778,,active
+SEN-002,hrv_rmssd,synthetic_device,AEGIS_SIM,SIM-2,ms,0.0002777777777777778,,active
+SEN-003,spo2,synthetic_device,AEGIS_SIM,SIM-3,percent,0.0002777777777777778,,active
+SEN-004,body_temperature,synthetic_device,AEGIS_SIM,SIM-4,degC,0.0002777777777777778,,active
+SEN-005,respiratory_rate,synthetic_device,AEGIS_SIM,SIM-5,breaths/min,0.0002777777777777778,,active
+SEN-006,cabin_co2,synthetic_device,AEGIS_SIM,SIM-6,ppm,0.0002777777777777778,,active
+SEN-007,cabin_temperature,synthetic_device,AEGIS_SIM,SIM-7,degC,0.0002777777777777778,,active
+SEN-008,cabin_humidity,synthetic_device,AEGIS_SIM,SIM-8,percent,0.0002777777777777778,,active
+SEN-009,cabin_pressure,synthetic_device,AEGIS_SIM,SIM-9,kPa,0.0002777777777777778,,active
+SEN-010,radiation_dose_rate,synthetic_device,AEGIS_SIM,SIM-10,uSv/h,0.0002777777777777778,,active
+SEN-NASA-RAD-B,nasa_msl_rad_dose_rate_B,nasa_external_reference_detector,MSL Radiation Assessment Detector,,uGy/h,,,external_reference
+SEN-NASA-RAD-E,nasa_msl_rad_dose_rate_E,nasa_external_reference_detector,MSL Radiation Assessment Detector,,uGy/h,,,external_reference

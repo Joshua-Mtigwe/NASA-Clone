@@ -1,0 +1,631 @@
+task_id,mission_id,task_set_id,task_date,task_title,task_description,task_category,priority,estimated_duration_minutes,required_crew_count,deadline,task_status,created_by_user_id,created_at
+TSK-001-01,MIS-001,SET-001,2027-03-01,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-03-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-001-02,MIS-001,SET-001,2027-03-01,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-03-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-001-03,MIS-001,SET-001,2027-03-01,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-001-04,MIS-001,SET-001,2027-03-01,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-001-05,MIS-001,SET-001,2027-03-01,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-03-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-001-06,MIS-001,SET-001,2027-03-01,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-001-07,MIS-001,SET-001,2027-03-01,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-002-01,MIS-001,SET-002,2027-03-02,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-03-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-002-02,MIS-001,SET-002,2027-03-02,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-03-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-002-03,MIS-001,SET-002,2027-03-02,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-002-04,MIS-001,SET-002,2027-03-02,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-002-05,MIS-001,SET-002,2027-03-02,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-03-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-002-06,MIS-001,SET-002,2027-03-02,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-002-07,MIS-001,SET-002,2027-03-02,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-003-01,MIS-001,SET-003,2027-03-03,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-03-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-003-02,MIS-001,SET-003,2027-03-03,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-03-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-003-03,MIS-001,SET-003,2027-03-03,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-003-04,MIS-001,SET-003,2027-03-03,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-003-05,MIS-001,SET-003,2027-03-03,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-03-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-003-06,MIS-001,SET-003,2027-03-03,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-003-07,MIS-001,SET-003,2027-03-03,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-004-01,MIS-001,SET-004,2027-03-04,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-03-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-004-02,MIS-001,SET-004,2027-03-04,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-03-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-004-03,MIS-001,SET-004,2027-03-04,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-004-04,MIS-001,SET-004,2027-03-04,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-004-05,MIS-001,SET-004,2027-03-04,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-03-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-004-06,MIS-001,SET-004,2027-03-04,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-004-07,MIS-001,SET-004,2027-03-04,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-005-01,MIS-001,SET-005,2027-03-05,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-03-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-005-02,MIS-001,SET-005,2027-03-05,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-03-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-005-03,MIS-001,SET-005,2027-03-05,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-005-04,MIS-001,SET-005,2027-03-05,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-005-05,MIS-001,SET-005,2027-03-05,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-03-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-005-06,MIS-001,SET-005,2027-03-05,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-005-07,MIS-001,SET-005,2027-03-05,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-006-01,MIS-001,SET-006,2027-03-06,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-03-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-006-02,MIS-001,SET-006,2027-03-06,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-03-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-006-03,MIS-001,SET-006,2027-03-06,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-006-04,MIS-001,SET-006,2027-03-06,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-006-05,MIS-001,SET-006,2027-03-06,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-03-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-006-06,MIS-001,SET-006,2027-03-06,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-006-07,MIS-001,SET-006,2027-03-06,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-007-01,MIS-001,SET-007,2027-03-07,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-03-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-007-02,MIS-001,SET-007,2027-03-07,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-03-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-007-03,MIS-001,SET-007,2027-03-07,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-007-04,MIS-001,SET-007,2027-03-07,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-007-05,MIS-001,SET-007,2027-03-07,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-03-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-007-06,MIS-001,SET-007,2027-03-07,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-007-07,MIS-001,SET-007,2027-03-07,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-008-01,MIS-001,SET-008,2027-03-08,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-03-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-008-02,MIS-001,SET-008,2027-03-08,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-03-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-008-03,MIS-001,SET-008,2027-03-08,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-008-04,MIS-001,SET-008,2027-03-08,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-008-05,MIS-001,SET-008,2027-03-08,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-03-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-008-06,MIS-001,SET-008,2027-03-08,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-008-07,MIS-001,SET-008,2027-03-08,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-009-01,MIS-001,SET-009,2027-03-09,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-03-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-009-02,MIS-001,SET-009,2027-03-09,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-03-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-009-03,MIS-001,SET-009,2027-03-09,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-009-04,MIS-001,SET-009,2027-03-09,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-009-05,MIS-001,SET-009,2027-03-09,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-03-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-009-06,MIS-001,SET-009,2027-03-09,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-009-07,MIS-001,SET-009,2027-03-09,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-010-01,MIS-001,SET-010,2027-03-10,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-03-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-010-02,MIS-001,SET-010,2027-03-10,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-03-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-010-03,MIS-001,SET-010,2027-03-10,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-010-04,MIS-001,SET-010,2027-03-10,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-010-05,MIS-001,SET-010,2027-03-10,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-03-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-010-06,MIS-001,SET-010,2027-03-10,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-010-07,MIS-001,SET-010,2027-03-10,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-011-01,MIS-001,SET-011,2027-03-11,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-03-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-011-02,MIS-001,SET-011,2027-03-11,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-03-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-011-03,MIS-001,SET-011,2027-03-11,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-011-04,MIS-001,SET-011,2027-03-11,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-011-05,MIS-001,SET-011,2027-03-11,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-03-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-011-06,MIS-001,SET-011,2027-03-11,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-011-07,MIS-001,SET-011,2027-03-11,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-012-01,MIS-001,SET-012,2027-03-12,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-03-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-012-02,MIS-001,SET-012,2027-03-12,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-03-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-012-03,MIS-001,SET-012,2027-03-12,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-012-04,MIS-001,SET-012,2027-03-12,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-012-05,MIS-001,SET-012,2027-03-12,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-03-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-012-06,MIS-001,SET-012,2027-03-12,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-012-07,MIS-001,SET-012,2027-03-12,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-013-01,MIS-001,SET-013,2027-03-13,Systems status check,Systems status check; prepared for demonstration,technical,high,54,1,2027-03-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-013-02,MIS-001,SET-013,2027-03-13,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,108,1,2027-03-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-013-03,MIS-001,SET-013,2027-03-13,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,60,1,2027-03-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-013-04,MIS-001,SET-013,2027-03-13,Navigation review,Navigation review; prepared for demonstration,technical,medium,90,1,2027-03-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-013-05,MIS-001,SET-013,2027-03-13,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,96,1,2027-03-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-013-06,MIS-001,SET-013,2027-03-13,Crew science report,Crew science report; prepared for demonstration,research,medium,78,1,2027-03-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-013-07,MIS-001,SET-013,2027-03-13,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,108,1,2027-03-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-014-01,MIS-001,SET-014,2027-03-14,Navigation review,Navigation review; prepared for demonstration,technical,high,90,1,2027-03-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-014-02,MIS-001,SET-014,2027-03-14,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,96,1,2027-03-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-014-03,MIS-001,SET-014,2027-03-14,Crew science report,Crew science report; prepared for demonstration,research,medium,78,1,2027-03-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-014-04,MIS-001,SET-014,2027-03-14,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,108,1,2027-03-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-014-05,MIS-001,SET-014,2027-03-14,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,72,1,2027-03-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-014-06,MIS-001,SET-014,2027-03-14,Communications check,Communications check; prepared for demonstration,technical,medium,54,1,2027-03-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-014-07,MIS-001,SET-014,2027-03-14,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,60,1,2027-03-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-015-01,MIS-001,SET-015,2027-03-15,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,108,1,2027-03-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-015-02,MIS-001,SET-015,2027-03-15,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,72,1,2027-03-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-015-03,MIS-001,SET-015,2027-03-15,Communications check,Communications check; prepared for demonstration,technical,medium,54,1,2027-03-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-015-04,MIS-001,SET-015,2027-03-15,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,60,1,2027-03-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-015-05,MIS-001,SET-015,2027-03-15,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,72,1,2027-03-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-015-06,MIS-001,SET-015,2027-03-15,Mission data review,Mission data review; prepared for demonstration,research,medium,84,1,2027-03-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-015-07,MIS-001,SET-015,2027-03-15,Systems status check,Systems status check; prepared for demonstration,technical,medium,54,1,2027-03-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-016-01,MIS-001,SET-016,2027-03-16,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,60,1,2027-03-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-016-02,MIS-001,SET-016,2027-03-16,Air quality verification,Air quality verification; prepared for demonstration,technical,high,72,1,2027-03-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-016-03,MIS-001,SET-016,2027-03-16,Mission data review,Mission data review; prepared for demonstration,research,medium,84,1,2027-03-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-016-04,MIS-001,SET-016,2027-03-16,Systems status check,Systems status check; prepared for demonstration,technical,medium,54,1,2027-03-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-016-05,MIS-001,SET-016,2027-03-16,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,108,1,2027-03-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-016-06,MIS-001,SET-016,2027-03-16,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,60,1,2027-03-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-016-07,MIS-001,SET-016,2027-03-16,Navigation review,Navigation review; prepared for demonstration,technical,medium,90,1,2027-03-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-017-01,MIS-001,SET-017,2027-03-17,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-03-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-017-02,MIS-001,SET-017,2027-03-17,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-03-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-017-03,MIS-001,SET-017,2027-03-17,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-017-04,MIS-001,SET-017,2027-03-17,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-017-05,MIS-001,SET-017,2027-03-17,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-03-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-017-06,MIS-001,SET-017,2027-03-17,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-017-07,MIS-001,SET-017,2027-03-17,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-018-01,MIS-001,SET-018,2027-03-18,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-03-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-018-02,MIS-001,SET-018,2027-03-18,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-03-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-018-03,MIS-001,SET-018,2027-03-18,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-018-04,MIS-001,SET-018,2027-03-18,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-018-05,MIS-001,SET-018,2027-03-18,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-03-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-018-06,MIS-001,SET-018,2027-03-18,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-018-07,MIS-001,SET-018,2027-03-18,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-019-01,MIS-001,SET-019,2027-03-19,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-03-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-019-02,MIS-001,SET-019,2027-03-19,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-03-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-019-03,MIS-001,SET-019,2027-03-19,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-019-04,MIS-001,SET-019,2027-03-19,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-019-05,MIS-001,SET-019,2027-03-19,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-03-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-019-06,MIS-001,SET-019,2027-03-19,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-019-07,MIS-001,SET-019,2027-03-19,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-020-01,MIS-001,SET-020,2027-03-20,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-03-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-020-02,MIS-001,SET-020,2027-03-20,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-03-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-020-03,MIS-001,SET-020,2027-03-20,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-020-04,MIS-001,SET-020,2027-03-20,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-020-05,MIS-001,SET-020,2027-03-20,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-03-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-020-06,MIS-001,SET-020,2027-03-20,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-020-07,MIS-001,SET-020,2027-03-20,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-021-01,MIS-001,SET-021,2027-03-21,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-03-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-021-02,MIS-001,SET-021,2027-03-21,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-03-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-021-03,MIS-001,SET-021,2027-03-21,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-021-04,MIS-001,SET-021,2027-03-21,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-021-05,MIS-001,SET-021,2027-03-21,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-03-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-021-06,MIS-001,SET-021,2027-03-21,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-021-07,MIS-001,SET-021,2027-03-21,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-022-01,MIS-001,SET-022,2027-03-22,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-03-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-022-02,MIS-001,SET-022,2027-03-22,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-03-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-022-03,MIS-001,SET-022,2027-03-22,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-022-04,MIS-001,SET-022,2027-03-22,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-022-05,MIS-001,SET-022,2027-03-22,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-03-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-022-06,MIS-001,SET-022,2027-03-22,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-022-07,MIS-001,SET-022,2027-03-22,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-023-01,MIS-001,SET-023,2027-03-23,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-03-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-023-02,MIS-001,SET-023,2027-03-23,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-03-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-023-03,MIS-001,SET-023,2027-03-23,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-023-04,MIS-001,SET-023,2027-03-23,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-023-05,MIS-001,SET-023,2027-03-23,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-03-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-023-06,MIS-001,SET-023,2027-03-23,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-023-07,MIS-001,SET-023,2027-03-23,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-024-01,MIS-001,SET-024,2027-03-24,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-03-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-024-02,MIS-001,SET-024,2027-03-24,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-03-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-024-03,MIS-001,SET-024,2027-03-24,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-024-04,MIS-001,SET-024,2027-03-24,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-024-05,MIS-001,SET-024,2027-03-24,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-03-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-024-06,MIS-001,SET-024,2027-03-24,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-024-07,MIS-001,SET-024,2027-03-24,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-025-01,MIS-001,SET-025,2027-03-25,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-03-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-025-02,MIS-001,SET-025,2027-03-25,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-03-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-025-03,MIS-001,SET-025,2027-03-25,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-025-04,MIS-001,SET-025,2027-03-25,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-025-05,MIS-001,SET-025,2027-03-25,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-03-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-025-06,MIS-001,SET-025,2027-03-25,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-025-07,MIS-001,SET-025,2027-03-25,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-026-01,MIS-001,SET-026,2027-03-26,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-03-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-026-02,MIS-001,SET-026,2027-03-26,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-03-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-026-03,MIS-001,SET-026,2027-03-26,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-026-04,MIS-001,SET-026,2027-03-26,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-026-05,MIS-001,SET-026,2027-03-26,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-03-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-026-06,MIS-001,SET-026,2027-03-26,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-026-07,MIS-001,SET-026,2027-03-26,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-027-01,MIS-001,SET-027,2027-03-27,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-03-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-027-02,MIS-001,SET-027,2027-03-27,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-03-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-027-03,MIS-001,SET-027,2027-03-27,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-027-04,MIS-001,SET-027,2027-03-27,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-027-05,MIS-001,SET-027,2027-03-27,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-03-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-027-06,MIS-001,SET-027,2027-03-27,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-027-07,MIS-001,SET-027,2027-03-27,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-028-01,MIS-001,SET-028,2027-03-28,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-03-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-028-02,MIS-001,SET-028,2027-03-28,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-03-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-028-03,MIS-001,SET-028,2027-03-28,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-028-04,MIS-001,SET-028,2027-03-28,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-028-05,MIS-001,SET-028,2027-03-28,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-03-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-028-06,MIS-001,SET-028,2027-03-28,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-028-07,MIS-001,SET-028,2027-03-28,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-029-01,MIS-001,SET-029,2027-03-29,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-03-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-029-02,MIS-001,SET-029,2027-03-29,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-03-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-029-03,MIS-001,SET-029,2027-03-29,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-03-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-029-04,MIS-001,SET-029,2027-03-29,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-03-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-029-05,MIS-001,SET-029,2027-03-29,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-03-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-029-06,MIS-001,SET-029,2027-03-29,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-029-07,MIS-001,SET-029,2027-03-29,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-030-01,MIS-001,SET-030,2027-03-30,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-03-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-030-02,MIS-001,SET-030,2027-03-30,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-03-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-030-03,MIS-001,SET-030,2027-03-30,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-03-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-030-04,MIS-001,SET-030,2027-03-30,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-03-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-030-05,MIS-001,SET-030,2027-03-30,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-03-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-030-06,MIS-001,SET-030,2027-03-30,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-030-07,MIS-001,SET-030,2027-03-30,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-031-01,MIS-001,SET-031,2027-03-31,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-03-31T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-031-02,MIS-001,SET-031,2027-03-31,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-03-31T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-031-03,MIS-001,SET-031,2027-03-31,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-03-31T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-031-04,MIS-001,SET-031,2027-03-31,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-03-31T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-031-05,MIS-001,SET-031,2027-03-31,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-03-31T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-031-06,MIS-001,SET-031,2027-03-31,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-03-31T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-031-07,MIS-001,SET-031,2027-03-31,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-03-31T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-032-01,MIS-001,SET-032,2027-04-01,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-04-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-032-02,MIS-001,SET-032,2027-04-01,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-04-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-032-03,MIS-001,SET-032,2027-04-01,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-032-04,MIS-001,SET-032,2027-04-01,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-032-05,MIS-001,SET-032,2027-04-01,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-04-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-032-06,MIS-001,SET-032,2027-04-01,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-032-07,MIS-001,SET-032,2027-04-01,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-033-01,MIS-001,SET-033,2027-04-02,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-04-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-033-02,MIS-001,SET-033,2027-04-02,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-04-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-033-03,MIS-001,SET-033,2027-04-02,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-033-04,MIS-001,SET-033,2027-04-02,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-033-05,MIS-001,SET-033,2027-04-02,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-04-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-033-06,MIS-001,SET-033,2027-04-02,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-033-07,MIS-001,SET-033,2027-04-02,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-034-01,MIS-001,SET-034,2027-04-03,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-04-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-034-02,MIS-001,SET-034,2027-04-03,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-04-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-034-03,MIS-001,SET-034,2027-04-03,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-034-04,MIS-001,SET-034,2027-04-03,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-034-05,MIS-001,SET-034,2027-04-03,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-04-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-034-06,MIS-001,SET-034,2027-04-03,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-04-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-034-07,MIS-001,SET-034,2027-04-03,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-04-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-035-01,MIS-001,SET-035,2027-04-04,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-04-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-035-02,MIS-001,SET-035,2027-04-04,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-04-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-035-03,MIS-001,SET-035,2027-04-04,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-04-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-035-04,MIS-001,SET-035,2027-04-04,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-04-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-035-05,MIS-001,SET-035,2027-04-04,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-04-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-035-06,MIS-001,SET-035,2027-04-04,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-035-07,MIS-001,SET-035,2027-04-04,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-036-01,MIS-001,SET-036,2027-04-05,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-04-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-036-02,MIS-001,SET-036,2027-04-05,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-04-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-036-03,MIS-001,SET-036,2027-04-05,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-036-04,MIS-001,SET-036,2027-04-05,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-036-05,MIS-001,SET-036,2027-04-05,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-04-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-036-06,MIS-001,SET-036,2027-04-05,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-036-07,MIS-001,SET-036,2027-04-05,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-037-01,MIS-001,SET-037,2027-04-06,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-04-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-037-02,MIS-001,SET-037,2027-04-06,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-04-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-037-03,MIS-001,SET-037,2027-04-06,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-037-04,MIS-001,SET-037,2027-04-06,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-037-05,MIS-001,SET-037,2027-04-06,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-04-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-037-06,MIS-001,SET-037,2027-04-06,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-037-07,MIS-001,SET-037,2027-04-06,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-038-01,MIS-001,SET-038,2027-04-07,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-04-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-038-02,MIS-001,SET-038,2027-04-07,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-04-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-038-03,MIS-001,SET-038,2027-04-07,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-038-04,MIS-001,SET-038,2027-04-07,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-038-05,MIS-001,SET-038,2027-04-07,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-04-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-038-06,MIS-001,SET-038,2027-04-07,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-04-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-038-07,MIS-001,SET-038,2027-04-07,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-04-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-039-01,MIS-001,SET-039,2027-04-08,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-04-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-039-02,MIS-001,SET-039,2027-04-08,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-04-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-039-03,MIS-001,SET-039,2027-04-08,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-04-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-039-04,MIS-001,SET-039,2027-04-08,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-04-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-039-05,MIS-001,SET-039,2027-04-08,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-04-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-039-06,MIS-001,SET-039,2027-04-08,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-039-07,MIS-001,SET-039,2027-04-08,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-040-01,MIS-001,SET-040,2027-04-09,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-04-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-040-02,MIS-001,SET-040,2027-04-09,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-04-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-040-03,MIS-001,SET-040,2027-04-09,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-040-04,MIS-001,SET-040,2027-04-09,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-040-05,MIS-001,SET-040,2027-04-09,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-04-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-040-06,MIS-001,SET-040,2027-04-09,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-040-07,MIS-001,SET-040,2027-04-09,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-041-01,MIS-001,SET-041,2027-04-10,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-04-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-041-02,MIS-001,SET-041,2027-04-10,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-04-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-041-03,MIS-001,SET-041,2027-04-10,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-041-04,MIS-001,SET-041,2027-04-10,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-041-05,MIS-001,SET-041,2027-04-10,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-04-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-041-06,MIS-001,SET-041,2027-04-10,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-041-07,MIS-001,SET-041,2027-04-10,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-042-01,MIS-001,SET-042,2027-04-11,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-04-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-042-02,MIS-001,SET-042,2027-04-11,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-04-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-042-03,MIS-001,SET-042,2027-04-11,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-042-04,MIS-001,SET-042,2027-04-11,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-042-05,MIS-001,SET-042,2027-04-11,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-04-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-042-06,MIS-001,SET-042,2027-04-11,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-04-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-042-07,MIS-001,SET-042,2027-04-11,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-04-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-043-01,MIS-001,SET-043,2027-04-12,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-04-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-043-02,MIS-001,SET-043,2027-04-12,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-04-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-043-03,MIS-001,SET-043,2027-04-12,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-04-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-043-04,MIS-001,SET-043,2027-04-12,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-04-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-043-05,MIS-001,SET-043,2027-04-12,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-04-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-043-06,MIS-001,SET-043,2027-04-12,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-043-07,MIS-001,SET-043,2027-04-12,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-044-01,MIS-001,SET-044,2027-04-13,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-04-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-044-02,MIS-001,SET-044,2027-04-13,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-04-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-044-03,MIS-001,SET-044,2027-04-13,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-044-04,MIS-001,SET-044,2027-04-13,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-044-05,MIS-001,SET-044,2027-04-13,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-04-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-044-06,MIS-001,SET-044,2027-04-13,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-044-07,MIS-001,SET-044,2027-04-13,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-045-01,MIS-001,SET-045,2027-04-14,Systems status check,Systems status check; prepared for demonstration,technical,high,54,1,2027-04-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-045-02,MIS-001,SET-045,2027-04-14,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,108,1,2027-04-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-045-03,MIS-001,SET-045,2027-04-14,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,60,1,2027-04-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-045-04,MIS-001,SET-045,2027-04-14,Navigation review,Navigation review; prepared for demonstration,technical,medium,90,1,2027-04-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-045-05,MIS-001,SET-045,2027-04-14,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,96,1,2027-04-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-045-06,MIS-001,SET-045,2027-04-14,Crew science report,Crew science report; prepared for demonstration,research,medium,78,1,2027-04-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-045-07,MIS-001,SET-045,2027-04-14,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,108,1,2027-04-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-046-01,MIS-001,SET-046,2027-04-15,Navigation review,Navigation review; prepared for demonstration,technical,high,90,1,2027-04-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-046-02,MIS-001,SET-046,2027-04-15,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,96,1,2027-04-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-046-03,MIS-001,SET-046,2027-04-15,Crew science report,Crew science report; prepared for demonstration,research,medium,78,1,2027-04-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-046-04,MIS-001,SET-046,2027-04-15,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,108,1,2027-04-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-046-05,MIS-001,SET-046,2027-04-15,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,72,1,2027-04-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-046-06,MIS-001,SET-046,2027-04-15,Communications check,Communications check; prepared for demonstration,technical,medium,54,1,2027-04-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-046-07,MIS-001,SET-046,2027-04-15,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,60,1,2027-04-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-047-01,MIS-001,SET-047,2027-04-16,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,108,1,2027-04-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-047-02,MIS-001,SET-047,2027-04-16,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,72,1,2027-04-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-047-03,MIS-001,SET-047,2027-04-16,Communications check,Communications check; prepared for demonstration,technical,medium,54,1,2027-04-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-047-04,MIS-001,SET-047,2027-04-16,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,60,1,2027-04-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-047-05,MIS-001,SET-047,2027-04-16,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,72,1,2027-04-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-047-06,MIS-001,SET-047,2027-04-16,Mission data review,Mission data review; prepared for demonstration,research,medium,84,1,2027-04-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-047-07,MIS-001,SET-047,2027-04-16,Systems status check,Systems status check; prepared for demonstration,technical,medium,54,1,2027-04-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-048-01,MIS-001,SET-048,2027-04-17,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,60,1,2027-04-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-048-02,MIS-001,SET-048,2027-04-17,Air quality verification,Air quality verification; prepared for demonstration,technical,high,72,1,2027-04-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-048-03,MIS-001,SET-048,2027-04-17,Mission data review,Mission data review; prepared for demonstration,research,medium,84,1,2027-04-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-048-04,MIS-001,SET-048,2027-04-17,Systems status check,Systems status check; prepared for demonstration,technical,medium,54,1,2027-04-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-048-05,MIS-001,SET-048,2027-04-17,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,108,1,2027-04-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-048-06,MIS-001,SET-048,2027-04-17,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,60,1,2027-04-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-048-07,MIS-001,SET-048,2027-04-17,Navigation review,Navigation review; prepared for demonstration,technical,medium,90,1,2027-04-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-049-01,MIS-001,SET-049,2027-04-18,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-04-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-049-02,MIS-001,SET-049,2027-04-18,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-04-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-049-03,MIS-001,SET-049,2027-04-18,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-049-04,MIS-001,SET-049,2027-04-18,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-049-05,MIS-001,SET-049,2027-04-18,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-04-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-049-06,MIS-001,SET-049,2027-04-18,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-049-07,MIS-001,SET-049,2027-04-18,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-050-01,MIS-001,SET-050,2027-04-19,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-04-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-050-02,MIS-001,SET-050,2027-04-19,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-04-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-050-03,MIS-001,SET-050,2027-04-19,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-050-04,MIS-001,SET-050,2027-04-19,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-050-05,MIS-001,SET-050,2027-04-19,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-04-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-050-06,MIS-001,SET-050,2027-04-19,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-04-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-050-07,MIS-001,SET-050,2027-04-19,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-04-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-051-01,MIS-001,SET-051,2027-04-20,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-04-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-051-02,MIS-001,SET-051,2027-04-20,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-04-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-051-03,MIS-001,SET-051,2027-04-20,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-04-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-051-04,MIS-001,SET-051,2027-04-20,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-04-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-051-05,MIS-001,SET-051,2027-04-20,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-04-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-051-06,MIS-001,SET-051,2027-04-20,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-051-07,MIS-001,SET-051,2027-04-20,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-052-01,MIS-001,SET-052,2027-04-21,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-04-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-052-02,MIS-001,SET-052,2027-04-21,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-04-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-052-03,MIS-001,SET-052,2027-04-21,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-052-04,MIS-001,SET-052,2027-04-21,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-052-05,MIS-001,SET-052,2027-04-21,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-04-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-052-06,MIS-001,SET-052,2027-04-21,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-052-07,MIS-001,SET-052,2027-04-21,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-053-01,MIS-001,SET-053,2027-04-22,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-04-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-053-02,MIS-001,SET-053,2027-04-22,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-04-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-053-03,MIS-001,SET-053,2027-04-22,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-053-04,MIS-001,SET-053,2027-04-22,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-053-05,MIS-001,SET-053,2027-04-22,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-04-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-053-06,MIS-001,SET-053,2027-04-22,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-053-07,MIS-001,SET-053,2027-04-22,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-054-01,MIS-001,SET-054,2027-04-23,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-04-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-054-02,MIS-001,SET-054,2027-04-23,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-04-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-054-03,MIS-001,SET-054,2027-04-23,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-054-04,MIS-001,SET-054,2027-04-23,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-054-05,MIS-001,SET-054,2027-04-23,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-04-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-054-06,MIS-001,SET-054,2027-04-23,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-04-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-054-07,MIS-001,SET-054,2027-04-23,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-04-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-055-01,MIS-001,SET-055,2027-04-24,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-04-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-055-02,MIS-001,SET-055,2027-04-24,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-04-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-055-03,MIS-001,SET-055,2027-04-24,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-04-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-055-04,MIS-001,SET-055,2027-04-24,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-04-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-055-05,MIS-001,SET-055,2027-04-24,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-04-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-055-06,MIS-001,SET-055,2027-04-24,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-055-07,MIS-001,SET-055,2027-04-24,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-056-01,MIS-001,SET-056,2027-04-25,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-04-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-056-02,MIS-001,SET-056,2027-04-25,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-04-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-056-03,MIS-001,SET-056,2027-04-25,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-056-04,MIS-001,SET-056,2027-04-25,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-056-05,MIS-001,SET-056,2027-04-25,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-04-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-056-06,MIS-001,SET-056,2027-04-25,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-056-07,MIS-001,SET-056,2027-04-25,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-057-01,MIS-001,SET-057,2027-04-26,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-04-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-057-02,MIS-001,SET-057,2027-04-26,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-04-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-057-03,MIS-001,SET-057,2027-04-26,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-057-04,MIS-001,SET-057,2027-04-26,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-057-05,MIS-001,SET-057,2027-04-26,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-04-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-057-06,MIS-001,SET-057,2027-04-26,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-057-07,MIS-001,SET-057,2027-04-26,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-058-01,MIS-001,SET-058,2027-04-27,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-04-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-058-02,MIS-001,SET-058,2027-04-27,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-04-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-058-03,MIS-001,SET-058,2027-04-27,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-058-04,MIS-001,SET-058,2027-04-27,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-058-05,MIS-001,SET-058,2027-04-27,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-04-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-058-06,MIS-001,SET-058,2027-04-27,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-04-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-058-07,MIS-001,SET-058,2027-04-27,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-04-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-059-01,MIS-001,SET-059,2027-04-28,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-04-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-059-02,MIS-001,SET-059,2027-04-28,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-04-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-059-03,MIS-001,SET-059,2027-04-28,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-04-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-059-04,MIS-001,SET-059,2027-04-28,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-04-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-059-05,MIS-001,SET-059,2027-04-28,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-04-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-059-06,MIS-001,SET-059,2027-04-28,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-059-07,MIS-001,SET-059,2027-04-28,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-060-01,MIS-001,SET-060,2027-04-29,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-04-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-060-02,MIS-001,SET-060,2027-04-29,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-04-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-060-03,MIS-001,SET-060,2027-04-29,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-04-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-060-04,MIS-001,SET-060,2027-04-29,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-04-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-060-05,MIS-001,SET-060,2027-04-29,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-04-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-060-06,MIS-001,SET-060,2027-04-29,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-060-07,MIS-001,SET-060,2027-04-29,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-061-01,MIS-001,SET-061,2027-04-30,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-04-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-061-02,MIS-001,SET-061,2027-04-30,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-04-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-061-03,MIS-001,SET-061,2027-04-30,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-04-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-061-04,MIS-001,SET-061,2027-04-30,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-04-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-061-05,MIS-001,SET-061,2027-04-30,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-04-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-061-06,MIS-001,SET-061,2027-04-30,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-04-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-061-07,MIS-001,SET-061,2027-04-30,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-04-30T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-062-01,MIS-001,SET-062,2027-05-01,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-05-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-062-02,MIS-001,SET-062,2027-05-01,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-05-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-062-03,MIS-001,SET-062,2027-05-01,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-062-04,MIS-001,SET-062,2027-05-01,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-062-05,MIS-001,SET-062,2027-05-01,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-05-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-062-06,MIS-001,SET-062,2027-05-01,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-062-07,MIS-001,SET-062,2027-05-01,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-01T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-063-01,MIS-001,SET-063,2027-05-02,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-05-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-063-02,MIS-001,SET-063,2027-05-02,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-05-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-063-03,MIS-001,SET-063,2027-05-02,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-063-04,MIS-001,SET-063,2027-05-02,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-063-05,MIS-001,SET-063,2027-05-02,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-05-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-063-06,MIS-001,SET-063,2027-05-02,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-05-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-063-07,MIS-001,SET-063,2027-05-02,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-05-02T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-064-01,MIS-001,SET-064,2027-05-03,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-05-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-064-02,MIS-001,SET-064,2027-05-03,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-05-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-064-03,MIS-001,SET-064,2027-05-03,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-05-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-064-04,MIS-001,SET-064,2027-05-03,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-05-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-064-05,MIS-001,SET-064,2027-05-03,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-05-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-064-06,MIS-001,SET-064,2027-05-03,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-05-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-064-07,MIS-001,SET-064,2027-05-03,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-05-03T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-065-01,MIS-001,SET-065,2027-05-04,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-05-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-065-02,MIS-001,SET-065,2027-05-04,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-05-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-065-03,MIS-001,SET-065,2027-05-04,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-05-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-065-04,MIS-001,SET-065,2027-05-04,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-05-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-065-05,MIS-001,SET-065,2027-05-04,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-05-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-065-06,MIS-001,SET-065,2027-05-04,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-065-07,MIS-001,SET-065,2027-05-04,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-04T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-066-01,MIS-001,SET-066,2027-05-05,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-05-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-066-02,MIS-001,SET-066,2027-05-05,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-05-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-066-03,MIS-001,SET-066,2027-05-05,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-066-04,MIS-001,SET-066,2027-05-05,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-066-05,MIS-001,SET-066,2027-05-05,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-05-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-066-06,MIS-001,SET-066,2027-05-05,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-066-07,MIS-001,SET-066,2027-05-05,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-05T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-067-01,MIS-001,SET-067,2027-05-06,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-05-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-067-02,MIS-001,SET-067,2027-05-06,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-05-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-067-03,MIS-001,SET-067,2027-05-06,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-067-04,MIS-001,SET-067,2027-05-06,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-067-05,MIS-001,SET-067,2027-05-06,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-05-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-067-06,MIS-001,SET-067,2027-05-06,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-05-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-067-07,MIS-001,SET-067,2027-05-06,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-05-06T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-068-01,MIS-001,SET-068,2027-05-07,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-05-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-068-02,MIS-001,SET-068,2027-05-07,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-05-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-068-03,MIS-001,SET-068,2027-05-07,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-05-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-068-04,MIS-001,SET-068,2027-05-07,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-05-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-068-05,MIS-001,SET-068,2027-05-07,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-05-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-068-06,MIS-001,SET-068,2027-05-07,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-05-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-068-07,MIS-001,SET-068,2027-05-07,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-05-07T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-069-01,MIS-001,SET-069,2027-05-08,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-05-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-069-02,MIS-001,SET-069,2027-05-08,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-05-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-069-03,MIS-001,SET-069,2027-05-08,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-05-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-069-04,MIS-001,SET-069,2027-05-08,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-05-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-069-05,MIS-001,SET-069,2027-05-08,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-05-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-069-06,MIS-001,SET-069,2027-05-08,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-069-07,MIS-001,SET-069,2027-05-08,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-08T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-070-01,MIS-001,SET-070,2027-05-09,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-05-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-070-02,MIS-001,SET-070,2027-05-09,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-05-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-070-03,MIS-001,SET-070,2027-05-09,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-070-04,MIS-001,SET-070,2027-05-09,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-070-05,MIS-001,SET-070,2027-05-09,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-05-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-070-06,MIS-001,SET-070,2027-05-09,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-070-07,MIS-001,SET-070,2027-05-09,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-09T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-071-01,MIS-001,SET-071,2027-05-10,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-05-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-071-02,MIS-001,SET-071,2027-05-10,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-05-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-071-03,MIS-001,SET-071,2027-05-10,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-071-04,MIS-001,SET-071,2027-05-10,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-071-05,MIS-001,SET-071,2027-05-10,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-05-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-071-06,MIS-001,SET-071,2027-05-10,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-05-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-071-07,MIS-001,SET-071,2027-05-10,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-05-10T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-072-01,MIS-001,SET-072,2027-05-11,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-05-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-072-02,MIS-001,SET-072,2027-05-11,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-05-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-072-03,MIS-001,SET-072,2027-05-11,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-05-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-072-04,MIS-001,SET-072,2027-05-11,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-05-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-072-05,MIS-001,SET-072,2027-05-11,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-05-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-072-06,MIS-001,SET-072,2027-05-11,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-05-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-072-07,MIS-001,SET-072,2027-05-11,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-05-11T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-073-01,MIS-001,SET-073,2027-05-12,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-05-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-073-02,MIS-001,SET-073,2027-05-12,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-05-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-073-03,MIS-001,SET-073,2027-05-12,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-05-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-073-04,MIS-001,SET-073,2027-05-12,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-05-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-073-05,MIS-001,SET-073,2027-05-12,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-05-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-073-06,MIS-001,SET-073,2027-05-12,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-073-07,MIS-001,SET-073,2027-05-12,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-12T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-074-01,MIS-001,SET-074,2027-05-13,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-05-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-074-02,MIS-001,SET-074,2027-05-13,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-05-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-074-03,MIS-001,SET-074,2027-05-13,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-074-04,MIS-001,SET-074,2027-05-13,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-074-05,MIS-001,SET-074,2027-05-13,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-05-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-074-06,MIS-001,SET-074,2027-05-13,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-074-07,MIS-001,SET-074,2027-05-13,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-13T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-075-01,MIS-001,SET-075,2027-05-14,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-05-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-075-02,MIS-001,SET-075,2027-05-14,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-05-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-075-03,MIS-001,SET-075,2027-05-14,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-075-04,MIS-001,SET-075,2027-05-14,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-075-05,MIS-001,SET-075,2027-05-14,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-05-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-075-06,MIS-001,SET-075,2027-05-14,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-05-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-075-07,MIS-001,SET-075,2027-05-14,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-05-14T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-076-01,MIS-001,SET-076,2027-05-15,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-05-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-076-02,MIS-001,SET-076,2027-05-15,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-05-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-076-03,MIS-001,SET-076,2027-05-15,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-05-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-076-04,MIS-001,SET-076,2027-05-15,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-05-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-076-05,MIS-001,SET-076,2027-05-15,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-05-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-076-06,MIS-001,SET-076,2027-05-15,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-05-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-076-07,MIS-001,SET-076,2027-05-15,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-05-15T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-077-01,MIS-001,SET-077,2027-05-16,Systems status check,Systems status check; prepared for demonstration,technical,high,54,1,2027-05-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-077-02,MIS-001,SET-077,2027-05-16,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,108,1,2027-05-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-077-03,MIS-001,SET-077,2027-05-16,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,60,1,2027-05-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-077-04,MIS-001,SET-077,2027-05-16,Navigation review,Navigation review; prepared for demonstration,technical,medium,90,1,2027-05-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-077-05,MIS-001,SET-077,2027-05-16,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,96,1,2027-05-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-077-06,MIS-001,SET-077,2027-05-16,Crew science report,Crew science report; prepared for demonstration,research,medium,78,1,2027-05-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-077-07,MIS-001,SET-077,2027-05-16,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,108,1,2027-05-16T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-078-01,MIS-001,SET-078,2027-05-17,Navigation review,Navigation review; prepared for demonstration,technical,high,90,1,2027-05-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-078-02,MIS-001,SET-078,2027-05-17,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,96,1,2027-05-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-078-03,MIS-001,SET-078,2027-05-17,Crew science report,Crew science report; prepared for demonstration,research,medium,78,1,2027-05-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-078-04,MIS-001,SET-078,2027-05-17,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,108,1,2027-05-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-078-05,MIS-001,SET-078,2027-05-17,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,72,1,2027-05-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-078-06,MIS-001,SET-078,2027-05-17,Communications check,Communications check; prepared for demonstration,technical,medium,54,1,2027-05-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-078-07,MIS-001,SET-078,2027-05-17,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,60,1,2027-05-17T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-079-01,MIS-001,SET-079,2027-05-18,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,108,1,2027-05-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-079-02,MIS-001,SET-079,2027-05-18,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,72,1,2027-05-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-079-03,MIS-001,SET-079,2027-05-18,Communications check,Communications check; prepared for demonstration,technical,medium,54,1,2027-05-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-079-04,MIS-001,SET-079,2027-05-18,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,60,1,2027-05-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-079-05,MIS-001,SET-079,2027-05-18,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,72,1,2027-05-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-079-06,MIS-001,SET-079,2027-05-18,Mission data review,Mission data review; prepared for demonstration,research,medium,84,1,2027-05-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-079-07,MIS-001,SET-079,2027-05-18,Systems status check,Systems status check; prepared for demonstration,technical,medium,54,1,2027-05-18T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-080-01,MIS-001,SET-080,2027-05-19,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,60,1,2027-05-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-080-02,MIS-001,SET-080,2027-05-19,Air quality verification,Air quality verification; prepared for demonstration,technical,high,72,1,2027-05-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-080-03,MIS-001,SET-080,2027-05-19,Mission data review,Mission data review; prepared for demonstration,research,medium,84,1,2027-05-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-080-04,MIS-001,SET-080,2027-05-19,Systems status check,Systems status check; prepared for demonstration,technical,medium,54,1,2027-05-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-080-05,MIS-001,SET-080,2027-05-19,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,108,1,2027-05-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-080-06,MIS-001,SET-080,2027-05-19,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,60,1,2027-05-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-080-07,MIS-001,SET-080,2027-05-19,Navigation review,Navigation review; prepared for demonstration,technical,medium,90,1,2027-05-19T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-081-01,MIS-001,SET-081,2027-05-20,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-05-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-081-02,MIS-001,SET-081,2027-05-20,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-05-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-081-03,MIS-001,SET-081,2027-05-20,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-05-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-081-04,MIS-001,SET-081,2027-05-20,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-05-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-081-05,MIS-001,SET-081,2027-05-20,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-05-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-081-06,MIS-001,SET-081,2027-05-20,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-081-07,MIS-001,SET-081,2027-05-20,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-20T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-082-01,MIS-001,SET-082,2027-05-21,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-05-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-082-02,MIS-001,SET-082,2027-05-21,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-05-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-082-03,MIS-001,SET-082,2027-05-21,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-082-04,MIS-001,SET-082,2027-05-21,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-082-05,MIS-001,SET-082,2027-05-21,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-05-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-082-06,MIS-001,SET-082,2027-05-21,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-082-07,MIS-001,SET-082,2027-05-21,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-21T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-083-01,MIS-001,SET-083,2027-05-22,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-05-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-083-02,MIS-001,SET-083,2027-05-22,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-05-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-083-03,MIS-001,SET-083,2027-05-22,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-083-04,MIS-001,SET-083,2027-05-22,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-083-05,MIS-001,SET-083,2027-05-22,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-05-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-083-06,MIS-001,SET-083,2027-05-22,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-05-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-083-07,MIS-001,SET-083,2027-05-22,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-05-22T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-084-01,MIS-001,SET-084,2027-05-23,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-05-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-084-02,MIS-001,SET-084,2027-05-23,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-05-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-084-03,MIS-001,SET-084,2027-05-23,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-05-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-084-04,MIS-001,SET-084,2027-05-23,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-05-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-084-05,MIS-001,SET-084,2027-05-23,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-05-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-084-06,MIS-001,SET-084,2027-05-23,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-05-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-084-07,MIS-001,SET-084,2027-05-23,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-05-23T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-085-01,MIS-001,SET-085,2027-05-24,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-05-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-085-02,MIS-001,SET-085,2027-05-24,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-05-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-085-03,MIS-001,SET-085,2027-05-24,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-05-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-085-04,MIS-001,SET-085,2027-05-24,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-05-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-085-05,MIS-001,SET-085,2027-05-24,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-05-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-085-06,MIS-001,SET-085,2027-05-24,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-085-07,MIS-001,SET-085,2027-05-24,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-24T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-086-01,MIS-001,SET-086,2027-05-25,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-05-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-086-02,MIS-001,SET-086,2027-05-25,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-05-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-086-03,MIS-001,SET-086,2027-05-25,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-086-04,MIS-001,SET-086,2027-05-25,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-086-05,MIS-001,SET-086,2027-05-25,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-05-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-086-06,MIS-001,SET-086,2027-05-25,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-086-07,MIS-001,SET-086,2027-05-25,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-25T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-087-01,MIS-001,SET-087,2027-05-26,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,high,90,1,2027-05-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-087-02,MIS-001,SET-087,2027-05-26,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,high,60,1,2027-05-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-087-03,MIS-001,SET-087,2027-05-26,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-087-04,MIS-001,SET-087,2027-05-26,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-087-05,MIS-001,SET-087,2027-05-26,Air quality verification,Air quality verification; prepared for demonstration,technical,medium,60,1,2027-05-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-087-06,MIS-001,SET-087,2027-05-26,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-05-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-087-07,MIS-001,SET-087,2027-05-26,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-05-26T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-088-01,MIS-001,SET-088,2027-05-27,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,high,50,1,2027-05-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-088-02,MIS-001,SET-088,2027-05-27,Air quality verification,Air quality verification; prepared for demonstration,technical,high,60,1,2027-05-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-088-03,MIS-001,SET-088,2027-05-27,Mission data review,Mission data review; prepared for demonstration,research,medium,70,1,2027-05-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-088-04,MIS-001,SET-088,2027-05-27,Systems status check,Systems status check; prepared for demonstration,technical,medium,45,1,2027-05-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-088-05,MIS-001,SET-088,2027-05-27,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,medium,90,1,2027-05-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-088-06,MIS-001,SET-088,2027-05-27,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-05-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-088-07,MIS-001,SET-088,2027-05-27,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-05-27T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-089-01,MIS-001,SET-089,2027-05-28,Systems status check,Systems status check; prepared for demonstration,technical,high,45,1,2027-05-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-089-02,MIS-001,SET-089,2027-05-28,Plant growth experiment,Plant growth experiment; prepared for demonstration,research,high,90,1,2027-05-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-089-03,MIS-001,SET-089,2027-05-28,Medical inventory audit,Medical inventory audit; prepared for demonstration,medical,medium,50,1,2027-05-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-089-04,MIS-001,SET-089,2027-05-28,Navigation review,Navigation review; prepared for demonstration,technical,medium,75,1,2027-05-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-089-05,MIS-001,SET-089,2027-05-28,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,medium,80,1,2027-05-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-089-06,MIS-001,SET-089,2027-05-28,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-089-07,MIS-001,SET-089,2027-05-28,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-28T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-090-01,MIS-001,SET-090,2027-05-29,Navigation review,Navigation review; prepared for demonstration,technical,high,75,1,2027-05-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-090-02,MIS-001,SET-090,2027-05-29,Water recycling inspection,Water recycling inspection; prepared for demonstration,maintenance,high,80,1,2027-05-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-090-03,MIS-001,SET-090,2027-05-29,Crew science report,Crew science report; prepared for demonstration,research,medium,65,1,2027-05-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-090-04,MIS-001,SET-090,2027-05-29,Equipment diagnostics,Equipment diagnostics; prepared for demonstration,technical,medium,90,1,2027-05-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-090-05,MIS-001,SET-090,2027-05-29,Lab sample documentation,Lab sample documentation; prepared for demonstration,research,medium,60,1,2027-05-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-090-06,MIS-001,SET-090,2027-05-29,Communications check,Communications check; prepared for demonstration,technical,medium,45,1,2027-05-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z
+TSK-090-07,MIS-001,SET-090,2027-05-29,Exercise equipment check,Exercise equipment check; prepared for demonstration,maintenance,medium,50,1,2027-05-29T18:00:00Z,prepared,USR-006,2027-02-01T00:00:00Z

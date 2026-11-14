@@ -1,0 +1,2 @@
+mission_id,mission_name,mission_type,launch_date,planned_end_date,actual_end_date,mission_status
+MIS-001,AEGIS 90-Day Deep Space Demo,fictional_deep_space,2027-03-01T00:00:00Z,2027-05-30T00:00:00Z,,simulated

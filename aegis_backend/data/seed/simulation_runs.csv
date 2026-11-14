@@ -1,0 +1,2 @@
+simulation_run_id,mission_id,run_name,start_mission_time,current_mission_time,speed_multiplier,status,created_at,data_mode
+RUN-DEMO-001,MIS-001,Default 90-day demo,2027-03-01T00:00:00Z,2027-03-01T00:00:00Z,60,paused,2026-11-13T00:00:00Z,synthetic_demo
