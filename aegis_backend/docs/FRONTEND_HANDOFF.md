@@ -1,8 +1,8 @@
 # Handoff for the frontend
 
 This is for whoever builds the screens. It covers how to talk to the backend, what each dashboard
-needs to call, and the things that will trip you up. Example responses are real ones from the seed
-data, shortened.
+needs to call, and the things that will trip you up. Example responses are shortened to the fields
+that matter; the numbers in them are illustrative.
 
 The full, always up-to-date list of endpoints with a "try it" button is at
 **http://127.0.0.1:8000/docs** once the backend is running. The machine-readable version is at
@@ -205,7 +205,8 @@ All paths start with `/astronauts/{astronaut_id}`.
 ```
 
 `GET /astronauts/AST-004/body-map` gives regions (heart, lungs and so on), each with metrics that
-carry `value`, `personal_range` and `position` (`within_personal_range`, `above…`, `below…`).
+carry `value`, `personal_range` and `position` (`within_personal_range`, `above_personal_range`,
+`below_personal_range`, `reference_period` or `no_data`).
 Colour the body map from `position`.
 
 `GET /astronauts/AST-004/health/changes` compares the last 7 days with the astronaut's own first
@@ -271,11 +272,12 @@ All paths start with `/astronauts/{astronaut_id}`.
 {"astronaut_id": "AST-004", "count": 40, "outside_range_worse": 3,
  "comparisons": [{"assessment_date": "2027-03-01", "mission_day": 1, "protocol_id": "NBACK",
                   "baseline_value": 87.5, "inflight_value": 85.0, "percentage_difference": -2.86,
-                  "reference_range_status": "within_reference", "interpretation": "within_range"}],
+                  "reference_range_status": "within_reference", "interpretation": "within_usual_range"}],
  "note": "Comparison with this astronaut's own preflight baseline. Statistical context only; …"}
 ```
 
-* Use `interpretation` for colour: `outside_range_worse` is the only one worth highlighting.
+* `interpretation` is `within_usual_range`, `outside_range_better` or `outside_range_worse`. Use it
+  for colour; `outside_range_worse` is the one worth highlighting.
 * **Lower is better for reaction time and fatigue; higher is better for accuracy.** Take
   `better_direction` from the data (`/metrics/definitions` or the trend response). Do not assume.
 * Always show the `note`. These are comparisons with the person's own normal, not medical
