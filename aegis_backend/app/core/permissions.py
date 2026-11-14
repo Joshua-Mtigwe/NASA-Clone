@@ -22,3 +22,10 @@ ADMIN_READ_ROLES = (MISSION_LEADER, MEDICAL_OFFICER)
 # The admin crew-health views: every astronaut's health data and how it has changed,
 # plus sensor data-quality checks. Viewing the crew-wide changes is written to audit_logs.
 HEALTH_ADMIN_ROLES = (MISSION_LEADER, MEDICAL_OFFICER)
+
+# Research (Phase 5). Staff may read analyses, results, charts and reports.
+RESEARCH_READ_ROLES = CREW_WIDE_ROLES
+# Define analyses, run analysis jobs, draft reports, evaluate planning effectiveness.
+RESEARCH_RUN_ROLES = (MEDICAL_RESEARCHER,)
+# Approve or reject a draft report. A reviewer can never review a report on a job they ran.
+REPORT_REVIEW_ROLES = (MEDICAL_OFFICER,)

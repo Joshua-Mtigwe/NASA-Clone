@@ -10,7 +10,8 @@ from app.core.config import get_settings
 SCHEMA_PATH = Path(__file__).with_name("schema.sql")
 
 # Tables the backend owns at runtime. Everything else in schema.sql is one of the 49 seed tables.
-RUNTIME_TABLES = frozenset({"import_runs", "auth_sessions", "simulation_run_clock", "daily_result_runs"})
+RUNTIME_TABLES = frozenset({"import_runs", "auth_sessions", "simulation_run_clock", "daily_result_runs",
+                            "analysis_job_details", "analysis_result_jobs", "research_report_details"})
 
 
 def connect(database_path: str | Path | None = None) -> sqlite3.Connection:

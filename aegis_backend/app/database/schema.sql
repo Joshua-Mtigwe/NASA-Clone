@@ -929,6 +929,34 @@ CREATE TABLE IF NOT EXISTS daily_result_runs (
 );
 CREATE INDEX IF NOT EXISTS ix_daily_result_runs_run ON daily_result_runs(simulation_run_id);
 
+-- Research (Phase 5). analysis_jobs has no column for a job's options, and analysis_results has no
+-- job column, so these tables record what each job was asked to do and which results it produced.
+CREATE TABLE IF NOT EXISTS analysis_job_details (
+    job_id TEXT PRIMARY KEY NOT NULL,
+    parameters_json TEXT NOT NULL,
+    summary_json TEXT,
+    FOREIGN KEY (job_id) REFERENCES analysis_jobs(job_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS analysis_result_jobs (
+    analysis_result_id TEXT PRIMARY KEY NOT NULL,
+    job_id TEXT NOT NULL,
+    FOREIGN KEY (analysis_result_id) REFERENCES analysis_results(analysis_result_id) ON DELETE CASCADE,
+    FOREIGN KEY (job_id) REFERENCES analysis_jobs(job_id)
+);
+CREATE INDEX IF NOT EXISTS ix_analysis_result_jobs_job ON analysis_result_jobs(job_id);
+
+-- research_reports has no column for the job a report was written from, its author, or the reviewer's comment.
+CREATE TABLE IF NOT EXISTS research_report_details (
+    report_id TEXT PRIMARY KEY NOT NULL,
+    job_id TEXT NOT NULL,
+    created_by_user_id TEXT,
+    review_comment TEXT,
+    FOREIGN KEY (report_id) REFERENCES research_reports(report_id) ON DELETE CASCADE,
+    FOREIGN KEY (job_id) REFERENCES analysis_jobs(job_id),
+    FOREIGN KEY (created_by_user_id) REFERENCES users(user_id)
+);
+
 CREATE TABLE IF NOT EXISTS simulation_run_clock (
     simulation_run_id TEXT PRIMARY KEY NOT NULL,
     anchor_wall_utc TEXT NOT NULL,

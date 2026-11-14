@@ -1,10 +1,12 @@
-# AEGIS Backend — Phases 1–4
+# AEGIS Backend — Phases 1–5
 
 Python + SQLite + FastAPI backend for the AEGIS crew health-aware mission planning prototype,
 following the Revised Backend Engineering Plan:
 * **Phase 1 (Foundation):** the 49-file importer, database schema, login and roles, and isolated simulation runs.
 * **Phase 2 (Health):** vitals, radiation, sleep, activity, cabin environment, and the admin crew health-changes view.
 * **Phase 3 (Cognition):** taking the cognitive tests, scoring, preflight baselines, and in-flight comparisons.
+* **Phase 4 (Planning):** eligibility, the daily task scheduler, and versioned schedule approval.
+* **Phase 5 (Research):** saved analyses, analysis jobs, statistics, chart data, reviewed reports, and planning effectiveness.
 
 All crew data is synthetic demo data. The seed also contains clearly labelled NASA *reference*
 records (Curiosity RAD readings and DONKI 2024 space-weather events) that belong to no astronaut.
@@ -94,13 +96,14 @@ password hashes. Every attempt is stored in `import_runs` with its full report.
 ```
 app/
   core/        config, security (hashing, tokens), permissions, errors
-  database/    schema.sql (49 seed tables + 4 runtime tables), session.py
+  database/    schema.sql (49 seed tables + 7 runtime tables), session.py
   services/    data_import_service, auth_service, mission_simulator, audit_service,
                health_context, physiology_service, radiation_service, environment_service,
                sleep_activity_service, health_changes_service,
                assessment_service, cognitive_scoring, baseline_service, cognitive_comparison_service,
-               task_service, crew_readiness_service, scheduling_optimizer, schedule_service
-  api/         auth, missions, simulation, health, environment, assessments, planning, admin, websocket routes
+               task_service, crew_readiness_service, scheduling_optimizer, schedule_service,
+               research_service, research_report_service, planning_effectiveness_service
+  api/         auth, missions, simulation, health, environment, assessments, planning, research, admin, websocket routes
   schemas/     Pydantic request/response models
   utils/       timestamps, units, statistics
 scripts/       import_csvs, validate_seed_data, set_demo_passwords
@@ -301,5 +304,90 @@ says which tasks don't fit and why. An earlier `workday_start_hour` fits more.
 * **Tests:** 36 new tests in `tests/integration/test_planning.py` and `tests/api/test_planning_api.py`.
   The CP-SAT comparison test runs once OR-Tools is installed.
 
-## Next: Phase 5 (Research)
-Analysis jobs, statistics and planning effectiveness.
+## Phase 5 (Research)
+
+The Medical Research dashboard: ask whether one daily measure goes with another, run it, chart it,
+write it up, and have it reviewed.
+
+### Analyses and jobs
+* An **analysis** is a saved question: an independent variable, a dependent variable, a method and a
+  date range. The three seeded analyses (`ANL-001` to `ANL-003`) work as they are.
+* A **job** runs an analysis against one simulation run and stores its numbers in `analysis_results`.
+  Jobs run at once, so a job is finished when the request returns.
+* **Variables** (`GET /research/variables`): the 16 health measures from Phase 2, accumulated radiation
+  dose, and the three cognitive test scores. Each is one value per astronaut per mission day, and days
+  are paired by date. Sleep is paired with the day *after* the night, so it lines up with the next
+  morning's tests.
+* **No peeking ahead:** a job only uses data from before the run's mission time (or the `as_of` you
+  pass). The demo run starts on day 1, so jump it forward first or the job is stored as `failed`
+  with a message saying so. Cognitive scores come only from the chosen run, as in Phase 3.
+
+### Methods
+| Method | What it reports |
+|---|---|
+| `descriptive` | Mean, spread and range of each variable. No association. |
+| `pearson` | Straight-line correlation across all astronaut-days pooled, with slope. |
+| `spearman` | Rank correlation across all astronaut-days pooled. |
+| `within_person` (default for new analyses) | Correlation after centring each astronaut on their own average, so differences between people cannot create the result. |
+
+Each association comes with a 95% confidence interval, a p-value, the sample size and a plain-English
+sentence. Fewer than 10 paired days gives no association. The statistics are written in
+`app/utils/statistics.py` with no extra library.
+
+Why `within_person` is the default: in the seed data, pooled sleep and reaction time correlate at
+**+0.38** (more sleep, slower), yet within every single astronaut the correlation is negative
+(**-0.39** overall). The pooled figure only reflects that the astronauts who sleep longer happen to be
+the slower ones.
+
+Every result carries the same caveat: synthetic data, association is not cause, days from one
+astronaut are not independent so p-values are optimistic, and nothing here is a clinical finding.
+
+### Charts
+`GET /research/jobs/{id}/chart` returns the scatter points (per astronaut per day), a fitted line
+(one pooled line for `pearson`; one line per astronaut with a shared slope for `within_person`) and
+axis labels and units.
+
+### Reports and review
+* The researcher drafts a report from a completed job. A fixed template writes it from the stored
+  results. No AI model is involved yet (Phase 6), so `model_id` is empty.
+* The draft stores a SHA-256 **evidence hash** of the question, the job's settings and its results.
+* The medical officer approves or rejects it. Approval re-computes the hash first and refuses if the
+  results changed since the draft. Nobody can review a report on a job they ran or drafted.
+* Every job, draft and review (including refused ones) is written to `audit_logs`.
+
+### Planning effectiveness
+`POST /research/planning-effectiveness/evaluate` summarises a run's plans over a period and stores one
+row per planning method (`preloaded_demo`, `optimizer`, `manual`):
+* task coverage, and workload balance (the daily gap in planned minutes between the busiest and least
+  busy astronaut);
+* the crew's average reaction time on the planned days;
+* task completion, on-time starts (within 15 minutes) and recovery completion. These stay **empty,
+  not zero**, until something is recorded as started or completed. Nothing in the backend records
+  that yet, so they are empty for the seed plan.
+
+Only approved, published or demo plans count unless `include_drafts` is set. The result is
+descriptive and says so: with one crew it cannot show that one planning method works better.
+
+### Three more runtime tables
+`analysis_job_details` (a job's settings and summary), `analysis_result_jobs` (which job produced each
+result) and `research_report_details` (a report's job, author and review comment). The seed tables
+have no columns for these. They are created automatically the next time the API starts.
+
+### Phase 5 endpoints (prefix `/api/v1/research`)
+| Method | Path | Who |
+|---|---|---|
+| GET | `/variables`, `/analyses`, `/analyses/{id}`, `/analyses/{id}/results`, `/analyses/{id}/chart` | staff |
+| GET | `/jobs`, `/jobs/{id}`, `/jobs/{id}/chart`, `/reports`, `/reports/{id}`, `/planning-effectiveness` | staff |
+| POST | `/analyses`, `/analyses/{id}/run`, `/reports`, `/planning-effectiveness/evaluate` | researcher |
+| POST | `/reports/{id}/review` | medical officer |
+
+Astronauts have no access to research routes. Roles are set in `app/core/permissions.py`
+(`RESEARCH_READ_ROLES`, `RESEARCH_RUN_ROLES`, `REPORT_REVIEW_ROLES`).
+
+### Phase 5 tests
+31 new tests in `tests/integration/test_research.py` and `tests/api/test_research_api.py`: p-values and
+correlations against reference values, no data after `as_of`, repeatable jobs, the report hash
+re-check, and every role rule.
+
+## Next: Phase 6 (Gemma)
+AI inference logging, model status, and AI-written recommendations and reports.
