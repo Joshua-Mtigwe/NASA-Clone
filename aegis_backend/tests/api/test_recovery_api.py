@@ -12,15 +12,14 @@ API = "/api/v1"
 
 
 @pytest.fixture
-def client(db_path, with_passwords):
+def client(db_path):
     with TestClient(app) as c:
         yield c
 
 
 def login(client, username):
-    r = client.post(f"{API}/auth/login", json={"username": username, "password": "test-password-123"})
-    assert r.status_code == 200, r.text
-    return {"Authorization": f"Bearer {r.json()['access_token']}"}
+    """Open demo mode: act as this persona. No password or token."""
+    return {"X-AEGIS-User": username}
 
 
 def jump(client, leader, day, hour):
@@ -109,4 +108,4 @@ def test_task_execution_over_http(client):
                       headers=login(client, "crew4")).status_code == 403
     assert client.post(f"{API}/planning/assignments/TA-010-01/start", headers=leader).status_code == 409
     assert client.post(f"{API}/planning/assignments/{aid}/skip", json={}, headers=leader).status_code == 422
-    assert client.get(f"{API}/planning/assignments").status_code == 401
+    assert client.get(f"{API}/planning/assignments", headers=login(client, "nobody")).status_code == 401

@@ -32,7 +32,15 @@ def db_path(seeded_template, tmp_path, monkeypatch):
     monkeypatch.setenv("AEGIS_DATABASE_PATH", str(path))
     monkeypatch.setenv("AEGIS_SEED_DIR", str(SEED_DIR))
     monkeypatch.setenv("AEGIS_PBKDF2_ITERATIONS", "1000")  # fast hashing in tests only
+    monkeypatch.setenv("AEGIS_AUTH_MODE", "open")  # the default; token-mode tests use the token_mode fixture
     return path
+
+
+@pytest.fixture
+def token_mode(db_path, monkeypatch):
+    """Run a test with the original username/password sign-in (AEGIS_AUTH_MODE=token)."""
+    monkeypatch.setenv("AEGIS_AUTH_MODE", "token")
+    return "token"
 
 
 @pytest.fixture

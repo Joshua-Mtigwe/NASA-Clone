@@ -12,7 +12,8 @@ API = "/api/v1"
 
 
 @pytest.fixture
-def client(db_path, with_passwords):
+def client(db_path, with_passwords, token_mode):
+    """These tests cover sign-in itself, so they run in token mode."""
     with TestClient(app) as c:
         yield c
 

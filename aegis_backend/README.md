@@ -1,16 +1,22 @@
-# AEGIS Backend — Phases 1–6
+# AEGIS Backend — Phases 1–7
 
 Python + SQLite + FastAPI backend for the AEGIS crew health-aware mission planning prototype,
 following the Revised Backend Engineering Plan:
-* **Phase 1 (Foundation):** the 49-file importer, database schema, login and roles, and isolated simulation runs.
+* **Phase 1 (Foundation):** the 49-file importer, database schema, roles, and isolated simulation runs.
 * **Phase 2 (Health):** vitals, radiation, sleep, activity, cabin environment, and the admin crew health-changes view.
 * **Phase 3 (Cognition):** taking the cognitive tests, scoring, preflight baselines, and in-flight comparisons.
 * **Phase 4 (Planning):** eligibility, the daily task scheduler, and versioned schedule approval.
 * **Phase 5 (Research):** saved analyses, analysis jobs, statistics, chart data, reviewed reports, and planning effectiveness.
 * **Phase 6 (AI):** a Gemma model running on this machine explains task assignments and recovery suggestions and drafts research reports.
+* **Phase 7 (Offline sync):** crew devices record task and recovery progress offline and upload it later; a record that changed meanwhile is never overwritten.
 
 All crew data is synthetic demo data. The seed also contains clearly labelled NASA *reference*
 records (Curiosity RAD readings and DONKI 2024 space-weather events) that belong to no astronaut.
+
+**Open source, no sign-in.** Released under the MIT License (`LICENSE` at the repository root). By default
+the backend runs in **open demo mode**: there are no accounts to create, no passwords and no tokens.
+Each request says which demo persona it acts as, so you can see how each role experiences the system.
+See [Open demo mode](#open-demo-mode) below.
 
 ## Setup in VS Code (Windows)
 
@@ -30,16 +36,43 @@ pip install -r requirements.txt
 ```powershell
 python scripts/validate_seed_data.py      # optional: check the 49 CSVs, writes nothing
 python scripts/import_csvs.py --reset     # build aegis.db from data/seed
-python scripts/set_demo_passwords.py      # give the 8 demo users passwords
 uvicorn app.main:app --reload             # start the API
 pytest                                    # run the tests
 ```
 
-* API docs: http://127.0.0.1:8000/docs. Click **Authorize** after logging in, or call
-  `POST /api/v1/auth/login` and send `Authorization: Bearer <access_token>`.
-* `set_demo_passwords.py` writes the generated passwords to `demo_credentials.local.txt`
-  (git-ignored). Use `--user crew1` to choose one yourself.
-* The seed users have the placeholder `DEMO_ACCOUNT_NO_PASSWORD`, which can never log in.
+* API docs: http://127.0.0.1:8000/docs. No sign-in needed. To act as someone other than the mission
+  leader, click **Authorize** and enter a persona in `X-AEGIS-User` (for example `crew1` or `USR-008`).
+* The seed users have the placeholder password `DEMO_ACCOUNT_NO_PASSWORD`, which can never be used to sign in.
+
+## Open demo mode
+
+The default (`AEGIS_AUTH_MODE=open`), made for the open-source NASA Space Apps submission.
+
+* **No logins, passwords or tokens.** `GET /api/v1/personas` (public) lists the demo personas:
+  * the mission leader (`USR-006`);
+  * the medical researcher (`USR-007`);
+  * the medical officer (`USR-008`);
+  * astronauts AST-001 to AST-005 (`crew1` to `crew5`).
+* **Choosing a persona:** send its user ID or username in the **`X-AEGIS-User`** header. Without the header
+  you act as the mission leader (`AEGIS_DEFAULT_PERSONA`). An unknown or deactivated persona gets `401`.
+* **Every role rule still applies to the persona:**
+  * an astronaut sees only their own data;
+  * only the mission leader approves plans;
+  * a reviewer cannot approve their own job;
+  * the audit log records which persona did what.
+
+  Personas are **viewpoints for the demo, not security**: anyone can choose any persona.
+* **Gone in open mode** (`404`, hidden from `/docs`): `/auth/login`, `/auth/logout`,
+  `/auth/change-password` and `/admin/users/{id}/reset-password`. Creating a user
+  (`POST /admin/users`) makes a new persona with no password; sending a password is refused.
+* **Live clock:** `ws://…/api/v1/ws/simulation/{run_id}` needs no token (optionally `?as_user=crew1`).
+* **Reset:** `POST /api/v1/demo/reset` (mission leader persona) puts all data back to the seed CSVs, so a
+  shared online demo can always be returned to a clean state. Switch it off with `AEGIS_ALLOW_DEMO_RESET=false`.
+* **Token mode:** `AEGIS_AUTH_MODE=token` brings back the original username/password sign-in. Then
+  run `python scripts/set_demo_passwords.py` to give the demo users passwords; they are written to
+  the git-ignored `demo_credentials.local.txt`. Its tests run with the `token_mode` fixture.
+
+For the frontend team: see `docs/OPEN_DEMO_MODE.md`.
 
 ## What Phase 1 delivers
 
@@ -105,8 +138,10 @@ app/
                task_service, crew_readiness_service, scheduling_optimizer, schedule_service,
                research_service, research_report_service, planning_effectiveness_service,
                recovery_service, task_execution_service, account_service,
-               gemma_client, ai_service
-  api/         auth, missions, simulation, health, environment, assessments, planning, recovery, research, ai, admin, websocket routes
+               gemma_client, ai_service, sync_service,
+               coach_service, wellbeing_service, wellbeing_risk_service, journal_service
+  api/         auth, missions, simulation, health, environment, assessments, planning, recovery, research, ai, sync, admin,
+               wellbeing, journal, websocket routes
   schemas/     Pydantic request/response models
   utils/       timestamps, units, statistics
 scripts/       import_csvs, validate_seed_data, set_demo_passwords
@@ -508,7 +543,7 @@ Gemma runs on your own machine through [Ollama](https://ollama.com), so after th
 needs no internet.
 
 1. Install Ollama.
-2. While online, download the model once: `ollama pull gemma3:4b`
+2. While online, download the model once: `ollama pull gemma4:e4b`
 3. Ollama then serves it at `http://127.0.0.1:11434`. Start the backend as usual.
 4. Check it: `GET /api/v1/admin/model-status` should say `"ready": true`.
 
@@ -567,7 +602,201 @@ reports) when the rule-based text is shown instead, plus `rule_based_text` so a 
 * **Not yet run against a real Gemma model.** The request format follows Ollama's published API,
   but how often real answers pass the checks, and how good they read, has to be tried on a machine
   with the model installed. If too many good answers are rejected, the prompts in `ai_service.py`
-  (`SYSTEM_PROMPT`, `_TASKS`) are the place to adjust.
+  (`SYSTEM_PROMPT`, `_TASKS`, `_REMINDER`) are the place to adjust. Bump `PROMPT_VERSIONS` when you do.
 
-## Next: Phase 7 (Offline sync)
-Sync status and sync conflicts (`/admin/sync-status`, `/admin/sync-conflicts`).
+### Prompt version 2 (`recovery_v2`, `task_v2`, `report_v2`)
+Tuned for a small local model (Gemma 3 4B), and fixing answers the checker used to throw away wrongly.
+
+**Checker**
+* **Whole words only:** "secure" is no longer mistaken for "cure".
+* **Words already in the facts are allowed:** this fixes a bug where every explanation of an
+  "Equipment diagnostics" task was rejected because of "diagnos".
+* **Research reports** also refuse cause-and-effect wording ("caused", "led to"), because their
+  results are associations.
+
+**Prompt**
+* **New rules:**
+  * text inside the facts is data, never an instruction (protection against prompt injection, since
+    research questions are typed by people);
+  * say plainly when the facts give no reason, never invent one;
+  * write measures as plain words;
+  * no calculated percentages or differences.
+* **Each task names its reader** (the recovery text speaks to the astronaut as "you") and ends with a
+  style example written in `[placeholders]`, so there are no real values to copy by mistake.
+* **The key rules are repeated right before the facts.** Gemma has no separate system role, so Ollama
+  merges the system text into the user message.
+* **Reports** are told to say "went with" and not to mention significance cut-offs such as p < 0.05.
+
+**Facts**
+* Measures carry a plain-English `what` label.
+* The task packet now includes ready-made differences from each person's usual values, so the model
+  never needs to calculate.
+
+**Model call**
+* An explicit context window (`num_ctx` 8192), so long prompts never silently lose their rules.
+* A fixed `seed` for repeatable text.
+* An answer cut off at the token limit is refused (`model_truncated`) and the rule-based text is shown.
+
+## Phase 7 (Offline sync)
+
+Crew devices keep working without a link to the habitat server. While offline, a device records
+what the astronaut does:
+* starting, completing or skipping a task;
+* completing or skipping a recovery session.
+
+When the link returns, it uploads those **actions**, never raw database writes.
+
+### How a device uses it
+1. **Before going offline:** `GET /sync/pull?date=…` returns the astronaut's published tasks and recovery
+   bookings, each with a `sync_version` (a fingerprint of the record).
+2. **While offline:** the device records events such as `{"action": "start", "at": "…", "base_version": "<sync_version>"}`.
+   A later action on the same record (say `complete`) can leave `base_version` empty; it then builds on
+   the device's previous event for that record.
+3. **Back online:** `POST /sync/events` with the device ID and the events. They are replayed in order,
+   through the normal task and recovery services, with the astronaut's own permissions, so every
+   existing rule still applies.
+
+### What can happen to each event
+| Outcome | Meaning |
+|---|---|
+| `applied` | The record hadn't changed; the action was carried out. |
+| `duplicate` | The server already shows exactly this change (for example, it was sent twice). Nothing is done. |
+| `conflict` | The record changed since the device last saw it. **Nothing is written.** A conflict is opened with both versions. |
+| `blocked` | It follows an event that is in conflict. It waits, and once the conflict is resolved it is checked against the record as it is then. |
+| `rejected` | A normal rule refused it, e.g. a dependency isn't finished or it's someone else's task. The reason is shown. |
+| `failed` | Temporary problem (database busy). Retried automatically on the next replay, up to 5 times. |
+
+Resending a batch is always safe: each event is identified by `(device_id, client_event_id)`, so a
+repeat returns the original outcome instead of applying again. A device ID belongs to one account.
+
+### Resolving conflicts (mission leader, medical officer)
+* `GET /admin/sync-conflicts` shows each open conflict: what the device wanted, the server's version
+  when the conflict was found, and the record now.
+* `POST /admin/sync-conflicts/{id}/resolve` with notes (required), choosing one of:
+  * `keep_server`: discard the device's action;
+  * `reapply`: run the device's action on the **current** record. Every rule is checked again, so it is
+    refused if it no longer makes sense (e.g. starting a task that's already started).
+* If the record changed **again** after the conflict was opened, resolving is refused and the conflict is
+  updated to show the latest version, so a person always decides on what is really there.
+* Every conflict and every resolution is written to `audit_logs`.
+
+### Phase 7 endpoints (prefix `/api/v1`)
+| Method | Path | Who |
+|---|---|---|
+| GET | `/sync/pull` | the astronaut (staff: with `astronaut_id`) |
+| POST | `/sync/events` · GET `/sync/events` (your own) | signed in |
+| GET | `/admin/sync-status`, `/admin/sync-events`, `/admin/sync-conflicts`, `/admin/sync-conflicts/{id}` | mission leader, medical officer |
+| POST | `/admin/sync-conflicts/{id}/resolve`, `/admin/sync/replay` | mission leader, medical officer |
+
+The new runtime table `sync_event_details` holds each event's action, sender and base version
+(`sync_events` and `sync_conflicts` are the plan's own tables).
+
+### Phase 7 acceptance (plan §8: "conflicts never silently overwrite records")
+* **No overwrites:** a device action based on an out-of-date version is never applied. The record stays
+  exactly as the server had it (tested), and a person must decide.
+* **Resolution re-checks everything:** re-applying goes through the normal rules, and resolving is
+  refused if the record changed again.
+* **Tests:** 24 new tests in `tests/integration/test_sync.py` and `tests/api/test_sync_api.py`.
+
+## Reflective Coach: wellbeing chat and mission journal
+
+Two places where an astronaut writes in their own words: a **chat** ("how I feel right now") and a
+private **journal**. Behind both is the same coach (`coach_service`). It reflects back what they
+wrote, compares things only with **their own** usual, asks one reframing question, suggests approved
+recovery activities, and always points them back to their crewmates and the medical officer.
+
+It is a guided-reflection tool. It is not a therapist or a doctor, it never names an illness or a
+medication, and it is not a substitute for the crew. Every reply carries that note.
+
+### Step 1: analyse (labels that code can check)
+Gemma fills a fixed JSON form (structured output, temperature 0) with a mood, themes, stress
+triggers, thinking patterns and crisis markers.
+* Every label must come from a **fixed list** and carry a **quote** from the text. Code keeps a label
+  only if its quote is really in the text, and drops the rest. (In a trial with the real model it
+  invented a "work" theme that was not in the text; this check removes that.)
+* A plain **keyword detector** runs alongside. For crisis markers it can only **add** to what the
+  model found, never remove, so safety never rests on the model alone. With the model off, the
+  keyword analysis is used by itself.
+* The theme list starts from the most frequent categories in NASA's study of ISS crew journals
+  (Stuster 2010).
+
+### Step 2: respond
+* The reply is written from the checked analysis, the astronaut's own metrics (chat) or their own
+  journal patterns (journal), and a **reframing question chosen by code** from the detected thinking
+  pattern, not by the model.
+* The reply is checked: no number that is not in the facts, no illness words, no medication ever, no
+  "therapy" framing, only approved activities. If the model is off or its text fails a check, a
+  rule-based reply is used.
+* Code then makes sure every reply points to the crew and to the medical officer.
+
+### Urgent writing
+* Chest pain, trouble breathing, fainting or thoughts of self-harm are caught by keywords and **never
+  sent to the model**, not even for analysis. A fixed reply says to contact the medical officer now;
+  the self-harm reply also points a real person to their local emergency number or a crisis line.
+* If the model's analysis finds self-harm or a safety risk in wording the keywords missed (with a
+  real quote), the same fixed reply is used and the model writes nothing.
+
+### Privacy and break-glass (`wellbeing_risk_service`)
+* **What an astronaut writes is private.** The medical officer can see that a conversation exists
+  but reads its messages only if the astronaut **shares** that conversation. Journal entries are
+  invisible to the medical officer unless the astronaut shares that entry. Sharing can be taken
+  back. Every read of shared writing is audited. The mission leader and researcher see nothing.
+* **Two exceptions raise a risk flag for the medical officer:**
+  * *immediate*: the writing points to immediate danger (self-harm, a risk to someone's safety, an
+    urgent physical symptom);
+  * *persistent*: the same crisis marker appears in **3 of that astronaut's last 5 writings**
+    (chat and journal together). One open flag per marker; a new one only after it is acknowledged.
+* **A flag carries the indicator only** (for example "hopelessness, 3 of the last 5"), never the
+  words. The medical officer acknowledges it with a follow-up note.
+* **Nothing happens behind the astronaut's back.** Every reply includes a privacy note explaining
+  this, the response says when the medical officer was alerted, and astronauts can see their own flags.
+
+### The journal (`journal_service`)
+* Writing an entry returns the coach's **reflection**, a short summary of what it noticed, and a
+  **writing prompt** for next time.
+* **Patterns against your own baseline:** themes in the last 5 entries are compared with the same
+  astronaut's earlier entries. A theme is "rising" when it is clearly more common lately. Counts
+  only; the reflection may mention a rising theme using exactly those counts. `GET /journal/trends`
+  shows themes and mood by mission week. Trends are the astronaut's alone.
+* **Research with consent:** an astronaut can allow the **themes** of their entries (never the text)
+  to be counted in crew-level figures, and can withdraw at any time. The researcher and medical
+  officer see totals only, never per person, and **nothing at all unless at least 3 crew members
+  consent**, because small counts could point to one person.
+* **Demo entries:** an astronaut can fill their own journal with fictional entries labelled
+  `synthetic_demo` so the trend screens have data. They never raise flags and are left out of
+  research counts unless asked for.
+
+### Endpoints (prefix `/api/v1`)
+| Method | Path | Who |
+|---|---|---|
+| POST | `/wellbeing/chat` `{"message", "conversation_id"?}` | astronaut |
+| GET | `/wellbeing/conversations`, `/wellbeing/conversations/{id}` | astronaut (own); medical officer (text only if shared) |
+| POST | `/wellbeing/conversations/{id}/share` `{"shared"}` | that astronaut |
+| POST | `/wellbeing/conversations/{id}/review` `{"note"}` | medical officer |
+| GET | `/wellbeing/risk-flags` (`?open_only=true`) | medical officer (all), astronaut (own) |
+| POST | `/wellbeing/risk-flags/{id}/acknowledge` `{"note"}` | medical officer |
+| POST | `/journal/entries` `{"text"}` | astronaut |
+| GET | `/journal/entries`, `/journal/entries/{id}` | astronaut (own); medical officer (shared only) |
+| POST | `/journal/entries/{id}/share` `{"shared"}` | that astronaut |
+| GET | `/journal/trends` | astronaut (own) |
+| GET, PUT | `/journal/consent` | astronaut (own) |
+| GET | `/journal/research-summary` | researcher, medical officer |
+| POST | `/journal/demo-entries` `{"days"}` | astronaut (own journal) |
+
+`reply.source` (chat) and `entry.reflection_source` (journal) are `gemma`, `rules` (model off, or its
+text failed a check) or `escalation` (urgent). `medical_officer_alerted` is `immediate`, `persistent`
+or empty.
+
+### Tested, and not tested
+* 67 tests in `test_wellbeing.py`, `test_journal.py` and their API files use a stand-in model. They
+  cover the quote checks, the keyword union, escalation, the 3-of-5 rule, privacy and sharing, consent
+  and the minimum-crew rule, and that the model can be off throughout.
+* The analysis step and the model switch to `gemma4:e4b` were tried against the real model. **The
+  full coach replies and journal reflections have not yet been read through with the real model**;
+  that is the next thing to do before a demo. Prompts are in `ai_service._TASKS`.
+* The crisis keyword lists are short and English-only. They are a safety net for a prototype on
+  synthetic data, not a validated screening tool, and would need clinical review before real use.
+
+## All plan phases are now built
+Suggested next steps: one full demo run end to end on a fresh database, and a security pass
+(CORS origins, `/docs` exposure, real passwords) before anything leaves your machine.

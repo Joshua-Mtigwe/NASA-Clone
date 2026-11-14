@@ -36,15 +36,14 @@ def model(monkeypatch):
 
 
 @pytest.fixture
-def client(db_path, with_passwords):
+def client(db_path):
     with TestClient(app) as c:
         yield c
 
 
 def login(client, username):
-    r = client.post(f"{API}/auth/login", json={"username": username, "password": "test-password-123"})
-    assert r.status_code == 200, r.text
-    return {"Authorization": f"Bearer {r.json()['access_token']}"}
+    """Open demo mode: act as this persona. No password or token."""
+    return {"X-AEGIS-User": username}
 
 
 def test_ai_routes_over_http(client, model):
@@ -58,7 +57,7 @@ def test_ai_routes_over_http(client, model):
 
     for who in (leader, researcher, crew4):
         assert client.post(url, headers=who).status_code == 403
-    assert client.post(url).status_code == 401
+    assert client.post(url, headers=login(client, "nobody")).status_code == 401  # unknown persona
     good = client.post(url, headers=officer)
     assert good.status_code == 200 and good.json()["source"] == "gemma"
 
