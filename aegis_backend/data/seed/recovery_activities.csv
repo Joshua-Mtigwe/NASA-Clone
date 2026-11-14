@@ -1,0 +1,7 @@
+recovery_activity_id,activity_name,activity_category,recommended_duration_minutes,description,instructions,intensity,approval_status,approved_by_user_id
+REC-001,Guided paced breathing,relaxation,8,Short breathing practice,routine_demo,low,approved,USR-008
+REC-002,Quiet break,rest,15,Low-stimulation break,routine_demo,low,approved,USR-008
+REC-003,Light mobility,mobility,10,Gentle movement,routine_demo,low,approved,USR-008
+REC-004,Sleep preparation,sleep,20,Reduce stimulation before sleep,routine_demo,low,approved,USR-008
+REC-005,Mindfulness break,relaxation,10,Attention and relaxation,routine_demo,low,approved,USR-008
+REC-006,Scheduled exercise,exercise,40,Follow approved conditioning schedule,routine_demo,medium,approved,USR-008

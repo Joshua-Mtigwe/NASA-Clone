@@ -1,0 +1,5 @@
+role_id,role_name,description
+ROLE-1,astronaut,Crew member
+ROLE-2,mission_leader,Mission planning
+ROLE-3,medical_researcher,Research
+ROLE-4,medical_officer,Assessment oversight

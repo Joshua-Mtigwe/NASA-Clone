@@ -1,0 +1,1 @@
+optimization_run_id,simulation_run_id,task_set_id,requested_by_user_id,solver_version,objective_version,status,started_at,finished_at,objective_value,infeasibility_reason,input_hash

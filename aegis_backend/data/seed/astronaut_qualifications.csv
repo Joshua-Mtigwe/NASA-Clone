@@ -1,0 +1,6 @@
+qualification_id,astronaut_id,qualification_code,authorization_status,valid_from,valid_until,verified_by_user_id,source_type
+QUAL-0001,AST-001,SIM_CERT_SYSTEMS,demo_assumed_not_verified,2027-02-01,2027-06-30,,synthetic_demo
+QUAL-0002,AST-002,SIM_CERT_SCIENCE,demo_assumed_not_verified,2027-02-01,2027-06-30,,synthetic_demo
+QUAL-0003,AST-003,SIM_CERT_FLIGHT,demo_assumed_not_verified,2027-02-01,2027-06-30,,synthetic_demo
+QUAL-0004,AST-004,SIM_CERT_MEDICAL,demo_assumed_not_verified,2027-02-01,2027-06-30,,synthetic_demo
+QUAL-0005,AST-005,SIM_CERT_ENGINEERING,demo_assumed_not_verified,2027-02-01,2027-06-30,,synthetic_demo
