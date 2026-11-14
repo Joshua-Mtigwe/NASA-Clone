@@ -148,7 +148,7 @@ Every time Gemma is called, write one row to `ai_inference_logs`:
 | `simulation_run_id` | The run the request was for |
 | `purpose` | `task_explanation`, `recovery_explanation` or `research_report` |
 | `model_id`, `model_version` | Which Gemma model |
-| `prompt_template_version` | A version label for your prompt, e.g. `task_v1` |
+| `prompt_template_version` | A version label for your prompt, e.g. `task_v2` (bump it whenever the prompt changes) |
 | `input_hash` | SHA-256 of the packet you sent |
 | `output_hash` | SHA-256 of what came back |
 | `status` | `succeeded`, `failed` or `rejected_by_check` |

@@ -15,6 +15,8 @@ from typing import Any
 from app.core.config import get_settings
 
 LOCAL_HOSTS = {"127.0.0.1", "localhost", "::1"}
+CONTEXT_TOKENS = 8192  # room for the rules plus the largest fact packet (a research report)
+SEED = 42
 
 
 class ModelUnavailable(Exception):
@@ -60,13 +62,23 @@ class OllamaClient:
             raise ModelUnavailable("model_bad_response", "The model server sent something that is not JSON") from exc
 
     def generate(self, system: str, prompt: str, max_tokens: int = 400) -> str:
-        """One answer, not streamed. Low temperature: these are factual summaries, not creative writing."""
+        """One answer, not streamed.
+
+        * Low temperature and a fixed seed: these are factual summaries, and the same facts should give
+          the same text.
+        * An explicit context window: depending on the Ollama version the default can be as small as
+          2048 tokens, and a long prompt would then silently lose its beginning, including the rules.
+        * An answer cut off by the token limit is refused rather than shown half-finished.
+        """
         data = self._request("/api/generate", {
             "model": self.model, "system": system, "prompt": prompt, "stream": False,
-            "options": {"temperature": 0.2, "num_predict": max_tokens}})
+            "options": {"temperature": 0.2, "num_predict": max_tokens, "num_ctx": CONTEXT_TOKENS, "seed": SEED}})
         text = (data.get("response") or "").strip()
         if not text:
             raise ModelUnavailable("model_empty_response", "The model returned no text")
+        if data.get("done_reason") == "length":
+            raise ModelUnavailable("model_truncated",
+                                   f"The answer was cut off at the {max_tokens}-token limit, so it is not used")
         return text
 
     def status(self) -> dict[str, Any]:
