@@ -9,7 +9,7 @@ from app.core.config import get_settings
 from app.database.session import get_db
 from app.core.errors import ValidationFailed
 from app.schemas.auth import CreateUserRequest
-from app.services import account_service, audit_service, data_import_service, health_changes_service, physiology_service
+from app.services import account_service, ai_service, audit_service, data_import_service, health_changes_service, physiology_service
 from app.services.health_context import resolve_as_of, resolve_range
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -140,3 +140,21 @@ def reactivate_user(user_id: str, user: dict = Depends(user_admin), conn: sqlite
 def reset_password(user_id: str, user: dict = Depends(user_admin), conn: sqlite3.Connection = Depends(get_db)):
     """Returns a new temporary password once and signs the user out everywhere."""
     return account_service.reset_password(conn, user, user_id)
+
+
+# --------------------------------------------------------------------------- AI (Phase 6)
+
+@router.get("/ai-inferences")
+def ai_inferences(purpose: str | None = None, status: str | None = None, simulation_run_id: str | None = None,
+                  limit: int = Query(100, ge=1, le=1000), user: dict = Depends(admin_reader),
+                  conn: sqlite3.Connection = Depends(get_db)):
+    """Every call made to the AI model: purpose, model, prompt version, hashes, timing and outcome
+    (succeeded, failed or rejected_by_check). Prompts and answers are stored as hashes only."""
+    return ai_service.list_inferences(conn, purpose=purpose, status=status, simulation_run_id=simulation_run_id,
+                                      limit=limit)
+
+
+@router.get("/model-status")
+def model_status(user: dict = Depends(admin_reader), conn: sqlite3.Connection = Depends(get_db)):
+    """Is the local model server running and is the configured Gemma model installed?"""
+    return ai_service.model_status(conn)

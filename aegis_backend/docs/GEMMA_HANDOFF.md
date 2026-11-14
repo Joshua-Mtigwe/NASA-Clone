@@ -1,5 +1,13 @@
 # Handoff for the Gemma (AI) part
 
+> **Update: Phase 6 is now built.** See "Phase 6 (AI: Gemma, offline)" in `README.md` for how it
+> works and how to install the model. The code is in `app/services/gemma_client.py`,
+> `app/services/ai_service.py` and `app/api/ai.py`. Two things differ from the plan below:
+> the AI text is stored in a separate table (`ai_explanations`) so the rule-based reason is never
+> overwritten, and the backend builds the task packet itself, so no extra endpoint is needed.
+> The rest of this page remains a good description of the design. What is left to do is trying it
+> with a real model and tuning the prompts.
+
 This is for whoever builds Phase 6. It says what the backend already works out, what Gemma should
 be given, where Gemma's answers go, and the rules Gemma must not break.
 

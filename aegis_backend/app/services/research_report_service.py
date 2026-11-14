@@ -77,8 +77,12 @@ def list_reports(conn: sqlite3.Connection, *, analysis_id: str | None = None, st
 
 
 def create_report(conn: sqlite3.Connection, *, actor_user_id: str, job_id: str | None = None,
-                  analysis_id: str | None = None, title: str | None = None) -> dict[str, Any]:
-    """Draft a report from a completed job (or from an analysis's latest completed job)."""
+                  analysis_id: str | None = None, title: str | None = None,
+                  report_text: str | None = None, model_id: str | None = None) -> dict[str, Any]:
+    """Draft a report from a completed job (or from an analysis's latest completed job).
+
+    `report_text` and `model_id` are set only by the AI service, after its checks; otherwise the fixed
+    template writes the text and model_id stays empty."""
     if not job_id:
         if not analysis_id:
             raise ValidationFailed("Give a job_id or an analysis_id")
@@ -95,11 +99,12 @@ def create_report(conn: sqlite3.Connection, *, actor_user_id: str, job_id: str |
     conn.execute(
         """INSERT INTO research_reports (report_id, analysis_id, simulation_run_id, title, status, model_id,
                evidence_hash, report_text, created_at, reviewed_by_user_id, reviewed_at, data_classification)
-           VALUES (?, ?, ?, ?, 'draft', NULL, ?, ?, ?, NULL, NULL, ?)""",
+           VALUES (?, ?, ?, ?, 'draft', ?, ?, ?, ?, NULL, NULL, ?)""",
         (report_id, analysis["analysis_id"], job["simulation_run_id"],
          (title or "").strip() or f"{analysis['independent_variable']} and {analysis['dependent_variable']}: "
                                   f"{job['method']} analysis",
-         evidence_hash(conn, job_id), _report_text(analysis, job), to_iso(utcnow()), DATA_CLASSIFICATION))
+         model_id, evidence_hash(conn, job_id), report_text or _report_text(analysis, job), to_iso(utcnow()),
+         DATA_CLASSIFICATION))
     conn.execute("INSERT INTO research_report_details (report_id, job_id, created_by_user_id, review_comment) "
                  "VALUES (?, ?, ?, NULL)", (report_id, job_id, actor_user_id))
     write_audit(conn, user_id=actor_user_id, action_type="create_report", entity_type="research_report",

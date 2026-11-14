@@ -357,8 +357,7 @@ A suggestion:
 
 * **An astronaut with nothing unusual gets no suggestion.** The generate response includes a
   `message` saying so. Show it; an empty list is a normal result, not an error.
-* Show `reason` as the explanation. In Phase 6 the AI will write a friendlier version into the
-  same field, so the screen will not need to change.
+* Show `reason` as the explanation, or the AI-written version from section 11b when there is one.
 * Booking on top of a task, sleep, exercise or another recovery gives 409 with the clashes in
   `details`.
 * `GET /recommendations` hides the fictional seed rows unless you pass `include_demo=true`. Rows
@@ -423,6 +422,33 @@ Registering an astronaut:
   before the user closes it. The same applies to reset-password.
 * Do not store the temporary password anywhere in the frontend.
 
+## 11b. AI explanations (Phase 6)
+
+A local Gemma model can put a decision into friendlier words. The screens never depend on it.
+
+| Action | Call | Who |
+|---|---|---|
+| Read the explanation to show (fast, no model call) | `GET /ai/explanations/recovery_recommendation/{id}` or `/ai/explanations/task_assignment/{id}` | the astronaut concerned, staff |
+| Ask the model for a recovery explanation | `POST /ai/recovery-recommendations/{id}/explain` | medical officer |
+| Ask the model for a task explanation | `POST /ai/task-assignments/{id}/explain` | mission leader |
+| Draft a report with the model | `POST /ai/reports {"job_id": "…"}` | researcher |
+| Is the model running? | `GET /admin/model-status` | mission leader, medical officer |
+| Log of model calls | `GET /admin/ai-inferences` | mission leader, medical officer |
+
+```json
+{"entity_type": "recovery_recommendation", "entity_id": "RCR-3F2A…", "source": "gemma",
+ "text": "You slept less than your usual last night and rated your fatigue higher …",
+ "model_id": "gemma3:4b",
+ "rule_based_text": "Sleep preparation: shorter sleep than usual last night, higher fatigue than usual."}
+```
+
+* Show `text`. Label it from `source`: "AI-written (Gemma)" for `gemma`, nothing special for `rules`.
+* **The "explain" calls can take many seconds** on a laptop. Show a spinner, and do not call them
+  automatically for every row; call them when the user presses an "Explain" button.
+* They always answer 200, even when the model is off. Then `source` is `rules` and `note` says the
+  AI was not used. That is a normal result, not an error.
+* The seed demo rows answer 409: there is nothing real to explain.
+
 ## 12. Things to show honestly
 
 * **Everything is synthetic demo data.** Put a visible "Simulated data" label on the app.
@@ -454,5 +480,4 @@ problems all show up there.
 Open the browser's Network tab, copy the request (address, body) and the response, and send both
 to the backend owner. That turns most mismatches into a one-line fix.
 
-Not built yet: the AI routes (Phase 6) and offline sync (Phase 7). Nothing in this guide depends on
-them.
+Not built yet: offline sync (Phase 7). Nothing in this guide depends on it.

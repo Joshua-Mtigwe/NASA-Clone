@@ -37,3 +37,8 @@ RECOVERY_PLAN_ROLES = (MEDICAL_OFFICER,)
 # Create missions, register users and astronauts, deactivate accounts, reset passwords.
 # There is no open sign-up: an account's role decides who can read the crew's medical data.
 USER_ADMIN_ROLES = (MISSION_LEADER,)
+
+# Phase 6 (AI). Asking the model to explain something follows who owns that decision.
+AI_TASK_EXPLAIN_ROLES = (MISSION_LEADER,)
+AI_RECOVERY_EXPLAIN_ROLES = RECOVERY_PLAN_ROLES
+AI_REPORT_ROLES = RESEARCH_RUN_ROLES

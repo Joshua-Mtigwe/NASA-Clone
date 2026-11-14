@@ -1,4 +1,4 @@
-# AEGIS Backend — Phases 1–5
+# AEGIS Backend — Phases 1–6
 
 Python + SQLite + FastAPI backend for the AEGIS crew health-aware mission planning prototype,
 following the Revised Backend Engineering Plan:
@@ -7,6 +7,7 @@ following the Revised Backend Engineering Plan:
 * **Phase 3 (Cognition):** taking the cognitive tests, scoring, preflight baselines, and in-flight comparisons.
 * **Phase 4 (Planning):** eligibility, the daily task scheduler, and versioned schedule approval.
 * **Phase 5 (Research):** saved analyses, analysis jobs, statistics, chart data, reviewed reports, and planning effectiveness.
+* **Phase 6 (AI):** a Gemma model running on this machine explains task assignments and recovery suggestions and drafts research reports.
 
 All crew data is synthetic demo data. The seed also contains clearly labelled NASA *reference*
 records (Curiosity RAD readings and DONKI 2024 space-weather events) that belong to no astronaut.
@@ -96,15 +97,16 @@ password hashes. Every attempt is stored in `import_runs` with its full report.
 ```
 app/
   core/        config, security (hashing, tokens), permissions, errors
-  database/    schema.sql (49 seed tables + 8 runtime tables), session.py
+  database/    schema.sql (49 seed tables + 9 runtime tables), session.py
   services/    data_import_service, auth_service, mission_simulator, audit_service,
                health_context, physiology_service, radiation_service, environment_service,
                sleep_activity_service, health_changes_service,
                assessment_service, cognitive_scoring, baseline_service, cognitive_comparison_service,
                task_service, crew_readiness_service, scheduling_optimizer, schedule_service,
                research_service, research_report_service, planning_effectiveness_service,
-               recovery_service, task_execution_service, account_service
-  api/         auth, missions, simulation, health, environment, assessments, planning, recovery, research, admin, websocket routes
+               recovery_service, task_execution_service, account_service,
+               gemma_client, ai_service
+  api/         auth, missions, simulation, health, environment, assessments, planning, recovery, research, ai, admin, websocket routes
   schemas/     Pydantic request/response models
   utils/       timestamps, units, statistics
 scripts/       import_csvs, validate_seed_data, set_demo_passwords
@@ -494,5 +496,78 @@ likewise has no task sets or sensor data until some are added.
 
 **Tests:** 4 new tests in `tests/api/test_accounts_api.py`.
 
-## Next: Phase 6 (Gemma)
-AI inference logging, model status, and AI-written recommendations and reports.
+## Phase 6 (AI: Gemma, offline)
+
+**The rules decide. Gemma explains.** The scheduler and the recovery rules already choose who does a
+task and which activity is suggested. Gemma only turns those decisions into a few readable
+sentences, and drafts research reports. It never picks an astronaut, never changes a
+recommendation and never approves anything.
+
+### Setting up the model (once)
+Gemma runs on your own machine through [Ollama](https://ollama.com), so after the first download it
+needs no internet.
+
+1. Install Ollama.
+2. While online, download the model once: `ollama pull gemma3:4b`
+3. Ollama then serves it at `http://127.0.0.1:11434`. Start the backend as usual.
+4. Check it: `GET /api/v1/admin/model-status` should say `"ready": true`.
+
+To use a different Gemma size, set `AEGIS_GEMMA_MODEL` in `.env` (for example `gemma3:1b` on a small
+laptop) and pull that one instead. Settings are listed in `.env.example`.
+
+**Without the model, nothing breaks.** Every AI route still answers, with the rule-based text, and
+`model-status` says what to do.
+
+### What happens on each request (`ai_service`)
+1. **Build a small packet of finished facts.** Never raw tables: the backend has already done the
+   maths (today's value, the astronaut's own usual, the difference).
+2. **Ask the local model** to write a few sentences from that packet only.
+3. **Check the answer.** It is thrown away if it contains a number that is not in the packet, names
+   an astronaut or activity that is not in the packet, is too long, or uses medical or promising
+   wording ("diagnosis", "unfit", "will improve" and similar).
+4. **Log the call** in `ai_inference_logs`: purpose, model, prompt version, timing, outcome and
+   SHA-256 hashes of the prompt and the answer (not the text itself).
+5. **Keep the text only if it passed.** Otherwise the rule-based text is returned. The rule-based
+   reason on the original row is never overwritten.
+
+### The three jobs
+| Job | Who asks | What Gemma is given | Where the text goes |
+|---|---|---|---|
+| Explain a recovery suggestion | medical officer | The activity, and what is unusual for that astronaut today against their own usual | `ai_explanations` |
+| Explain a task assignment | mission leader | The task's demands, who the rules allow, who they exclude and why, and each allowed astronaut's sleep, fatigue, workload and tests today | `ai_explanations` |
+| Draft a research report | researcher | The question, method, results and per-astronaut figures of a completed job | `research_reports` (`model_id` set, status `draft`) |
+
+* A report written by Gemma gets the limitations paragraph added by code, not by the model, and
+  still needs the medical officer's review like any other report. If Gemma is unavailable or its
+  text fails the checks, the fixed template writes the report.
+* The fictional seed rows cannot be explained: seeded recovery suggestions have no evidence behind
+  them, and the seed plan assigned tasks by rotation rather than crew state.
+* The task packet uses crew state as known by the time the task starts, never later.
+
+### Crew data stays on this machine
+The model client refuses any address that is not this computer (`127.0.0.1` or `localhost`).
+`AEGIS_GEMMA_ALLOW_REMOTE=true` lifts that, for a model on another trusted host.
+
+### Phase 6 endpoints (prefix `/api/v1`)
+| Method | Path | Who |
+|---|---|---|
+| POST | `/ai/recovery-recommendations/{id}/explain` | medical officer |
+| POST | `/ai/task-assignments/{id}/explain` | mission leader |
+| GET | `/ai/explanations/{entity_type}/{entity_id}` (no model call) | the astronaut concerned, or staff |
+| POST | `/ai/reports` | researcher |
+| GET | `/admin/ai-inferences`, `/admin/model-status` | mission leader, medical officer |
+
+Every answer carries `source`: `gemma` when a checked AI text is shown, `rules` (or `template` for
+reports) when the rule-based text is shown instead, plus `rule_based_text` so a screen can show both.
+
+### Tested, and not tested
+* 23 new tests in `tests/integration/test_ai.py` and `tests/api/test_ai_api.py` use a stand-in
+  model, so they run with no model installed. They cover the answer checks, logging, fallback when
+  the model is off or wrong, every role rule, and that an explanation never changes a decision.
+* **Not yet run against a real Gemma model.** The request format follows Ollama's published API,
+  but how often real answers pass the checks, and how good they read, has to be tried on a machine
+  with the model installed. If too many good answers are rejected, the prompts in `ai_service.py`
+  (`SYSTEM_PROMPT`, `_TASKS`) are the place to adjust.
+
+## Next: Phase 7 (Offline sync)
+Sync status and sync conflicts (`/admin/sync-status`, `/admin/sync-conflicts`).

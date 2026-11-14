@@ -34,6 +34,10 @@ class Settings:
     pbkdf2_iterations: int
     default_template_run_id: str
     cors_origins: tuple[str, ...]
+    gemma_url: str
+    gemma_model: str
+    gemma_timeout_seconds: float
+    gemma_allow_remote: bool
 
 
 def get_settings() -> Settings:
@@ -48,4 +52,8 @@ def get_settings() -> Settings:
         pbkdf2_iterations=int(os.environ.get("AEGIS_PBKDF2_ITERATIONS", "600000")),
         default_template_run_id=os.environ.get("AEGIS_TEMPLATE_RUN_ID", "RUN-DEMO-001"),
         cors_origins=tuple(o.strip() for o in origins.split(",") if o.strip()),
+        gemma_url=os.environ.get("AEGIS_GEMMA_URL", "http://127.0.0.1:11434").rstrip("/"),
+        gemma_model=os.environ.get("AEGIS_GEMMA_MODEL", "gemma3:4b"),
+        gemma_timeout_seconds=float(os.environ.get("AEGIS_GEMMA_TIMEOUT_SECONDS", "120")),
+        gemma_allow_remote=os.environ.get("AEGIS_GEMMA_ALLOW_REMOTE", "false").strip().lower() in ("1", "true", "yes"),
     )

@@ -971,6 +971,22 @@ CREATE TABLE IF NOT EXISTS recovery_recommendation_details (
     FOREIGN KEY (reviewed_by_user_id) REFERENCES users(user_id)
 );
 
+-- Phase 6. Text written by the AI model that passed every check. The rule-based reason on the original
+-- row is never overwritten, so it remains as the fallback.
+CREATE TABLE IF NOT EXISTS ai_explanations (
+    explanation_id TEXT PRIMARY KEY NOT NULL,
+    entity_type TEXT NOT NULL,
+    entity_id TEXT NOT NULL,
+    explanation_text TEXT NOT NULL,
+    model_id TEXT,
+    inference_id TEXT,
+    created_by_user_id TEXT,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (inference_id) REFERENCES ai_inference_logs(inference_id),
+    FOREIGN KEY (created_by_user_id) REFERENCES users(user_id)
+);
+CREATE INDEX IF NOT EXISTS ix_ai_explanations_entity ON ai_explanations(entity_type, entity_id);
+
 CREATE TABLE IF NOT EXISTS simulation_run_clock (
     simulation_run_id TEXT PRIMARY KEY NOT NULL,
     anchor_wall_utc TEXT NOT NULL,
