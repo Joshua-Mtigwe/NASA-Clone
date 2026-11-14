@@ -1,4 +1,4 @@
-# AEGIS Backend — Phases 1–6
+# AEGIS Backend — Phases 1–7
 
 Python + SQLite + FastAPI backend for the AEGIS crew health-aware mission planning prototype,
 following the Revised Backend Engineering Plan:
@@ -8,6 +8,7 @@ following the Revised Backend Engineering Plan:
 * **Phase 4 (Planning):** eligibility, the daily task scheduler, and versioned schedule approval.
 * **Phase 5 (Research):** saved analyses, analysis jobs, statistics, chart data, reviewed reports, and planning effectiveness.
 * **Phase 6 (AI):** a Gemma model running on this machine explains task assignments and recovery suggestions and drafts research reports.
+* **Phase 7 (Offline sync):** crew devices record task and recovery progress offline and upload it later; a record that changed meanwhile is never overwritten.
 
 All crew data is synthetic demo data. The seed also contains clearly labelled NASA *reference*
 records (Curiosity RAD readings and DONKI 2024 space-weather events) that belong to no astronaut.
@@ -105,8 +106,9 @@ app/
                task_service, crew_readiness_service, scheduling_optimizer, schedule_service,
                research_service, research_report_service, planning_effectiveness_service,
                recovery_service, task_execution_service, account_service,
-               gemma_client, ai_service
-  api/         auth, missions, simulation, health, environment, assessments, planning, recovery, research, ai, admin, websocket routes
+               gemma_client, ai_service, sync_service
+  api/         auth, missions, simulation, health, environment, assessments, planning, recovery, research, ai, sync, admin,
+               websocket routes
   schemas/     Pydantic request/response models
   utils/       timestamps, units, statistics
 scripts/       import_csvs, validate_seed_data, set_demo_passwords
@@ -569,5 +571,67 @@ reports) when the rule-based text is shown instead, plus `rule_based_text` so a 
   with the model installed. If too many good answers are rejected, the prompts in `ai_service.py`
   (`SYSTEM_PROMPT`, `_TASKS`) are the place to adjust.
 
-## Next: Phase 7 (Offline sync)
-Sync status and sync conflicts (`/admin/sync-status`, `/admin/sync-conflicts`).
+## Phase 7 (Offline sync)
+
+Crew devices keep working without a link to the habitat server. While offline, a device records
+what the astronaut does:
+* starting, completing or skipping a task;
+* completing or skipping a recovery session.
+
+When the link returns, it uploads those **actions**, never raw database writes.
+
+### How a device uses it
+1. **Before going offline:** `GET /sync/pull?date=…` returns the astronaut's published tasks and recovery
+   bookings, each with a `sync_version` (a fingerprint of the record).
+2. **While offline:** the device records events such as `{"action": "start", "at": "…", "base_version": "<sync_version>"}`.
+   A later action on the same record (say `complete`) can leave `base_version` empty; it then builds on
+   the device's previous event for that record.
+3. **Back online:** `POST /sync/events` with the device ID and the events. They are replayed in order,
+   through the normal task and recovery services, with the astronaut's own permissions, so every
+   existing rule still applies.
+
+### What can happen to each event
+| Outcome | Meaning |
+|---|---|
+| `applied` | The record hadn't changed; the action was carried out. |
+| `duplicate` | The server already shows exactly this change (for example, it was sent twice). Nothing is done. |
+| `conflict` | The record changed since the device last saw it. **Nothing is written.** A conflict is opened with both versions. |
+| `blocked` | It follows an event that is in conflict. It waits, and once the conflict is resolved it is checked against the record as it is then. |
+| `rejected` | A normal rule refused it, e.g. a dependency isn't finished or it's someone else's task. The reason is shown. |
+| `failed` | Temporary problem (database busy). Retried automatically on the next replay, up to 5 times. |
+
+Resending a batch is always safe: each event is identified by `(device_id, client_event_id)`, so a
+repeat returns the original outcome instead of applying again. A device ID belongs to one account.
+
+### Resolving conflicts (mission leader, medical officer)
+* `GET /admin/sync-conflicts` shows each open conflict: what the device wanted, the server's version
+  when the conflict was found, and the record now.
+* `POST /admin/sync-conflicts/{id}/resolve` with notes (required), choosing one of:
+  * `keep_server`: discard the device's action;
+  * `reapply`: run the device's action on the **current** record. Every rule is checked again, so it is
+    refused if it no longer makes sense (e.g. starting a task that's already started).
+* If the record changed **again** after the conflict was opened, resolving is refused and the conflict is
+  updated to show the latest version, so a person always decides on what is really there.
+* Every conflict and every resolution is written to `audit_logs`.
+
+### Phase 7 endpoints (prefix `/api/v1`)
+| Method | Path | Who |
+|---|---|---|
+| GET | `/sync/pull` | the astronaut (staff: with `astronaut_id`) |
+| POST | `/sync/events` · GET `/sync/events` (your own) | signed in |
+| GET | `/admin/sync-status`, `/admin/sync-events`, `/admin/sync-conflicts`, `/admin/sync-conflicts/{id}` | mission leader, medical officer |
+| POST | `/admin/sync-conflicts/{id}/resolve`, `/admin/sync/replay` | mission leader, medical officer |
+
+The new runtime table `sync_event_details` holds each event's action, sender and base version
+(`sync_events` and `sync_conflicts` are the plan's own tables).
+
+### Phase 7 acceptance (plan §8: "conflicts never silently overwrite records")
+* **No overwrites:** a device action based on an out-of-date version is never applied. The record stays
+  exactly as the server had it (tested), and a person must decide.
+* **Resolution re-checks everything:** re-applying goes through the normal rules, and resolving is
+  refused if the record changed again.
+* **Tests:** 24 new tests in `tests/integration/test_sync.py` and `tests/api/test_sync_api.py`.
+
+## All plan phases are now built
+Suggested next steps: one full demo run end to end on a fresh database, and a security pass
+(CORS origins, `/docs` exposure, real passwords) before anything leaves your machine.

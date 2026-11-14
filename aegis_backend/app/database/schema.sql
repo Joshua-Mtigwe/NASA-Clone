@@ -992,3 +992,27 @@ CREATE TABLE IF NOT EXISTS simulation_run_clock (
     anchor_wall_utc TEXT NOT NULL,
     FOREIGN KEY (simulation_run_id) REFERENCES simulation_runs(simulation_run_id) ON DELETE CASCADE
 );
+
+-- Phase 7: what each offline sync event asked for. sync_events (a seed table) records where an event
+-- came from and its status; this holds the action itself, who sent it and what version it was based on.
+-- (device_id, client_event_id) is unique, so a device can resend a batch without anything applying twice.
+CREATE TABLE IF NOT EXISTS sync_event_details (
+    sync_id TEXT PRIMARY KEY NOT NULL,
+    device_id TEXT NOT NULL,
+    client_event_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    action TEXT NOT NULL,
+    base_version TEXT,
+    payload_json TEXT NOT NULL DEFAULT '{}',
+    client_recorded_at TEXT,
+    received_at TEXT NOT NULL,
+    sequence INTEGER NOT NULL,
+    attempts INTEGER NOT NULL DEFAULT 0,
+    result_version TEXT,
+    UNIQUE (device_id, client_event_id),
+    FOREIGN KEY (sync_id) REFERENCES sync_events(sync_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+CREATE INDEX IF NOT EXISTS ix_sync_event_details_order ON sync_event_details(device_id, sequence);
+CREATE INDEX IF NOT EXISTS ix_sync_events_status ON sync_events(sync_status);
+CREATE INDEX IF NOT EXISTS ix_sync_conflicts_status ON sync_conflicts(resolution_status);
