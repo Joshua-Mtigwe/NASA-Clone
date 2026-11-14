@@ -240,18 +240,20 @@ def set_simulation_speed(conn: sqlite3.Connection, run_id: str, speed_multiplier
 
 
 def jump_to_mission_day(conn: sqlite3.Connection, run_id: str, mission_day: int, *,
-                        actor_user_id: str | None, now: datetime | None = None) -> dict[str, Any]:
-    """Move the clock to 00:00 UTC of the given mission day (1 = launch day)."""
+                        actor_user_id: str | None, now: datetime | None = None, hour: int = 0) -> dict[str, Any]:
+    """Move the clock to `hour`:00 UTC of the given mission day (1 = launch day)."""
     now = now or utcnow()
     state = get_simulation_state(conn, run_id, now)
     if not 1 <= mission_day <= state["mission_total_days"]:
         raise ValidationFailed(f"mission_day must be between 1 and {state['mission_total_days']}")
-    target = to_iso(parse_iso(state["mission_launch"]) + timedelta(days=mission_day - 1))
+    if not 0 <= hour <= 23:
+        raise ValidationFailed("hour must be between 0 and 23")
+    target = to_iso(parse_iso(state["mission_launch"]) + timedelta(days=mission_day - 1, hours=hour))
     running = state["status"] == RUNNING
     status = RUNNING if running else PAUSED  # jumping back out of 'completed' leaves the run paused
     _persist(conn, run_id, current=target, status=status, anchor=now if running else None)
     _audit(conn, actor_user_id, "jump_to_mission_day", run_id,
-           f"day {state['mission_day']} -> {mission_day}")
+           f"day {state['mission_day']} -> {mission_day} {hour:02d}:00")
     conn.commit()
     return get_simulation_state(conn, run_id, now)
 

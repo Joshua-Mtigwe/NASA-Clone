@@ -1,9 +1,10 @@
-# AEGIS Backend — Phases 1–2
+# AEGIS Backend — Phases 1–3
 
 Python + SQLite + FastAPI backend for the AEGIS crew health-aware mission planning prototype,
 following the Revised Backend Engineering Plan:
 * **Phase 1 (Foundation):** the 49-file importer, database schema, login and roles, and isolated simulation runs.
 * **Phase 2 (Health):** vitals, radiation, sleep, activity, cabin environment, and the admin crew health-changes view.
+* **Phase 3 (Cognition):** taking the cognitive tests, scoring, preflight baselines, and in-flight comparisons.
 
 All crew data is synthetic demo data. The seed also contains clearly labelled NASA *reference*
 records (Curiosity RAD readings and DONKI 2024 space-weather events) that belong to no astronaut.
@@ -93,11 +94,12 @@ password hashes. Every attempt is stored in `import_runs` with its full report.
 ```
 app/
   core/        config, security (hashing, tokens), permissions, errors
-  database/    schema.sql (49 seed tables + 3 runtime tables), session.py
+  database/    schema.sql (49 seed tables + 4 runtime tables), session.py
   services/    data_import_service, auth_service, mission_simulator, audit_service,
                health_context, physiology_service, radiation_service, environment_service,
-               sleep_activity_service, health_changes_service
-  api/         auth, missions, simulation, health, environment, admin, websocket routes
+               sleep_activity_service, health_changes_service,
+               assessment_service, cognitive_scoring, baseline_service, cognitive_comparison_service
+  api/         auth, missions, simulation, health, environment, assessments, admin, websocket routes
   schemas/     Pydantic request/response models
   utils/       timestamps, units, statistics
 scripts/       import_csvs, validate_seed_data, set_demo_passwords
@@ -184,6 +186,83 @@ worse sleep quality, more fatigue), while the other four astronauts show only mi
 * **Consistent units:** every reading's unit matches its sensor. Crew radiation is always Sv. NASA µGy/h data is only returned in its own `nasa_reference` block, and any mix raises an error.
 * **Tests:** 45 new tests in `tests/integration/test_health.py` and `tests/api/test_health_api.py`.
 
-## Next: Phase 3 (Cognition)
-Assessments, scoring, baselines and metric definitions: `assessment_service`, `cognitive_scoring`,
-`baseline_service` and `cognitive_comparison_service`.
+## Phase 3 (Cognition)
+
+The Preflight Assessment and Mission Mind dashboards: astronauts take short cognitive tests,
+the backend scores them, and each in-flight day is compared with that person's own preflight normal.
+
+### The tests
+| Test | Measures | Score | Better |
+|---|---|---|---|
+| PVT (Signal Response) | Alertness | Median reaction time (ms), false starts < 100 ms excluded | Lower |
+| NBACK (Working Memory) | Working memory | % correct | Higher |
+| STROOP (System Scanner) | Attention | % correct | Higher |
+| SURVEY (Fatigue & Workload) | How tired you feel | Fatigue 1–9 (no trials) | Lower |
+
+SWITCH is in the catalogue but has no metric definition or scorer yet, so starting one is refused.
+
+### Taking a test
+1. **Generate:** the mission leader or medical officer generates assignments for a simulation run with
+   `POST /assessments/assignments/generate`. They come from `TPL-FLIGHT`, with source `system_template`
+   and no human assigner; the person who triggered it is in the audit log. Running it again skips existing slots.
+2. **Move the clock:** each test is open for 1 hour from 08:00 mission time. Jump the run there with
+   `POST /simulation/runs/{id}/jump {"mission_day": 5, "hour": 8}`.
+3. **Take it:** the astronaut calls:
+   * `GET /assessments/due` to see what's open;
+   * `POST /assessments/sessions` to start one;
+   * `POST /assessments/sessions/{id}/trials` to submit trials;
+   * `POST /assessments/sessions/{id}/complete` to finish. SURVEY sends its answers here.
+4. **On completion** the backend:
+   * scores the session (fewer than 10 usable trials marks it `invalid`, with no score);
+   * saves the result;
+   * updates that day's result for the run;
+   * compares it with the matching baseline (same astronaut, test and time of day).
+
+The server always decides whether an answer was correct; a client's `is_correct` is ignored. Only the
+assigned astronaut can take their test. Staff can see what's due but cannot take tests for someone.
+
+### Baselines
+* **How they're built:** from the preflight results for each astronaut, test and time of day, as
+  median, mean, sample SD and a range of mean ± 2 SD. At least 20 sessions are needed; the seed has 28.
+* **Versions:** `POST /baselines/freeze` (medical officer only) saves a new version (v2, v3, …). Old
+  versions are kept, and comparisons use the newest one and record which one they used.
+* **Capping:** new versions cap the range to the scale (accuracy ≤ 100 %, fatigue 1–9). v1 has accuracy
+  limits above 100 %. Capping never changes which scores are inside or outside the range.
+
+### Reading results
+Every comparison shows:
+* `z_score`;
+* `performance_z`: signed so **positive always means better** than the person's normal, whatever the metric;
+* `interpretation`: `within_usual_range`, `outside_range_better` or `outside_range_worse`.
+
+This is a comparison with the astronaut's own preflight data, **not medical clearance**, and the API says so.
+
+### Simulation runs stay separate
+Tests taken in a new run create that run's own daily results, linked in the `daily_result_runs`
+runtime table. They never change the demo run's seeded results.
+
+### Phase 3 endpoints (prefix `/api/v1`)
+| Method | Path | Who |
+|---|---|---|
+| GET | `/assessments/due`, `/assessments/sessions/{id}`, `/astronauts/{id}/assessments` | that astronaut, or staff |
+| POST | `/assessments/sessions`, `/sessions/{id}/trials`, `/sessions/{id}/complete` | the assigned astronaut only |
+| POST | `/assessments/assignments/generate` | mission leader, medical officer |
+| GET | `/astronauts/{id}/baselines` | that astronaut, or staff |
+| POST | `/baselines/freeze` | medical officer |
+| GET | `/astronauts/{id}/cognition/daily`, `/cognition/comparisons`, `/cognition/trend` | that astronaut, or staff |
+| GET | `/metrics/definitions` | signed in |
+
+The simulation jump now also takes an optional `hour`.
+
+### Phase 3 acceptance (plan §8: "reproducible scoring; context-matched baseline")
+* **Reproducible scoring:** re-scoring all 2,920 stored sessions from their trials reproduces every stored
+  result. NBACK, STROOP and SURVEY match exactly. PVT matches within 0.05 ms, because the seed rounded
+  trial times to 0.1 ms after computing the median.
+* **Context-matched baselines:** rebuilding gives exactly the seeded v1 values for every test and time of
+  day, and each comparison uses the baseline for the same test and time of day.
+* **Tests:** 39 new tests in `tests/integration/test_cognition.py` and `tests/api/test_assessments_api.py`.
+
+## Next: Phase 4 (Planning)
+Qualification checks, OR-Tools scheduling and versioned approval: `crew_readiness_service`,
+`task_service` and `scheduling_optimizer`. The plan's acceptance check is that unverified safety-critical
+certifications are blocked and schedules never overlap.

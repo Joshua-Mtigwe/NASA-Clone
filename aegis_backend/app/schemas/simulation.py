@@ -19,6 +19,7 @@ class SpeedRequest(BaseModel):
 
 class JumpRequest(BaseModel):
     mission_day: int = Field(ge=1)
+    hour: int = Field(0, ge=0, le=23, description="Hour of the day (UTC), e.g. 8 for the morning tests")
 
 
 class SimulationState(BaseModel):

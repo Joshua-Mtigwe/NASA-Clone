@@ -55,7 +55,7 @@ def set_speed(run_id: str, body: SpeedRequest, user: dict = Depends(controller),
 @router.post("/runs/{run_id}/jump", response_model=SimulationState)
 def jump(run_id: str, body: JumpRequest, user: dict = Depends(controller),
          conn: sqlite3.Connection = Depends(get_db)):
-    state = sim.jump_to_mission_day(conn, run_id, body.mission_day, actor_user_id=user["user_id"])
+    state = sim.jump_to_mission_day(conn, run_id, body.mission_day, actor_user_id=user["user_id"], hour=body.hour)
     return _announce(state, "jumped")
 
 

@@ -875,6 +875,15 @@ CREATE INDEX IF NOT EXISTS ix_radiation_readings_series ON radiation_readings(as
 CREATE INDEX IF NOT EXISTS ix_sleep_records_series ON sleep_records(astronaut_id, sleep_start);
 CREATE INDEX IF NOT EXISTS ix_activity_records_series ON activity_records(astronaut_id, start_time);
 
+-- Phase 3: assessment lookups.
+CREATE INDEX IF NOT EXISTS ix_assessment_assignments_slot
+    ON assessment_assignments(simulation_run_id, astronaut_id, protocol_id, scheduled_at);
+CREATE INDEX IF NOT EXISTS ix_assessment_trials_session_number ON assessment_trials(session_id, trial_number);
+CREATE INDEX IF NOT EXISTS ix_daily_cognitive_results_day
+    ON daily_cognitive_results(astronaut_id, assessment_date, protocol_id);
+CREATE INDEX IF NOT EXISTS ix_cognitive_baselines_match
+    ON cognitive_baselines(astronaut_id, protocol_id, assessment_condition, baseline_version);
+
 -- ---------------------------------------------------------------------------
 -- Backend runtime tables (not seeded from CSV). They hold state the 49 CSVs
 -- have no column for, so the seed tables stay identical to the source files.
@@ -909,6 +918,17 @@ CREATE INDEX IF NOT EXISTS ix_auth_sessions_user_id ON auth_sessions(user_id);
 -- Wall-clock anchor for a running simulation. While a run is 'running',
 -- mission time = current_mission_time + (now - anchor_wall_utc) * speed_multiplier.
 -- Pausing folds the elapsed time into simulation_runs.current_mission_time.
+-- Which simulation run produced a daily cognitive result. daily_cognitive_results has no run
+-- column, so results from a new run would otherwise collide with the seeded demo run.
+-- Seeded rows have no entry here and belong to the template run (RUN-DEMO-001).
+CREATE TABLE IF NOT EXISTS daily_result_runs (
+    daily_result_id TEXT PRIMARY KEY NOT NULL,
+    simulation_run_id TEXT NOT NULL,
+    FOREIGN KEY (daily_result_id) REFERENCES daily_cognitive_results(daily_result_id) ON DELETE CASCADE,
+    FOREIGN KEY (simulation_run_id) REFERENCES simulation_runs(simulation_run_id)
+);
+CREATE INDEX IF NOT EXISTS ix_daily_result_runs_run ON daily_result_runs(simulation_run_id);
+
 CREATE TABLE IF NOT EXISTS simulation_run_clock (
     simulation_run_id TEXT PRIMARY KEY NOT NULL,
     anchor_wall_utc TEXT NOT NULL,
