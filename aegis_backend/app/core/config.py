@@ -56,7 +56,7 @@ def get_settings() -> Settings:
         default_template_run_id=os.environ.get("AEGIS_TEMPLATE_RUN_ID", "RUN-DEMO-001"),
         cors_origins=tuple(o.strip() for o in origins.split(",") if o.strip()),
         gemma_url=os.environ.get("AEGIS_GEMMA_URL", "http://127.0.0.1:11434").rstrip("/"),
-        gemma_model=os.environ.get("AEGIS_GEMMA_MODEL", "gemma3:4b"),
+        gemma_model=os.environ.get("AEGIS_GEMMA_MODEL", "gemma4:e4b"),
         gemma_timeout_seconds=float(os.environ.get("AEGIS_GEMMA_TIMEOUT_SECONDS", "120")),
         gemma_allow_remote=os.environ.get("AEGIS_GEMMA_ALLOW_REMOTE", "false").strip().lower() in ("1", "true", "yes"),
         # 'open' (default): no logins or passwords; each request names a demo persona.

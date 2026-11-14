@@ -542,7 +542,7 @@ Gemma runs on your own machine through [Ollama](https://ollama.com), so after th
 needs no internet.
 
 1. Install Ollama.
-2. While online, download the model once: `ollama pull gemma3:4b`
+2. While online, download the model once: `ollama pull gemma4:e4b`
 3. Ollama then serves it at `http://127.0.0.1:11434`. Start the backend as usual.
 4. Check it: `GET /api/v1/admin/model-status` should say `"ready": true`.
 
@@ -696,6 +696,76 @@ The new runtime table `sync_event_details` holds each event's action, sender and
 * **Resolution re-checks everything:** re-applying goes through the normal rules, and resolving is
   refused if the record changed again.
 * **Tests:** 24 new tests in `tests/integration/test_sync.py` and `tests/api/test_sync_api.py`.
+
+## Wellbeing chat
+
+An astronaut tells the assistant how they feel, in their own words. The reply draws on **their own
+current metrics** and suggests **approved recovery activities**. Every message and every reply is
+stored. It is general wellbeing support, not medical advice, and every reply comes with that note.
+
+### What happens to a message (`wellbeing_service`)
+1. **Stored** in `wellbeing_messages`, in a conversation that belongs to that astronaut.
+2. **Urgent messages never go to the model.** Chest pain, trouble breathing, fainting or thoughts of
+   self-harm get a fixed reply: contact the medical officer now. The self-harm reply also points a
+   real person to their local emergency number or a crisis line. The conversation is **flagged** for
+   the medical officer.
+3. **Otherwise a fact packet is built** from the astronaut's own data at the current mission time,
+   each item compared with *their own* usual values:
+   * sleep, self-reported fatigue and workload, and this morning's cognitive tests;
+   * vitals against their personal range, radiation, and notable changes this week;
+   * today's schedule;
+   * the approved activities.
+4. **Gemma replies** (`ai_service`, purpose `wellbeing_chat`, prompt `wellbeing_v2`). The model is shown:
+   * only what is unusual, with values; everything normal is summed up as one phrase, because a small
+     model invents values for anything it is named;
+   * what the person wrote, and the last few messages.
+
+   Code adds specific instructions:
+   * a medication question: don't name it, say you can't advise, point to the medical officer;
+   * a radiation question: give the reading, the medical officer tracks dose;
+   * "what's wrong with me": you can't say, the medical officer can;
+   * nothing unusual: give no numbers.
+5. **The reply is checked.** It must contain:
+   * no number that isn't in the facts or the person's message;
+   * no illness words;
+   * **no medication, ever, even if the person asked about it**;
+   * no activity outside the approved catalogue.
+
+   What the person typed never counts as an allowed fact for these word checks. If the model is off,
+   or its answer fails a check, a rule-based reply is used instead.
+6. **The reply is stored** with the full facts and exactly what the model was shown, so a reviewer can
+   see why it said what it said.
+
+### Who can see what
+* **Astronauts** chat about themselves only, and see only their own conversations.
+* **The medical officer** can list and read every conversation (each read is written to the audit
+  log) and record a follow-up on flagged ones.
+* **The mission leader and researcher** cannot read them: they are personal health conversations.
+
+### Endpoints (prefix `/api/v1`)
+| Method | Path | Who |
+|---|---|---|
+| POST | `/wellbeing/chat` `{"message", "conversation_id"?}` | astronaut |
+| GET | `/wellbeing/conversations` (`?flagged=true` for the medical officer) | astronaut (own), medical officer (all) |
+| GET | `/wellbeing/conversations/{id}` | that astronaut, medical officer |
+| POST | `/wellbeing/conversations/{id}/review` `{"note"}` | medical officer |
+
+`reply.source` is `gemma`, `rules` (model off, or its answer failed a check) or `escalation` (urgent).
+
+### Tried with the real model
+Messages were tried with `gemma3:4b` running locally:
+* tiredness;
+* a sleeping-pill question;
+* boredom;
+* a "tell me my diagnosis" injection attempt;
+* radiation worry;
+* loneliness;
+* a good day.
+
+All passed the checks, responded to what the person said, used only real values, never named
+medication, and pointed to the medical officer. Earlier prompt versions failed in ways that shaped the
+design above, for example by inventing "typical" vitals. The checker caught those, and the rule-based
+reply was shown instead.
 
 ## All plan phases are now built
 Suggested next steps: one full demo run end to end on a fresh database, and a security pass

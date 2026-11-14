@@ -442,7 +442,7 @@ A local Gemma model can put a decision into friendlier words. The screens never 
 ```json
 {"entity_type": "recovery_recommendation", "entity_id": "RCR-3F2A…", "source": "gemma",
  "text": "You slept less than your usual last night and rated your fatigue higher …",
- "model_id": "gemma3:4b",
+ "model_id": "gemma4:e4b",
  "rule_based_text": "Sleep preparation: shorter sleep than usual last night, higher fatigue than usual."}
 ```
 

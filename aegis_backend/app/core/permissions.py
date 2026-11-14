@@ -42,6 +42,11 @@ USER_ADMIN_ROLES = (MISSION_LEADER,)
 # replayed with their own permissions). Staff see sync status and resolve conflicts.
 SYNC_ADMIN_ROLES = (MISSION_LEADER, MEDICAL_OFFICER)
 
+# Wellbeing chat. Only an astronaut talks to it, about themselves. These are personal health
+# conversations, so only the medical officer may read other people's (every read is audited).
+WELLBEING_CHAT_ROLES = (ASTRONAUT,)
+WELLBEING_REVIEW_ROLES = (MEDICAL_OFFICER,)
+
 # Phase 6 (AI). Asking the model to explain something follows who owns that decision.
 AI_TASK_EXPLAIN_ROLES = (MISSION_LEADER,)
 AI_RECOVERY_EXPLAIN_ROLES = RECOVERY_PLAN_ROLES

@@ -1016,3 +1016,92 @@ CREATE TABLE IF NOT EXISTS sync_event_details (
 CREATE INDEX IF NOT EXISTS ix_sync_event_details_order ON sync_event_details(device_id, sequence);
 CREATE INDEX IF NOT EXISTS ix_sync_events_status ON sync_events(sync_status);
 CREATE INDEX IF NOT EXISTS ix_sync_conflicts_status ON sync_conflicts(resolution_status);
+
+-- Wellbeing chat: an astronaut describes how they feel; the reply draws on their own metrics.
+-- Every message and every reply is kept, with the facts the reply was based on.
+CREATE TABLE IF NOT EXISTS wellbeing_conversations (
+    conversation_id TEXT PRIMARY KEY NOT NULL,
+    astronaut_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    simulation_run_id TEXT,
+    started_at TEXT NOT NULL,
+    last_message_at TEXT NOT NULL,
+    flagged INTEGER NOT NULL DEFAULT 0,
+    flag_reason TEXT,
+    reviewed_by_user_id TEXT,
+    reviewed_at TEXT,
+    review_note TEXT,
+    shared_with_medical_officer INTEGER NOT NULL DEFAULT 0,  -- message text stays private unless shared
+    shared_at TEXT,
+    FOREIGN KEY (astronaut_id) REFERENCES astronauts(astronaut_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (reviewed_by_user_id) REFERENCES users(user_id)
+);
+CREATE INDEX IF NOT EXISTS ix_wellbeing_conversations_astronaut ON wellbeing_conversations(astronaut_id, last_message_at);
+
+CREATE TABLE IF NOT EXISTS wellbeing_messages (
+    message_id TEXT PRIMARY KEY NOT NULL,
+    conversation_id TEXT NOT NULL,
+    sender TEXT NOT NULL CHECK (sender IN ('astronaut', 'assistant')),
+    text TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    mission_time TEXT,
+    source TEXT,                -- assistant only: gemma, rules or escalation
+    inference_id TEXT,          -- assistant only: the logged model call, if any
+    facts_json TEXT,            -- assistant only: the metrics the reply was based on
+    check_problems_json TEXT,   -- assistant only: why a model answer was not used
+    analysis_json TEXT,         -- astronaut only: the validated coach analysis (labels + quotes)
+    FOREIGN KEY (conversation_id) REFERENCES wellbeing_conversations(conversation_id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS ix_wellbeing_messages_conversation ON wellbeing_messages(conversation_id, created_at);
+
+-- Mission journal (Reflective Coach). Entries are PRIVATE to the astronaut: the medical officer sees an
+-- entry only if the astronaut shares it. Analysis holds validated labels with supporting quotes.
+CREATE TABLE IF NOT EXISTS journal_entries (
+    entry_id TEXT PRIMARY KEY NOT NULL,
+    astronaut_id TEXT NOT NULL,
+    user_id TEXT,
+    simulation_run_id TEXT,
+    created_at TEXT NOT NULL,
+    mission_time TEXT NOT NULL,
+    mission_day INTEGER,
+    text TEXT NOT NULL,
+    analysis_json TEXT,
+    analysis_source TEXT,           -- gemma+keywords, keywords, or synthetic_demo
+    analysis_inference_id TEXT,
+    reflection_text TEXT,
+    reflection_source TEXT,         -- gemma, rules, escalation or synthetic_demo
+    reflection_inference_id TEXT,
+    writing_prompt TEXT,
+    shared_with_medical_officer INTEGER NOT NULL DEFAULT 0,
+    shared_at TEXT,
+    origin TEXT NOT NULL DEFAULT 'astronaut',  -- astronaut or synthetic_demo
+    FOREIGN KEY (astronaut_id) REFERENCES astronauts(astronaut_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+CREATE INDEX IF NOT EXISTS ix_journal_entries_astronaut ON journal_entries(astronaut_id, mission_time);
+
+-- Whether an astronaut lets their journal THEMES (never text) be counted in crew-level research figures.
+CREATE TABLE IF NOT EXISTS wellbeing_consent (
+    astronaut_id TEXT PRIMARY KEY NOT NULL,
+    research_consent INTEGER NOT NULL DEFAULT 0,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (astronaut_id) REFERENCES astronauts(astronaut_id)
+);
+
+-- Break-glass risk flags for the medical officer: indicator labels and counts only, NEVER the text.
+CREATE TABLE IF NOT EXISTS wellbeing_risk_flags (
+    flag_id TEXT PRIMARY KEY NOT NULL,
+    astronaut_id TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    mission_time TEXT,
+    level TEXT NOT NULL CHECK (level IN ('immediate', 'persistent')),
+    indicators_json TEXT NOT NULL,
+    source TEXT NOT NULL,           -- chat or journal
+    acknowledged_by_user_id TEXT,
+    acknowledged_at TEXT,
+    acknowledgement_note TEXT,
+    FOREIGN KEY (astronaut_id) REFERENCES astronauts(astronaut_id),
+    FOREIGN KEY (acknowledged_by_user_id) REFERENCES users(user_id)
+);
+CREATE INDEX IF NOT EXISTS ix_wellbeing_risk_flags_astronaut ON wellbeing_risk_flags(astronaut_id, created_at);

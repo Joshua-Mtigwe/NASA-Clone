@@ -17,6 +17,9 @@ from app.core.config import get_settings
 LOCAL_HOSTS = {"127.0.0.1", "localhost", "::1"}
 CONTEXT_TOKENS = 8192  # room for the rules plus the largest fact packet (a research report)
 SEED = 42
+# Gemma 4 models "think" before answering by default; with a small token budget the whole budget goes on
+# thinking and the answer comes back empty. These are short, fact-bound answers, so thinking is turned off.
+THINK = False
 
 
 class ModelUnavailable(Exception):
@@ -61,6 +64,25 @@ class OllamaClient:
         except ValueError as exc:
             raise ModelUnavailable("model_bad_response", "The model server sent something that is not JSON") from exc
 
+    def generate_json(self, system: str, prompt: str, schema: dict[str, Any], max_tokens: int = 500) -> dict:
+        """Structured output: Ollama constrains the answer to `schema` (a JSON Schema), at temperature 0.
+
+        Used for the analysis step before a reply is written, so labels come from fixed lists.
+        Raises ModelUnavailable if the answer is cut off or is not a JSON object.
+        """
+        data = self._request("/api/generate", {
+            "model": self.model, "system": system, "prompt": prompt, "stream": False, "format": schema, "think": THINK,
+            "options": {"temperature": 0, "num_predict": max_tokens, "num_ctx": CONTEXT_TOKENS, "seed": SEED}})
+        if data.get("done_reason") == "length":
+            raise ModelUnavailable("model_truncated", f"The analysis was cut off at the {max_tokens}-token limit")
+        try:
+            parsed = json.loads(data.get("response") or "")
+        except ValueError as exc:
+            raise ModelUnavailable("model_bad_json", "The model did not return valid JSON") from exc
+        if not isinstance(parsed, dict):
+            raise ModelUnavailable("model_bad_json", "The model did not return a JSON object")
+        return parsed
+
     def generate(self, system: str, prompt: str, max_tokens: int = 400) -> str:
         """One answer, not streamed.
 
@@ -71,7 +93,7 @@ class OllamaClient:
         * An answer cut off by the token limit is refused rather than shown half-finished.
         """
         data = self._request("/api/generate", {
-            "model": self.model, "system": system, "prompt": prompt, "stream": False,
+            "model": self.model, "system": system, "prompt": prompt, "stream": False, "think": THINK,
             "options": {"temperature": 0.2, "num_predict": max_tokens, "num_ctx": CONTEXT_TOKENS, "seed": SEED}})
         text = (data.get("response") or "").strip()
         if not text:
