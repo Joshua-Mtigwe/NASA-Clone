@@ -11,9 +11,9 @@ from fastapi import APIRouter, Depends, Query, status
 from app.api.deps import current_user, require_roles
 from app.core import permissions
 from app.database.session import get_db
-from app.schemas.planning import OptimizeRequest, RejectRequest
+from app.schemas.planning import OptimizeRequest, RecordTimeRequest, RejectRequest, SkipTaskRequest
 from app.services import crew_readiness_service as readiness
-from app.services import schedule_service, scheduling_optimizer, task_service
+from app.services import auth_service, schedule_service, scheduling_optimizer, task_execution_service, task_service
 from app.services.health_context import parse_time_param, resolve_as_of
 
 router = APIRouter(prefix="/planning", tags=["planning"])
@@ -124,3 +124,41 @@ def reject(schedule_version_id: str, body: RejectRequest | None = None, user: di
 def publish(schedule_version_id: str, user: dict = Depends(leader), conn: sqlite3.Connection = Depends(get_db)):
     """Put an approved version on the crew calendar."""
     return schedule_service.publish_approved_schedule(conn, schedule_version_id, user)
+
+
+# --------------------------------------------------------------------------- what actually happened
+
+@router.get("/assignments")
+def assignments(astronaut_id: str | None = None, date: str | None = Query(None, description="YYYY-MM-DD"),
+                assignment_status: str | None = None, simulation_run_id: str = "RUN-DEMO-001",
+                user: dict = Depends(current_user), conn: sqlite3.Connection = Depends(get_db)):
+    """Tasks on the crew calendar with their planned and actual times. Astronauts see only their own."""
+    if astronaut_id:
+        auth_service.require_astronaut_access(conn, user, astronaut_id)
+        visible = [astronaut_id]
+    else:
+        visible = auth_service.get_permitted_astronauts(conn, user)
+    return task_execution_service.list_assignments(conn, visible, simulation_run_id=simulation_run_id, date=date,
+                                                   assignment_status=assignment_status)
+
+
+@router.post("/assignments/{task_assignment_id}/start")
+def start_task(task_assignment_id: str, body: RecordTimeRequest | None = None, user: dict = Depends(current_user),
+               conn: sqlite3.Connection = Depends(get_db)):
+    """The assigned astronaut (or the mission leader) starts a published task. Dependencies must be done."""
+    return task_execution_service.start_assignment(conn, task_assignment_id, user,
+                                                   parse_time_param(body.at if body else None, "at"))
+
+
+@router.post("/assignments/{task_assignment_id}/complete")
+def complete_task(task_assignment_id: str, body: RecordTimeRequest | None = None, user: dict = Depends(current_user),
+                  conn: sqlite3.Connection = Depends(get_db)):
+    return task_execution_service.complete_assignment(conn, task_assignment_id, user,
+                                                      parse_time_param(body.at if body else None, "at"))
+
+
+@router.post("/assignments/{task_assignment_id}/skip")
+def skip_task(task_assignment_id: str, body: SkipTaskRequest, user: dict = Depends(current_user),
+              conn: sqlite3.Connection = Depends(get_db)):
+    return task_execution_service.skip_assignment(conn, task_assignment_id, user, body.reason,
+                                                  parse_time_param(body.at, "at"))

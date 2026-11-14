@@ -96,14 +96,15 @@ password hashes. Every attempt is stored in `import_runs` with its full report.
 ```
 app/
   core/        config, security (hashing, tokens), permissions, errors
-  database/    schema.sql (49 seed tables + 7 runtime tables), session.py
+  database/    schema.sql (49 seed tables + 8 runtime tables), session.py
   services/    data_import_service, auth_service, mission_simulator, audit_service,
                health_context, physiology_service, radiation_service, environment_service,
                sleep_activity_service, health_changes_service,
                assessment_service, cognitive_scoring, baseline_service, cognitive_comparison_service,
                task_service, crew_readiness_service, scheduling_optimizer, schedule_service,
-               research_service, research_report_service, planning_effectiveness_service
-  api/         auth, missions, simulation, health, environment, assessments, planning, research, admin, websocket routes
+               research_service, research_report_service, planning_effectiveness_service,
+               recovery_service, task_execution_service
+  api/         auth, missions, simulation, health, environment, assessments, planning, recovery, research, admin, websocket routes
   schemas/     Pydantic request/response models
   utils/       timestamps, units, statistics
 scripts/       import_csvs, validate_seed_data, set_demo_passwords
@@ -363,7 +364,8 @@ row per planning method (`preloaded_demo`, `optimizer`, `manual`):
 * the crew's average reaction time on the planned days;
 * task completion, on-time starts (within 15 minutes) and recovery completion. These stay **empty,
   not zero**, until something is recorded as started or completed. Nothing in the backend records
-  that yet, so they are empty for the seed plan.
+  The seed plan is fictional and can never be recorded, so its rates stay empty. Real plans fill them
+  in through the task and recovery tracking routes below.
 
 Only approved, published or demo plans count unless `include_drafts` is set. The result is
 descriptive and says so: with one crew it cannot show that one planning method works better.
@@ -388,6 +390,77 @@ Astronauts have no access to research routes. Roles are set in `app/core/permiss
 31 new tests in `tests/integration/test_research.py` and `tests/api/test_research_api.py`: p-values and
 correlations against reference values, no data after `as_of`, repeatable jobs, the report hash
 re-check, and every role rule.
+
+## Recovery Planner and task tracking
+
+These close two gaps before the AI phase: recovery suggestions had no routes, and nothing recorded
+whether a task or a recovery was actually done.
+
+### Recovery Planner (`recovery_service`)
+
+```
+generate -> pending_review --approve--> approved --schedule--> booked (planned)
+booked: planned --complete--> completed      planned --skip--> skipped
+```
+
+* **Signals.** For one astronaut at one mission time, four things are compared with that astronaut's
+  **own earlier days**: last night's sleep length, this morning's fatigue, this morning's perceived
+  workload, and any test result below their preflight baseline range. A value counts once it is 1 SD
+  from their own average (5 earlier values needed). Only data from before that mission time is used.
+  `GET /recovery/signals` shows exactly what the rules see.
+* **Suggestions.** Fixed rules (`rules_v1`, no AI model) score each **approved** catalogue activity
+  against the active signals and keep the top two. Short sleep points to sleep preparation, fatigue to
+  a quiet break, workload to paced breathing, a test dip to a mindfulness or quiet break. Extra
+  exercise is never suggested. No unusual signal means no suggestion, and the reply says so.
+  Each suggestion stores the evidence it was based on.
+* **Review and booking.** The medical officer approves or rejects, then books an approved suggestion
+  at a time. Booking is refused if it overlaps a task, sleep, exercise or another recovery, and lists
+  what it clashes with. A booked recovery also blocks the task scheduler.
+* **Outcome.** The astronaut it is booked for (or the medical officer) marks it completed or skipped,
+  with optional feedback.
+* Generating again for the same day replaces suggestions nobody reviewed and keeps reviewed ones.
+  Suggestions belong to the simulation run they were made in.
+
+Example from the seed, day 10 at 10:00: AST-004 slept less than usual and reports more fatigue, so
+gets *Sleep preparation* and *Quiet break*. AST-003 has a test below baseline and gets *Mindfulness
+break*. The other three get nothing.
+
+A suggestion says an astronaut's morning looks unusual for them and names a matching approved
+activity. It does not claim the activity will improve a score. Whether it does is a question the
+completion records now make it possible to study in Phase 5.
+
+### Task tracking (`task_execution_service`)
+
+```
+scheduled --start--> in_progress --complete--> completed       scheduled / in_progress --skip--> skipped
+```
+
+* Only tasks from a **published** schedule can be recorded. The assigned astronaut records their own
+  work; the mission leader can record for anyone.
+* A task cannot start until the tasks it depends on are completed. Skipping needs a reason.
+* Times are mission time (the run's clock, or an earlier `at`), and only on the task's planned day.
+* Once any task in a day's plan has started, that plan can no longer be replaced by a newer version.
+
+### The seed plan stays fictional
+Seeded recommendations, recovery bookings and task assignments cannot be approved, completed or
+started, the same rule Phase 4 applies to seed schedules. To record real work: optimise, approve and
+publish a day, or generate, approve and book a recovery.
+
+### Endpoints (prefix `/api/v1`)
+| Method | Path | Who |
+|---|---|---|
+| GET | `/recovery/activities` | signed in |
+| GET | `/recovery/signals`, `/recovery/recommendations`, `/recovery/recommendations/{id}`, `/recovery/scheduled` | that astronaut, or staff |
+| POST | `/recovery/recommendations/generate`, `/recommendations/{id}/approve`, `/reject`, `/schedule` | medical officer |
+| POST | `/recovery/scheduled/{id}/complete`, `/skip` | that astronaut, or medical officer |
+| GET | `/planning/assignments` | that astronaut, or staff |
+| POST | `/planning/assignments/{id}/start`, `/complete`, `/skip` | the assigned astronaut, or mission leader |
+
+One more runtime table, `recovery_recommendation_details`, holds each suggestion's simulation run,
+evidence and review. It is created automatically the next time the API starts.
+
+**Tests:** 19 new tests in `tests/integration/test_recovery_and_execution.py` and
+`tests/api/test_recovery_api.py`.
 
 ## Next: Phase 6 (Gemma)
 AI inference logging, model status, and AI-written recommendations and reports.

@@ -11,3 +11,12 @@ class OptimizeRequest(BaseModel):
 
 class RejectRequest(BaseModel):
     reason: str = Field("", max_length=500)
+
+
+class RecordTimeRequest(BaseModel):
+    at: str | None = Field(None, description="ISO-8601 UTC mission time, not in the future. "
+                                             "Default: the run's current mission time")
+
+
+class SkipTaskRequest(RecordTimeRequest):
+    reason: str = Field(min_length=1, max_length=500)

@@ -29,3 +29,7 @@ RESEARCH_READ_ROLES = CREW_WIDE_ROLES
 RESEARCH_RUN_ROLES = (MEDICAL_RESEARCHER,)
 # Approve or reject a draft report. A reviewer can never review a report on a job they ran.
 REPORT_REVIEW_ROLES = (MEDICAL_OFFICER,)
+
+# Recovery planner: generate, approve, reject and book recovery recommendations, and record outcomes
+# for anyone. An astronaut can always record the outcome of their own booked recovery.
+RECOVERY_PLAN_ROLES = (MEDICAL_OFFICER,)

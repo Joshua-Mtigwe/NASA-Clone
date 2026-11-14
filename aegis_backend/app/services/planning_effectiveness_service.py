@@ -89,9 +89,15 @@ def evaluate_planning_effectiveness(conn: sqlite3.Connection, *, actor_user_id: 
         on_time = [r for r in started if abs(parse_iso(r["actual_start"]) - parse_iso(r["planned_start"]))
                    <= timedelta(minutes=ON_TIME_MINUTES)]
         finished = [r for r in items if r["actual_end"] or r["assignment_status"] == "completed"]
+        # The seed's fictional bookings count only for the seed plan; real bookings only for real plans.
         recovery = conn.execute(
-            f"""SELECT completion_status FROM scheduled_recovery WHERE mission_id = ?
-                AND substr(scheduled_start, 1, 10) IN ({marks})""", (mission_id, *days)).fetchall()
+            f"""SELECT s.completion_status FROM scheduled_recovery s
+                LEFT JOIN daily_schedules ds ON ds.schedule_id = s.schedule_id
+                WHERE s.mission_id = ? AND substr(s.scheduled_start, 1, 10) IN ({marks})
+                  AND COALESCE(ds.simulation_run_id, ?) = ?
+                  AND (COALESCE(ds.approval_status, '') = 'demo_unapproved') = ?""",
+            (mission_id, *days, get_settings().default_template_run_id, run_id,
+             method == "preloaded_demo")).fetchall()
         recovery_recorded = [r for r in recovery if r["completion_status"] not in (None, "", "planned")]
         cognitive = conn.execute(
             f"""SELECT AVG(d.daily_mean) FROM daily_cognitive_results d WHERE d.mission_id = ? AND d.metric_name = ?

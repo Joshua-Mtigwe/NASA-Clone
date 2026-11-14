@@ -957,6 +957,20 @@ CREATE TABLE IF NOT EXISTS research_report_details (
     FOREIGN KEY (created_by_user_id) REFERENCES users(user_id)
 );
 
+-- Recovery planner. recovery_recommendations has no column for the simulation run a suggestion was made
+-- in, the evidence behind it, or its review. Seeded rows have no entry here and belong to the template run.
+CREATE TABLE IF NOT EXISTS recovery_recommendation_details (
+    recommendation_id TEXT PRIMARY KEY NOT NULL,
+    simulation_run_id TEXT NOT NULL,
+    evidence_json TEXT,
+    reviewed_by_user_id TEXT,
+    reviewed_at TEXT,
+    review_comment TEXT,
+    FOREIGN KEY (recommendation_id) REFERENCES recovery_recommendations(recommendation_id) ON DELETE CASCADE,
+    FOREIGN KEY (simulation_run_id) REFERENCES simulation_runs(simulation_run_id),
+    FOREIGN KEY (reviewed_by_user_id) REFERENCES users(user_id)
+);
+
 CREATE TABLE IF NOT EXISTS simulation_run_clock (
     simulation_run_id TEXT PRIMARY KEY NOT NULL,
     anchor_wall_utc TEXT NOT NULL,

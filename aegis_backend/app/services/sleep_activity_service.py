@@ -97,7 +97,8 @@ def get_astronaut_schedule(conn: sqlite3.Connection, astronaut_id: str, day: dat
         (astronaut_id, date))]
     tasks = [dict(r) for r in conn.execute(
         """SELECT ta.task_assignment_id, ta.task_id, mt.task_title, mt.task_category, mt.priority,
-                  ta.planned_start, ta.planned_end, ta.assignment_status, ta.approval_status,
+                  ta.planned_start, ta.planned_end, ta.actual_start, ta.actual_end,
+                  ta.assignment_status, ta.approval_status,
                   ta.schedule_version_id, sv.status AS version_status
            FROM task_assignments ta JOIN mission_tasks mt ON mt.task_id = ta.task_id
            LEFT JOIN schedule_versions sv ON sv.schedule_version_id = ta.schedule_version_id
@@ -107,7 +108,7 @@ def get_astronaut_schedule(conn: sqlite3.Connection, astronaut_id: str, day: dat
         (astronaut_id, date))]
     recovery = [dict(r) for r in conn.execute(
         """SELECT sr.scheduled_recovery_id, ra.activity_name, sr.scheduled_start, sr.scheduled_end,
-                  sr.completion_status FROM scheduled_recovery sr
+                  sr.completion_status, sr.completed_at, sr.astronaut_feedback FROM scheduled_recovery sr
            JOIN recovery_activities ra ON ra.recovery_activity_id = sr.recovery_activity_id
            WHERE sr.astronaut_id = ? AND substr(sr.scheduled_start, 1, 10) = ? ORDER BY sr.scheduled_start""",
         (astronaut_id, date))]

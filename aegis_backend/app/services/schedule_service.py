@@ -197,6 +197,15 @@ def approve_schedule_version(conn: sqlite3.Connection, schedule_version_id: str,
                     entity_type="schedule_version", entity_id=schedule_version_id, action_result="denied",
                     change_summary="; ".join(problems)[:500])
         raise Conflict("Schedule failed safety re-check and cannot be approved", problems)
+    started = conn.execute(
+        """SELECT COUNT(*) FROM task_assignments ta JOIN schedule_versions v
+           ON v.schedule_version_id = ta.schedule_version_id
+           WHERE v.simulation_run_id = ? AND v.task_set_id = ? AND v.schedule_version_id != ?
+             AND v.status IN ('approved', 'published') AND ta.actual_start IS NOT NULL""",
+        (version["simulation_run_id"], version["task_set_id"], schedule_version_id)).fetchone()[0]
+    if started:
+        raise Conflict(f"The current plan for this day has {started} task(s) already started, "
+                       "so it cannot be replaced")
     now = to_iso(utcnow())
     try:
         older = supersede_schedule(conn, version["simulation_run_id"], version["task_set_id"], schedule_version_id)
