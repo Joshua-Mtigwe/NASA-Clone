@@ -82,7 +82,7 @@ password hashes. Every attempt is stored in `import_runs` with its full report.
 
 | Method | Path | Who |
 |---|---|---|
-| POST | `/auth/login`, `/auth/logout` · GET `/auth/me` | anyone / signed in |
+| POST | `/auth/login`, `/auth/logout`, `/auth/change-password` · GET `/auth/me` | anyone / signed in |
 | GET | `/missions`, `/missions/{id}` | signed in |
 | GET | `/astronauts`, `/astronauts/{id}` | filtered to permitted astronauts |
 | GET | `/simulation/runs`, `/simulation/runs/{id}`, `/simulation/events` | signed in |
@@ -103,7 +103,7 @@ app/
                assessment_service, cognitive_scoring, baseline_service, cognitive_comparison_service,
                task_service, crew_readiness_service, scheduling_optimizer, schedule_service,
                research_service, research_report_service, planning_effectiveness_service,
-               recovery_service, task_execution_service
+               recovery_service, task_execution_service, account_service
   api/         auth, missions, simulation, health, environment, assessments, planning, recovery, research, admin, websocket routes
   schemas/     Pydantic request/response models
   utils/       timestamps, units, statistics
@@ -461,6 +461,38 @@ evidence and review. It is created automatically the next time the API starts.
 
 **Tests:** 19 new tests in `tests/integration/test_recovery_and_execution.py` and
 `tests/api/test_recovery_api.py`.
+
+## Accounts and new missions
+
+Login was there from Phase 1. This adds a way to register people and missions (`account_service`).
+
+* **No open sign-up.** A role decides who can read the crew's medical data, so the **mission leader**
+  creates each account and chooses its role. Anyone could otherwise register as a medical officer.
+* **Registering a user** (`POST /admin/users`): username, role and optional email. Leave the password
+  out and a temporary one is returned **once**; it is never stored in readable form.
+* **Registering an astronaut:** the same call with role `astronaut` plus a `mission_id` (and optional
+  `specialization` and `crew_role`). It creates the login and the astronaut profile together.
+* **New mission** (`POST /missions`): name, launch date and planned end date. It starts empty with
+  status `planned`.
+* **Passwords:** a user changes their own with `POST /auth/change-password` (current password needed).
+  The mission leader can reset anyone's and gets a new temporary password back once.
+* **Deactivating** an account blocks sign-in and keeps its records. Deactivating, resetting or changing
+  a password signs that account out everywhere. Nobody can deactivate themselves.
+* Every one of these actions is written to `audit_logs`.
+
+What a new astronaut does **not** get automatically: a medical clearance (they start as
+`pending_review`), a readiness record, qualifications, baselines or any health data. Until those
+exist the task scheduler will not assign them anything, which is the safe default. A new mission
+likewise has no task sets or sensor data until some are added.
+
+| Method | Path | Who |
+|---|---|---|
+| POST | `/missions` | mission leader |
+| GET | `/admin/users`, `/admin/users/{id}` | mission leader, medical officer |
+| POST | `/admin/users`, `/admin/users/{id}/deactivate`, `/reactivate`, `/reset-password` | mission leader |
+| POST | `/auth/change-password` | signed in (own password) |
+
+**Tests:** 4 new tests in `tests/api/test_accounts_api.py`.
 
 ## Next: Phase 6 (Gemma)
 AI inference logging, model status, and AI-written recommendations and reports.

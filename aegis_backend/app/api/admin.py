@@ -1,14 +1,15 @@
 """Administration: import status, provenance and audit trail."""
 import sqlite3
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, status
 
 from app.api.deps import require_roles
 from app.core import permissions
 from app.core.config import get_settings
 from app.database.session import get_db
 from app.core.errors import ValidationFailed
-from app.services import audit_service, data_import_service, health_changes_service, physiology_service
+from app.schemas.auth import CreateUserRequest
+from app.services import account_service, audit_service, data_import_service, health_changes_service, physiology_service
 from app.services.health_context import resolve_as_of, resolve_range
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -96,3 +97,46 @@ def audit_logs(
     conn: sqlite3.Connection = Depends(get_db),
 ):
     return audit_service.list_audit_logs(conn, user_id=user_id, entity_type=entity_type, limit=limit)
+
+
+# --------------------------------------------------------------------------- accounts
+
+user_admin = require_roles(*permissions.USER_ADMIN_ROLES)
+
+
+@router.get("/users")
+def users(role_name: str | None = None, mission_id: str | None = None, account_status: str | None = None,
+          user: dict = Depends(admin_reader), conn: sqlite3.Connection = Depends(get_db)):
+    """Accounts with their role and, for astronauts, their mission and crew role. Never returns passwords."""
+    return account_service.list_users(conn, role_name=role_name, mission_id=mission_id,
+                                      account_status=account_status)
+
+
+@router.post("/users", status_code=status.HTTP_201_CREATED)
+def create_user(body: CreateUserRequest, user: dict = Depends(user_admin),
+                conn: sqlite3.Connection = Depends(get_db)):
+    """Register an account. For role 'astronaut', also give mission_id to create their astronaut profile.
+    If no password is sent, a temporary one is returned once."""
+    return account_service.create_user(conn, user, **body.model_dump())
+
+
+@router.get("/users/{user_id}")
+def get_user(user_id: str, user: dict = Depends(admin_reader), conn: sqlite3.Connection = Depends(get_db)):
+    return account_service.get_user(conn, user_id)
+
+
+@router.post("/users/{user_id}/deactivate")
+def deactivate_user(user_id: str, user: dict = Depends(user_admin), conn: sqlite3.Connection = Depends(get_db)):
+    """Block sign-in and end the account's sessions. Its records are kept."""
+    return account_service.set_account_status(conn, user, user_id, active=False)
+
+
+@router.post("/users/{user_id}/reactivate")
+def reactivate_user(user_id: str, user: dict = Depends(user_admin), conn: sqlite3.Connection = Depends(get_db)):
+    return account_service.set_account_status(conn, user, user_id, active=True)
+
+
+@router.post("/users/{user_id}/reset-password")
+def reset_password(user_id: str, user: dict = Depends(user_admin), conn: sqlite3.Connection = Depends(get_db)):
+    """Returns a new temporary password once and signs the user out everywhere."""
+    return account_service.reset_password(conn, user, user_id)

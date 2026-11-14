@@ -1,12 +1,13 @@
 """Mission and crew reference data."""
 import sqlite3
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 
 from app.api.deps import current_user
 from app.core.errors import NotFound
 from app.database.session import get_db
-from app.services import auth_service
+from app.schemas.auth import CreateMissionRequest
+from app.services import account_service, auth_service
 
 router = APIRouter(tags=["missions"])
 
@@ -14,6 +15,13 @@ router = APIRouter(tags=["missions"])
 @router.get("/missions")
 def list_missions(user: dict = Depends(current_user), conn: sqlite3.Connection = Depends(get_db)):
     return [dict(r) for r in conn.execute("SELECT * FROM missions ORDER BY launch_date")]
+
+
+@router.post("/missions", status_code=status.HTTP_201_CREATED)
+def create_mission(body: CreateMissionRequest, user: dict = Depends(current_user),
+                   conn: sqlite3.Connection = Depends(get_db)):
+    """Mission leader only. The mission starts empty; register its crew with POST /admin/users."""
+    return account_service.create_mission(conn, user, **body.model_dump())
 
 
 @router.get("/missions/{mission_id}")

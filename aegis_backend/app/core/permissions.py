@@ -33,3 +33,7 @@ REPORT_REVIEW_ROLES = (MEDICAL_OFFICER,)
 # Recovery planner: generate, approve, reject and book recovery recommendations, and record outcomes
 # for anyone. An astronaut can always record the outcome of their own booked recovery.
 RECOVERY_PLAN_ROLES = (MEDICAL_OFFICER,)
+
+# Create missions, register users and astronauts, deactivate accounts, reset passwords.
+# There is no open sign-up: an account's role decides who can read the crew's medical data.
+USER_ADMIN_ROLES = (MISSION_LEADER,)

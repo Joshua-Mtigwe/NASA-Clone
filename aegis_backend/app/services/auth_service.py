@@ -131,13 +131,14 @@ def revoke_session(conn: sqlite3.Connection, token: str) -> bool:
     return cur.rowcount > 0
 
 
-def set_user_password(conn: sqlite3.Connection, user_id: str, password: str) -> None:
+def set_user_password(conn: sqlite3.Connection, user_id: str, password: str, *,
+                      actor_user_id: str | None = None, summary: str = "password set by setup script") -> None:
     """Store a hashed password and revoke the user's existing sessions."""
     cur = conn.execute("UPDATE users SET password_hash = ? WHERE user_id = ?", (hash_password(password), user_id))
     if cur.rowcount == 0:
         raise NotFound(f"User {user_id} not found")
     conn.execute("UPDATE auth_sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL",
                  (to_iso(utcnow()), user_id))
-    write_audit(conn, user_id=None, action_type="set_password", entity_type="user", entity_id=user_id,
-                action_result="success", change_summary="password set by setup script", commit=False)
+    write_audit(conn, user_id=actor_user_id, action_type="set_password", entity_type="user", entity_id=user_id,
+                action_result="success", change_summary=summary, commit=False)
     conn.commit()
