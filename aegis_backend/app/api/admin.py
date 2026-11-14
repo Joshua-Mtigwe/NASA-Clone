@@ -3,9 +3,9 @@ import sqlite3
 
 from fastapi import APIRouter, Depends, Query, status
 
-from app.api.deps import require_roles
+from app.api.deps import require_roles, token_mode_only
 from app.core import permissions
-from app.core.config import get_settings
+from app.core.config import get_settings, is_open_mode
 from app.database.session import get_db
 from app.core.errors import ValidationFailed
 from app.schemas.auth import CreateUserRequest
@@ -115,8 +115,9 @@ def users(role_name: str | None = None, mission_id: str | None = None, account_s
 @router.post("/users", status_code=status.HTTP_201_CREATED)
 def create_user(body: CreateUserRequest, user: dict = Depends(user_admin),
                 conn: sqlite3.Connection = Depends(get_db)):
-    """Register an account. For role 'astronaut', also give mission_id to create their astronaut profile.
-    If no password is sent, a temporary one is returned once."""
+    """Register an account (open mode: a new persona, never with a password). For role 'astronaut',
+    also give mission_id to create their astronaut profile. Token mode: if no password is sent, a
+    temporary one is returned once."""
     return account_service.create_user(conn, user, **body.model_dump())
 
 
@@ -136,9 +137,10 @@ def reactivate_user(user_id: str, user: dict = Depends(user_admin), conn: sqlite
     return account_service.set_account_status(conn, user, user_id, active=True)
 
 
-@router.post("/users/{user_id}/reset-password")
+@router.post("/users/{user_id}/reset-password", include_in_schema=not is_open_mode(),
+             dependencies=[Depends(token_mode_only)])
 def reset_password(user_id: str, user: dict = Depends(user_admin), conn: sqlite3.Connection = Depends(get_db)):
-    """Returns a new temporary password once and signs the user out everywhere."""
+    """Token mode: returns a new temporary password once and signs the user out everywhere."""
     return account_service.reset_password(conn, user, user_id)
 
 

@@ -1,5 +1,9 @@
 # Handoff for the frontend
 
+> **Update: open demo mode is now the default.** There is no login, password or token any more.
+> Read [`OPEN_DEMO_MODE.md`](OPEN_DEMO_MODE.md) first. Wherever this guide says to log in or send
+> `Authorization: Bearer <token>`, send `X-AEGIS-User: <persona>` instead. Everything else below still applies.
+
 This is for whoever builds the screens. It covers how to talk to the backend, what each dashboard
 needs to call, and the things that will trip you up. Example responses are shortened to the fields
 that matter; the numbers in them are illustrative.

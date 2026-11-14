@@ -38,6 +38,9 @@ class Settings:
     gemma_model: str
     gemma_timeout_seconds: float
     gemma_allow_remote: bool
+    auth_mode: str
+    default_persona: str
+    allow_demo_reset: bool
 
 
 def get_settings() -> Settings:
@@ -56,4 +59,20 @@ def get_settings() -> Settings:
         gemma_model=os.environ.get("AEGIS_GEMMA_MODEL", "gemma3:4b"),
         gemma_timeout_seconds=float(os.environ.get("AEGIS_GEMMA_TIMEOUT_SECONDS", "120")),
         gemma_allow_remote=os.environ.get("AEGIS_GEMMA_ALLOW_REMOTE", "false").strip().lower() in ("1", "true", "yes"),
+        # 'open' (default): no logins or passwords; each request names a demo persona.
+        # 'token': the original username/password login with bearer tokens.
+        auth_mode=_auth_mode(os.environ.get("AEGIS_AUTH_MODE", "open")),
+        default_persona=os.environ.get("AEGIS_DEFAULT_PERSONA", "USR-006").strip(),
+        allow_demo_reset=os.environ.get("AEGIS_ALLOW_DEMO_RESET", "true").strip().lower() in ("1", "true", "yes"),
     )
+
+
+def _auth_mode(value: str) -> str:
+    mode = value.strip().lower()
+    if mode not in ("open", "token"):
+        raise ValueError(f"AEGIS_AUTH_MODE must be 'open' or 'token', not {value!r}")
+    return mode
+
+
+def is_open_mode() -> bool:
+    return get_settings().auth_mode == "open"

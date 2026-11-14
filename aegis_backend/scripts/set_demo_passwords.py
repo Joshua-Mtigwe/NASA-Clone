@@ -1,4 +1,6 @@
-"""Give demo users real hashed passwords (the seed CSV has none, so nobody can log in until this runs).
+"""TOKEN MODE ONLY (AEGIS_AUTH_MODE=token). Not needed for the open demo, which has no passwords.
+
+Give demo users real hashed passwords (the seed CSV has none, so nobody can log in until this runs).
 
     python scripts/set_demo_passwords.py                  # every user still on the placeholder
     python scripts/set_demo_passwords.py --user crew1     # one user; you type the password

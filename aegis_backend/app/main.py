@@ -9,7 +9,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api import (admin, ai, assessments, auth, environment, health, missions, planning, recovery, research,
+from app.api import (admin, ai, assessments, auth, demo, environment, health, missions, planning, recovery, research,
                      simulation, sync, websocket)
 from app.core.config import get_settings
 from app.core.errors import AuthenticationFailed, ServiceError
@@ -32,7 +32,9 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="AEGIS Backend",
     version="0.1.0",
-    description="Crew health-aware mission planning prototype. All crew data is synthetic demo data.",
+    description=("Crew health-aware mission planning prototype. All crew data is synthetic demo data. "
+                 "Open demo mode (default): no sign-in. Choose a persona from GET /api/v1/personas and send it "
+                 "as the X-AEGIS-User header (use Authorize above); without it you act as the mission leader."),
     lifespan=lifespan,
 )
 
@@ -60,7 +62,7 @@ def health_check():
     return {"status": "ok"}
 
 
-for router in (auth.router, missions.router, simulation.router, health.router, environment.router,
+for router in (auth.personas_router, auth.router, demo.router, missions.router, simulation.router, health.router, environment.router,
                assessments.router, planning.router, recovery.router, research.router, ai.router, sync.router, admin.router,
                websocket.router):
     app.include_router(router, prefix=API_PREFIX)

@@ -1,7 +1,8 @@
 """Live simulation clock over WebSocket.
 
-Connect to  ws://host/api/v1/ws/simulation/{run_id}?token=<access_token>
-(browsers cannot set an Authorization header on WebSockets, so the token goes in the query).
+Open demo mode (default):  ws://host/api/v1/ws/simulation/{run_id}            (optionally ?as_user=crew1)
+Token mode:               ws://host/api/v1/ws/simulation/{run_id}?token=<access_token>
+(browsers cannot set headers on WebSockets, so the persona or token goes in the query).
 You receive the current state at once, an update after every start/pause/speed/jump,
 and a 'tick' every few seconds while the run is running.
 """
@@ -9,6 +10,7 @@ import asyncio
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, status
 
+from app.core.config import is_open_mode
 from app.core.errors import ServiceError
 from app.database.session import connect
 from app.services import auth_service
@@ -27,10 +29,14 @@ def _read_state(run_id: str) -> dict:
 
 
 @router.websocket("/ws/simulation/{run_id}")
-async def simulation_updates(websocket: WebSocket, run_id: str, token: str | None = None):
+async def simulation_updates(websocket: WebSocket, run_id: str, token: str | None = None,
+                             as_user: str | None = None):
     conn = connect()
     try:
-        auth_service.get_current_user(conn, token)
+        if is_open_mode():  # open demo mode: optional ?as_user=<persona>, no token
+            auth_service.get_persona(conn, as_user)
+        else:
+            auth_service.get_current_user(conn, token)
         state = sim.get_simulation_state(conn, run_id)
     except ServiceError as exc:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason=exc.message[:120])

@@ -1,5 +1,11 @@
 """Authentication and authorization (plan section 3, Phase 1).
 
+Two modes (AEGIS_AUTH_MODE):
+* 'open' (default, for the open-source hackathon submission): no logins, passwords or tokens.
+  Each request names a demo persona (get_persona); every role rule still applies to it.
+* 'token': the original sign-in described below.
+
+Token mode:
 * The seed users carry the placeholder password_hash DEMO_ACCOUNT_NO_PASSWORD. Those accounts
   cannot log in until scripts/set_demo_passwords.py gives them real hashed passwords.
 * Login returns an opaque bearer token; only its SHA-256 is stored (auth_sessions), so a
@@ -91,6 +97,43 @@ def get_current_user(conn: sqlite3.Connection, token: str | None) -> dict[str, A
     if row is None or row["account_status"] != "active":
         raise AuthenticationFailed("Account is not active")
     return _public(row)
+
+
+def get_persona(conn: sqlite3.Connection, persona: str | None) -> dict[str, Any]:
+    """Open demo mode: the user a request acts as, by user_id (USR-006) or username (mission_leader).
+
+    There are no passwords or tokens in this mode. A persona is a VIEWPOINT for demonstrating the
+    role rules, not a security control: anyone can choose any persona. Without one, the configured
+    default (the mission leader) is used.
+    """
+    value = (persona or "").strip() or get_settings().default_persona
+    row = _user_by(conn, "user_id", value) or conn.execute(
+        f"""SELECT {USER_COLUMNS}, u.password_hash FROM users u JOIN roles r ON r.role_id = u.role_id
+            WHERE lower(u.username) = lower(?)""", (value,)).fetchone()
+    if row is None:
+        raise AuthenticationFailed(f"Unknown persona '{value[:64]}'. GET /api/v1/personas lists them.")
+    if row["account_status"] != "active":
+        raise AuthenticationFailed(f"Persona '{value[:64]}' is deactivated")
+    return _public(row)
+
+
+def list_personas(conn: sqlite3.Connection) -> list[dict[str, Any]]:
+    """Every active user as a demo persona, with a readable label."""
+    rows = conn.execute(
+        f"""SELECT {USER_COLUMNS}, a.astronaut_id, a.specialization, a.crew_role, a.mission_id
+            FROM users u JOIN roles r ON r.role_id = u.role_id
+            LEFT JOIN astronauts a ON a.user_id = u.user_id
+            WHERE u.account_status = 'active' ORDER BY r.role_id, u.user_id""").fetchall()
+    out = []
+    for r in rows:
+        if r["role_name"] == permissions.ASTRONAUT:
+            detail = ", ".join(x for x in (r["crew_role"], r["specialization"]) if x)
+            label = f"Astronaut {r['astronaut_id']}" + (f" ({detail})" if detail else "")
+        else:
+            label = r["role_name"].replace("_", " ").capitalize()
+        out.append({"user_id": r["user_id"], "username": r["username"], "role_name": r["role_name"],
+                    "astronaut_id": r["astronaut_id"], "mission_id": r["mission_id"], "label": label})
+    return out
 
 
 def require_role(user: dict[str, Any], *allowed_roles: str) -> dict[str, Any]:

@@ -8,6 +8,10 @@ created by the mission leader, who chooses its role. The new user gets a tempora
 * A new astronaut starts with medical_clearance_status 'pending_review' and has no readiness
   record or qualifications, so the task scheduler will not assign them anything until those exist.
 * Deactivating an account, or changing or resetting its password, signs it out everywhere.
+
+Open demo mode (AEGIS_AUTH_MODE=open, the default): there are no passwords. Creating a user
+creates a new demo persona; its password_hash is the placeholder OPEN_DEMO_NO_PASSWORD, which can
+never be used to sign in, and no temporary password is generated or returned.
 """
 from __future__ import annotations
 
@@ -18,6 +22,7 @@ import uuid
 from typing import Any
 
 from app.core import permissions
+from app.core.config import is_open_mode
 from app.core.errors import AuthenticationFailed, Conflict, NotFound, ValidationFailed
 from app.core.security import hash_password, verify_password
 from app.services import auth_service
@@ -27,6 +32,7 @@ from app.utils.timestamps import parse_iso, to_iso, utcnow
 USERNAME_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{2,31}$")
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 MIN_PASSWORD = 8
+NO_PASSWORD = "OPEN_DEMO_NO_PASSWORD"  # never a valid hash, so it can never be used to sign in
 
 _USER_SQL = """SELECT u.user_id, u.username, u.email, u.role_id, r.role_name, u.account_status, u.created_at,
                       u.last_login_at, a.astronaut_id, a.mission_id, a.specialization, a.crew_role,
@@ -116,14 +122,20 @@ def create_user(conn: sqlite3.Connection, actor: dict[str, Any], *, username: st
             raise NotFound(f"Mission {mission_id} not found")
     elif mission_id or specialization or crew_role:
         raise ValidationFailed("mission_id, specialization and crew_role apply only to the astronaut role")
-    temporary = None if password else _temporary_password()
-    _check_password(password or temporary)
+    if is_open_mode():
+        if password:
+            raise ValidationFailed("Open demo mode has no passwords; leave password out")
+        temporary, stored_hash = None, NO_PASSWORD
+    else:
+        temporary = None if password else _temporary_password()
+        _check_password(password or temporary)
+        stored_hash = hash_password(password or temporary)
 
     user_id, now = f"USR-{uuid.uuid4().hex[:8].upper()}", to_iso(utcnow())
     conn.execute(
         """INSERT INTO users (user_id, username, email, password_hash, role_id, account_status, created_at,
                last_login_at) VALUES (?, ?, ?, ?, ?, 'active', ?, NULL)""",
-        (user_id, username, email, hash_password(password or temporary), role["role_id"], now))
+        (user_id, username, email, stored_hash, role["role_id"], now))
     if is_astronaut:
         astronaut_id = f"AST-{uuid.uuid4().hex[:8].upper()}"
         conn.execute(
@@ -137,6 +149,10 @@ def create_user(conn: sqlite3.Connection, actor: dict[str, Any], *, username: st
                 commit=False)
     conn.commit()
     out = get_user(conn, user_id)
+    if is_open_mode():
+        out["note"] = (f"New demo persona. Act as it with the header X-AEGIS-User: {user_id} "
+                       "(open demo mode has no passwords).")
+        return out
     out["temporary_password"] = temporary
     out["note"] = ("Give this temporary password to the user now; it is not stored and cannot be shown again. "
                    "They should change it after signing in." if temporary else

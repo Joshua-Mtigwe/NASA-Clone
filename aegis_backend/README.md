@@ -2,7 +2,7 @@
 
 Python + SQLite + FastAPI backend for the AEGIS crew health-aware mission planning prototype,
 following the Revised Backend Engineering Plan:
-* **Phase 1 (Foundation):** the 49-file importer, database schema, login and roles, and isolated simulation runs.
+* **Phase 1 (Foundation):** the 49-file importer, database schema, roles, and isolated simulation runs.
 * **Phase 2 (Health):** vitals, radiation, sleep, activity, cabin environment, and the admin crew health-changes view.
 * **Phase 3 (Cognition):** taking the cognitive tests, scoring, preflight baselines, and in-flight comparisons.
 * **Phase 4 (Planning):** eligibility, the daily task scheduler, and versioned schedule approval.
@@ -12,6 +12,11 @@ following the Revised Backend Engineering Plan:
 
 All crew data is synthetic demo data. The seed also contains clearly labelled NASA *reference*
 records (Curiosity RAD readings and DONKI 2024 space-weather events) that belong to no astronaut.
+
+**Open source, no sign-in.** Released under the MIT License (`LICENSE` at the repository root). By default
+the backend runs in **open demo mode**: there are no accounts to create, no passwords and no tokens.
+Each request says which demo persona it acts as, so you can see how each role experiences the system.
+See [Open demo mode](#open-demo-mode) below.
 
 ## Setup in VS Code (Windows)
 
@@ -31,16 +36,43 @@ pip install -r requirements.txt
 ```powershell
 python scripts/validate_seed_data.py      # optional: check the 49 CSVs, writes nothing
 python scripts/import_csvs.py --reset     # build aegis.db from data/seed
-python scripts/set_demo_passwords.py      # give the 8 demo users passwords
 uvicorn app.main:app --reload             # start the API
 pytest                                    # run the tests
 ```
 
-* API docs: http://127.0.0.1:8000/docs. Click **Authorize** after logging in, or call
-  `POST /api/v1/auth/login` and send `Authorization: Bearer <access_token>`.
-* `set_demo_passwords.py` writes the generated passwords to `demo_credentials.local.txt`
-  (git-ignored). Use `--user crew1` to choose one yourself.
-* The seed users have the placeholder `DEMO_ACCOUNT_NO_PASSWORD`, which can never log in.
+* API docs: http://127.0.0.1:8000/docs. No sign-in needed. To act as someone other than the mission
+  leader, click **Authorize** and enter a persona in `X-AEGIS-User` (for example `crew1` or `USR-008`).
+* The seed users have the placeholder password `DEMO_ACCOUNT_NO_PASSWORD`, which can never be used to sign in.
+
+## Open demo mode
+
+The default (`AEGIS_AUTH_MODE=open`), made for the open-source NASA Space Apps submission.
+
+* **No logins, passwords or tokens.** `GET /api/v1/personas` (public) lists the demo personas:
+  * the mission leader (`USR-006`);
+  * the medical researcher (`USR-007`);
+  * the medical officer (`USR-008`);
+  * astronauts AST-001 to AST-005 (`crew1` to `crew5`).
+* **Choosing a persona:** send its user ID or username in the **`X-AEGIS-User`** header. Without the header
+  you act as the mission leader (`AEGIS_DEFAULT_PERSONA`). An unknown or deactivated persona gets `401`.
+* **Every role rule still applies to the persona:**
+  * an astronaut sees only their own data;
+  * only the mission leader approves plans;
+  * a reviewer cannot approve their own job;
+  * the audit log records which persona did what.
+
+  Personas are **viewpoints for the demo, not security**: anyone can choose any persona.
+* **Gone in open mode** (`404`, hidden from `/docs`): `/auth/login`, `/auth/logout`,
+  `/auth/change-password` and `/admin/users/{id}/reset-password`. Creating a user
+  (`POST /admin/users`) makes a new persona with no password; sending a password is refused.
+* **Live clock:** `ws://…/api/v1/ws/simulation/{run_id}` needs no token (optionally `?as_user=crew1`).
+* **Reset:** `POST /api/v1/demo/reset` (mission leader persona) puts all data back to the seed CSVs, so a
+  shared online demo can always be returned to a clean state. Switch it off with `AEGIS_ALLOW_DEMO_RESET=false`.
+* **Token mode:** `AEGIS_AUTH_MODE=token` brings back the original username/password sign-in. Then
+  run `python scripts/set_demo_passwords.py` to give the demo users passwords; they are written to
+  the git-ignored `demo_credentials.local.txt`. Its tests run with the `token_mode` fixture.
+
+For the frontend team: see `docs/OPEN_DEMO_MODE.md`.
 
 ## What Phase 1 delivers
 

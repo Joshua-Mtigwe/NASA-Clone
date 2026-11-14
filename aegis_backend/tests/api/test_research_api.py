@@ -13,15 +13,14 @@ END = "2027-05-29T23:00:00Z"
 
 
 @pytest.fixture
-def client(db_path, with_passwords):
+def client(db_path):
     with TestClient(app) as c:
         yield c
 
 
 def login(client, username):
-    r = client.post(f"{API}/auth/login", json={"username": username, "password": "test-password-123"})
-    assert r.status_code == 200, r.text
-    return {"Authorization": f"Bearer {r.json()['access_token']}"}
+    """Open demo mode: act as this persona. No password or token."""
+    return {"X-AEGIS-User": username}
 
 
 def test_research_flow_over_http(client):
@@ -71,7 +70,7 @@ def test_research_roles(client):
     for path in ("/research/analyses", "/research/variables", "/research/jobs", "/research/reports",
                  "/research/planning-effectiveness", "/research/analyses/ANL-001"):
         assert client.get(f"{API}{path}", headers=crew).status_code == 403, path
-        assert client.get(f"{API}{path}").status_code == 401, path
+        assert client.get(f"{API}{path}", headers=login(client, "nobody")).status_code == 401, path
         assert client.get(f"{API}{path}", headers=leader).status_code == 200, path
     # only the researcher runs things
     for who in (crew, leader, officer):
