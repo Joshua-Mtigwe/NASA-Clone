@@ -561,7 +561,7 @@ Every answer carries `source`: `gemma` when a checked AI text is shown, `rules` 
 reports) when the rule-based text is shown instead, plus `rule_based_text` so a screen can show both.
 
 ### Tested, and not tested
-*  new tests in `tests/integration/test_ai.py` and `tests/api/test_ai_api.py` use a stand-in
+* 21 new tests in `tests/integration/test_ai.py` and `tests/api/test_ai_api.py` use a stand-in
   model, so they run with no model installed. They cover the answer checks, logging, fallback when
   the model is off or wrong, every role rule, and that an explanation never changes a decision.
 * **Not yet run against a real Gemma model.** The request format follows Ollama's published API,
