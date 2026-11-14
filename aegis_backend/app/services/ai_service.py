@@ -31,7 +31,7 @@ from app.services import recovery_service, research_report_service, research_ser
 from app.services.audit_service import write_audit
 from app.utils.timestamps import parse_iso, to_iso, utcnow
 
-PROMPT_VERSIONS = {"recovery_explanation": "recovery_v1", "task_explanation": "task_v1",
+PROMPT_VERSIONS = {"recovery_explanation": "recovery_v2", "task_explanation": "task_v1",
                    "research_report": "report_v1"}
 MAX_CHARS = {"recovery_explanation": 700, "task_explanation": 900, "research_report": 3000}
 MAX_TOKENS = {"recovery_explanation": 220, "task_explanation": 280, "research_report": 800}
@@ -49,7 +49,8 @@ SYSTEM_PROMPT = (
 
 _TASKS = {
     "recovery_explanation": "Explain to the astronaut, in 2 or 3 friendly sentences, why this recovery activity "
-                            "is suggested today. Mention the measurements that are unusual for them.",
+                            "is suggested today. Speak to them as 'you' and do not open with a greeting or "
+                            "their name. Mention only the measurements listed as unusual.",
     "task_explanation": "Explain to the mission leader, in 2 to 4 sentences, the facts that support giving this "
                         "task to the assigned astronaut today. If another allowed astronaut has a result below "
                         "their own usual today, you may say so.",
@@ -198,13 +199,15 @@ def recovery_packet(conn: sqlite3.Connection, recommendation_id: str) -> tuple[d
                        "Generate recommendations first.")
     activity = recovery_service.get_activity(conn, rec["recovery_activity_id"])
     unusual = {}
-    for name in rec["evidence"]["active"]:
+    # Only the signals the rules used for THIS activity, so the explanation matches the decision.
+    for name in recovery_service.signals_behind(activity, rec["evidence"]):
         s = rec["evidence"]["signals"][name]
         if name == "cognitive_dip":
             unusual["tests_below_personal_baseline"] = s["below_baseline"]
         else:
             unusual[s["measure"]] = {
-                "unit": s["unit"], "today": s["value"], "own_usual": s["own_average"],
+                "unit": s["unit"], "when": "last night" if name == "short_sleep" else "this morning",
+                "value": s["value"], "own_usual": s["own_average"],
                 "difference_from_usual": round(s["value"] - s["own_average"], 1),
                 "compared_with_usual": "higher" if s["value"] > s["own_average"] else "lower"}
     packet = {"astronaut_id": rec["astronaut_id"], "mission_day": rec["mission_day"],

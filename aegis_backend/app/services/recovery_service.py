@@ -138,6 +138,13 @@ def collect_signals(conn: sqlite3.Connection, astronaut_id: str, as_of: datetime
             "signals": signals, "active": sorted(k for k, v in signals.items() if v["active"])}
 
 
+def signals_behind(activity: dict[str, Any], evidence: dict[str, Any]) -> list[str]:
+    """The active signals that count towards this activity (the ones the rules actually used for it)."""
+    weights = _ACTIVITY_WEIGHTS.get(activity["recovery_activity_id"]) or _CATEGORY_WEIGHTS.get(
+        activity["activity_category"], {})
+    return [name for name in evidence["active"] if name in weights]
+
+
 def rank_activities(activities: list[dict[str, Any]], evidence: dict[str, Any]) -> list[dict[str, Any]]:
     """Score every approved catalogue activity against the active signals. Pure function."""
     ranked = []

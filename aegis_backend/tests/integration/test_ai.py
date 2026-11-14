@@ -94,13 +94,14 @@ def test_recovery_packet_holds_finished_facts_only(conn, recommendation):
     sleep = packet["unusual_for_this_astronaut_today"]["total_sleep_minutes"]
     assert packet["suggested_activity"]["name"] == "Sleep preparation"
     assert sleep["compared_with_usual"] == "lower"
-    assert sleep["difference_from_usual"] == round(sleep["today"] - sleep["own_usual"], 1)
+    assert sleep["difference_from_usual"] == round(sleep["value"] - sleep["own_usual"], 1)
+    assert sleep["when"] == "last night"
     assert len(json.dumps(packet)) < 1500  # a small packet, never raw tables
 
 
 def test_good_answer_is_stored_logged_and_shown(conn, model, recommendation):
     rid = recommendation["recommendation_id"]
-    model.reply = lambda f: (f"You slept {f['unusual_for_this_astronaut_today']['total_sleep_minutes']['today']} "
+    model.reply = lambda f: (f"You slept {f['unusual_for_this_astronaut_today']['total_sleep_minutes']['value']} "
                              f"minutes, less than your usual. A {f['suggested_activity']['duration_minutes']}-minute "
                              f"{f['suggested_activity']['name']} is suggested.")
     out = ai.explain_recovery(conn, rid, OFFICER)
@@ -108,7 +109,7 @@ def test_good_answer_is_stored_logged_and_shown(conn, model, recommendation):
     assert out["rule_based_text"] == recommendation["reason"]
     (log,) = _logs(conn)
     assert log["status"] == "succeeded" and log["purpose"] == "recovery_explanation"
-    assert log["prompt_template_version"] == "recovery_v1" and log["simulation_run_id"] == DEMO
+    assert log["prompt_template_version"] == "recovery_v2" and log["simulation_run_id"] == DEMO
     assert len(log["input_hash"]) == 64 and len(log["output_hash"]) == 64 and log["latency_ms"] >= 0
     # the rule-based reason and the decision are untouched
     after = rc.get_recommendation(conn, rid)
@@ -273,3 +274,15 @@ def test_inference_list_and_model_status(conn, model, recommendation):
     # an earlier checked answer keeps being shown after a later rejected one
     assert ai.get_explanation(conn, "recovery_recommendation", recommendation["recommendation_id"],
                               OFFICER)["text"] == "A Sleep preparation is suggested."
+
+
+def test_explanation_only_gets_the_signals_the_rules_used_for_that_activity(conn, recommendation):
+    """AST-004 has short sleep AND high fatigue. A quiet break was chosen for fatigue only, so its packet
+    must not offer the sleep figures as a reason."""
+    sim.jump_to_mission_day(conn, DEMO, 10, actor_user_id="USR-006", hour=10)
+    recs = rc.list_recommendations(conn, ["AST-004"], mission_day=10, include_demo=False)
+    quiet = next(r for r in recs if r["activity_name"] == "Quiet break")
+    _rec, packet = ai.recovery_packet(conn, quiet["recommendation_id"])
+    assert set(packet["unusual_for_this_astronaut_today"]) == {"fatigue_score"}
+    _rec, sleep_packet = ai.recovery_packet(conn, recommendation["recommendation_id"])
+    assert set(sleep_packet["unusual_for_this_astronaut_today"]) == {"fatigue_score", "total_sleep_minutes"}
