@@ -1,4 +1,4 @@
-# AEGIS Backend — Phases 1–3
+# AEGIS Backend — Phases 1–4
 
 Python + SQLite + FastAPI backend for the AEGIS crew health-aware mission planning prototype,
 following the Revised Backend Engineering Plan:
@@ -98,8 +98,9 @@ app/
   services/    data_import_service, auth_service, mission_simulator, audit_service,
                health_context, physiology_service, radiation_service, environment_service,
                sleep_activity_service, health_changes_service,
-               assessment_service, cognitive_scoring, baseline_service, cognitive_comparison_service
-  api/         auth, missions, simulation, health, environment, assessments, admin, websocket routes
+               assessment_service, cognitive_scoring, baseline_service, cognitive_comparison_service,
+               task_service, crew_readiness_service, scheduling_optimizer, schedule_service
+  api/         auth, missions, simulation, health, environment, assessments, planning, admin, websocket routes
   schemas/     Pydantic request/response models
   utils/       timestamps, units, statistics
 scripts/       import_csvs, validate_seed_data, set_demo_passwords
@@ -262,7 +263,43 @@ The simulation jump now also takes an optional `hour`.
   day, and each comparison uses the baseline for the same test and time of day.
 * **Tests:** 39 new tests in `tests/integration/test_cognition.py` and `tests/api/test_assessments_api.py`.
 
-## Next: Phase 4 (Planning)
-Qualification checks, OR-Tools scheduling and versioned approval: `crew_readiness_service`,
-`task_service` and `scheduling_optimizer`. The plan's acceptance check is that unverified safety-critical
-certifications are blocked and schedules never overlap.
+## Phase 4 (Planning)
+
+Plans one mission day's tasks: who does each one and when.
+
+* **Eligibility** (`crew_readiness_service`), which fails closed:
+  * The astronaut must hold the required certification on that date. A `demo_assumed_not_verified`
+    qualification counts for standard tasks (and is flagged), but **never for safety-critical ones**.
+    Any unknown safety class counts as safety-critical.
+  * A valid readiness record with an eligible status is required.
+  * Unknown restriction codes block the assignment.
+* **Scheduler** (`scheduling_optimizer`): the hard rules are qualified crew only, crew count, no
+  overlaps with other tasks or commitments (08:00 tests, exercise, recovery, protected sleep), nothing
+  before `workday_start_hour`, dependencies, deadlines and workload limits. Tasks that don't fit are
+  left out with plain-English reasons; nothing is relaxed. The objective, in order of importance:
+  task coverage, then not giving demanding tasks to astronauts with a worse-than-usual cognitive
+  result that day (a preference, not a gate), then workload balance, then earlier starts.
+  It uses OR-Tools CP-SAT if installed (uncomment it in `requirements.txt`), otherwise a built-in
+  exact solver, which is optimal for the seed's chained daily tasks.
+* **Versions** (`schedule_service`): optimising creates a **draft**. The mission leader approves it,
+  which **re-checks every rule** first, then publishes it to `daily_schedules`. Approving a newer
+  version supersedes the old one. Seed `demo_unapproved` schedules can't be approved.
+
+With a 09:00 start, no seed day fits all 7 chained tasks before sleep at 16:00. The scheduler
+says which tasks don't fit and why. An earlier `workday_start_hour` fits more.
+
+### Phase 4 endpoints (prefix `/api/v1/planning`)
+| Method | Path | Who |
+|---|---|---|
+| GET | `/task-sets`, `/task-sets/{id}` | signed in |
+| GET | `/task-sets/{id}/eligibility`, `/crew-readiness`, `/qualifications`, `/optimization-runs/{id}`, `/jobs/{id}`, `/schedule-versions`, `/schedule-versions/{id}`, `/schedule-versions/{id}/check` | staff |
+| POST | `/optimize`, `/schedule-versions/{id}/approve`, `/reject`, `/publish` | mission leader |
+
+### Phase 4 acceptance (plan §8)
+* **Unverified safety-critical certification is blocked:** tested.
+* **No overlaps:** every plan is independently checked against all hard rules, on days 1, 17, 45, 62 and 90.
+* **Tests:** 36 new tests in `tests/integration/test_planning.py` and `tests/api/test_planning_api.py`.
+  The CP-SAT comparison test runs once OR-Tools is installed.
+
+## Next: Phase 5 (Research)
+Analysis jobs, statistics and planning effectiveness.
