@@ -337,7 +337,9 @@ def send_message(conn: sqlite3.Connection, user: dict[str, Any], text: str, *, c
     else:
         facts = build_facts(conn, astronaut_id, now, run_id)
         seen = model_facts(facts, text)
-        question = coach_service.reframe_question(analysis)
+        # A question about medication, radiation or "what is wrong with me" gets a direct answer, not a
+        # reframing question ("Should I take...?" is a question, not a 'should' statement).
+        question = None if ai_service.chat_guidance(text) else coach_service.reframe_question(analysis)
         packet = {**seen, "coach_brief": coach_service.coach_brief(analysis), "reframe_question": question,
                   "astronaut_says": text, "recent_conversation": history}
         unapproved = {a["activity_name"] for a in recovery_service.list_activities(conn, include_unapproved=True)

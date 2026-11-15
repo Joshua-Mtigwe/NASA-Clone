@@ -328,3 +328,16 @@ def test_model_cannot_remove_a_crisis_marker_the_keywords_found(day10, model):
                         .fetchone()[0])
     assert [m["label"] for m in stored["crisis_markers"]] == ["hopelessness"]
     assert out["medical_officer_alerted"] is None  # one mention is not yet a pattern
+
+
+def test_no_reframing_question_on_a_topic_question(day10, model):
+    """'Should I take...?' is a question, not a 'should' statement: answer it, do not reframe it."""
+    model.analysis = {**model.analysis,
+                      "cognitive_distortions": [{"label": "should_statements", "quote": "Should I take"}]}
+    wb.send_message(day10, CREW4, "Should I take a sleeping pill?")
+    facts = json.loads(model.calls[-1][1].split("Facts (JSON):\n", 1)[1])
+    assert facts["reframe_question"] is None
+    model.analysis["cognitive_distortions"] = [{"label": "should_statements", "quote": "I should"}]
+    wb.send_message(day10, CREW4, "I should be coping better than this.")
+    facts = json.loads(model.calls[-1][1].split("Facts (JSON):\n", 1)[1])
+    assert facts["reframe_question"]  # still asked when it is a real thinking pattern

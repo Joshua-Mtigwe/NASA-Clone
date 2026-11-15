@@ -44,7 +44,7 @@ Send back `conversation_id` to continue the same conversation. Response (shorten
   plain line such as "The medical officer has been told you may need support. They were told the
   reason, not your words." Never hide this from the astronaut.
 * `coach_summary` is optional to display (for example as small tags under their message).
-* A reply can take 15 to 30 seconds on a laptop (the coach analyses first, then writes). Show a
+* A reply can take 30 to 60 seconds on a laptop (the coach analyses first, then writes). Show a
   typing indicator.
 * Messages are at most 1000 characters (422 otherwise).
 

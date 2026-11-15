@@ -278,7 +278,7 @@ def test_reflection_mentions_a_rising_theme_using_only_the_given_counts(day20, m
     rising = out["your_patterns"]["rising_themes"]
     assert rising and rising[0]["theme"] == "physical discomfort" and rising[0]["recent_count"] == 4
     facts = json.loads(model.calls[-1][1].split("Facts (JSON):\n", 1)[1])
-    assert facts["your_patterns"]["rising_themes"] == rising
+    assert facts["rising_themes"] == rising and "your_patterns" not in facts  # rising themes only
     model.reply = "bad 999"
     rules = jn.write_entry(day20, CREW[2], "Headache again.")["entry"]["reflection_text"]
     assert "Physical discomfort came up in 5 of your last 5 entries" in rules
@@ -343,3 +343,12 @@ def test_research_counts_leave_out_demo_entries_unless_asked(day20, model):
     with_demo = jn.research_summary(day20, RESEARCHER, include_synthetic=True)
     assert with_demo["entries"] == 15 and with_demo["includes_synthetic_demo"] is True
     assert jn.research_summary(day20, RESEARCHER, include_synthetic=True, from_day=18)["entries"] == 6
+
+
+def test_model_is_told_nothing_about_patterns_until_a_theme_rises(day20, model):
+    out = jn.write_entry(day20, CREW[1], "A quiet first entry.")
+    assert "Not enough earlier entries" in out["your_patterns"]["note"]  # the astronaut's own view keeps it
+    facts = json.loads(model.calls[-1][1].split("Facts (JSON):\n", 1)[1])
+    assert "rising_themes" not in facts and "your_patterns" not in facts
+    assert "earlier entries" not in json.dumps(facts) and "recent_mood" not in facts
+    assert jn.model_patterns({"rising_themes": []}) == {}

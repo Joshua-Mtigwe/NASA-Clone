@@ -34,7 +34,7 @@ from app.utils.timestamps import parse_iso, to_iso, utcnow
 # Bump these whenever SYSTEM_PROMPT, _TASKS or _REMINDER change, so the inference log shows which
 # prompt wrote each answer.
 PROMPT_VERSIONS = {"recovery_explanation": "recovery_v2", "task_explanation": "task_v2",
-                   "research_report": "report_v2", "wellbeing_chat": "coach_chat_v3", "journal_reflection": "coach_journal_v1",
+                   "research_report": "report_v2", "wellbeing_chat": "coach_chat_v3", "journal_reflection": "coach_journal_v2",
                    "chat_analysis": "analysis_v1", "journal_analysis": "analysis_v1"}
 MAX_CHARS = {"recovery_explanation": 700, "task_explanation": 900, "research_report": 3000, "wellbeing_chat": 1000,
              "journal_reflection": 1000}
@@ -104,12 +104,13 @@ _TASKS = {
     "journal_reflection": (
         "You are the AEGIS Reflective Coach, a guided-journaling tool for astronauts. You are a reflection tool, not a clinician or "
         "a doctor. The astronaut has written a private journal entry (\"astronaut_says\"); \"coach_brief\" is a "
-        "checked summary of it, and \"your_patterns\" compares recent entries with their own earlier ones. Write a short "
+        "checked summary of it. Write a short "
         "reflection back to them, as \"you\", in 3 to 5 sentences:\n"
         "a) Reflect the main feeling and themes in your own words, without quoting the entry at length. Be kind "
         "but honest; do not flatter.\n"
-        "b) If \"your_patterns\" lists a rising theme, mention it gently as something they may want to notice, "
-        "using only the counts given.\n"
+        "b) If \"rising_themes\" is given, mention the first one gently as something they may want to notice, "
+        "using only the counts given. If it is not given, say nothing at all about patterns, earlier entries, "
+        "counts or moods across entries.\n"
         "c) If \"reframe_question\" is given, ask it gently in your own words.\n"
         "d) Encourage one small step toward their crewmates (a conversation, a shared meal or activity), and "
         "remind them the medical officer is there if things feel heavier.\n"

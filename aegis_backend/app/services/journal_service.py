@@ -91,6 +91,13 @@ def patterns(entries: list[dict[str, Any]]) -> dict[str, Any]:
     return out
 
 
+def model_patterns(pattern: dict[str, Any]) -> dict[str, Any]:
+    """What the model is told about patterns: rising themes only, and nothing at all when there are none.
+    Given "not enough earlier entries" or mood counts, a small model repeats them back to the writer."""
+    rising = pattern.get("rising_themes") or []
+    return {"rising_themes": rising} if rising else {}
+
+
 # --------------------------------------------------------------------------- reflection
 
 def rule_based_reflection(analysis: dict[str, Any], pattern: dict[str, Any], question: str | None) -> str:
@@ -165,8 +172,8 @@ def write_entry(conn: sqlite3.Connection, user: dict[str, Any], text: str, *, si
                     change_summary=f"urgent journal entry from {astronaut_id}; no model-written reflection",
                     commit=False)
     else:
-        packet = {"coach_brief": coach_service.coach_brief(analysis), "your_patterns": pattern,
-                  "reframe_question": question, "astronaut_says": text}
+        packet = {"coach_brief": coach_service.coach_brief(analysis), "reframe_question": question,
+                  "astronaut_says": text, **model_patterns(pattern)}
         result = ai_service.run_inference(conn, purpose="journal_reflection", packet=packet,
                                           simulation_run_id=run_id, allowed_astronauts={astronaut_id})
         inference_id = result["inference_id"]
