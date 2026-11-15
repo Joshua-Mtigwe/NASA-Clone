@@ -96,7 +96,7 @@ export function VitalTrendsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Health Monitoring"
+        title="Vital Trends"
         description="Each measure over time, up to the current mission clock."
         actions={
           <div

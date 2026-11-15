@@ -17,7 +17,7 @@ function figure(name: string | RegExp) {
   return screen.findByRole('figure', { name });
 }
 
-describe('Health Monitoring', () => {
+describe('Vital Trends', () => {
   it('requests each series up to the mission clock and re-requests when the range changes', async () => {
     const urls: URL[] = [];
     server.events.on('request:start', ({ request }) => {
@@ -25,7 +25,7 @@ describe('Health Monitoring', () => {
       if (url.pathname.endsWith('/vitals/history')) urls.push(url);
     });
     await signInAs('astronaut');
-    renderApp('/astronaut/health');
+    renderApp('/astronaut/health/trends');
 
     const range = await screen.findByRole('group', { name: 'Time range' });
     expect(within(range).getByRole('button', { name: '7 d' })).toHaveAttribute(
@@ -48,7 +48,7 @@ describe('Health Monitoring', () => {
 
   it('draws HRV against the personal reference with its sample size and method', async () => {
     await signInAs('astronaut');
-    renderApp('/astronaut/health');
+    renderApp('/astronaut/health/trends');
 
     const hrv = await figure(/Heart rate variability/);
     await waitFor(() =>
@@ -63,7 +63,7 @@ describe('Health Monitoring', () => {
   it('says when no personal reference exists yet instead of drawing one', async () => {
     mockState.missionDayOverride = 1;
     await signInAs('astronaut');
-    renderApp('/astronaut/health');
+    renderApp('/astronaut/health/trends');
 
     const hrv = await figure(/Heart rate variability/);
     await waitFor(() => expect(hrv).toHaveTextContent('No personal reference available yet.'));
@@ -71,7 +71,7 @@ describe('Health Monitoring', () => {
 
   it('shows sleep as daily bars and as a timeline', async () => {
     await signInAs('astronaut');
-    renderApp('/astronaut/health');
+    renderApp('/astronaut/health/trends');
 
     const bars = await figure(/Sleep duration per night/);
     await waitFor(() =>
@@ -87,7 +87,7 @@ describe('Health Monitoring', () => {
 
   it('keeps radiation dose rate and accumulated dose in separate charts with their own units', async () => {
     await signInAs('astronaut');
-    renderApp('/astronaut/health');
+    renderApp('/astronaut/health/trends');
 
     const rate = await figure(/Radiation dose rate/);
     const total = await figure(/Accumulated dose/);
@@ -99,7 +99,7 @@ describe('Health Monitoring', () => {
 
   it('offers a data table for each chart, and No data for blood pressure', async () => {
     await signInAs('astronaut');
-    renderApp('/astronaut/health');
+    renderApp('/astronaut/health/trends');
 
     const hr = await figure(/^Heart rates?Unit/);
     const toggle = await within(hr).findByText(/Show data table \(\d+ rows\)/);

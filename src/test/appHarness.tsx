@@ -6,7 +6,7 @@ import { render } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router';
 import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 import { authApi } from '@/api/auth';
-import type { Role } from '@/api/types';
+import type { DashboardRole } from '@/app/roles';
 import { Providers } from '@/app/Providers';
 import { createQueryClient } from '@/app/queryClient';
 import { appRoutes } from '@/app/routes';
@@ -17,13 +17,12 @@ import { useUi } from '@/features/shell/uiStore';
 import { resetMockDb } from '@/mocks/db';
 import { server } from '@/mocks/server';
 
-/** One demo account per role (users.csv, plus the mock-only admin seed). */
-export const DEMO_USER: Record<Role, string> = {
+/** One demo account per dashboard role (users.csv). */
+export const DEMO_USER: Record<DashboardRole, string> = {
   astronaut: 'crew1',
   mission_leader: 'mission_leader',
   medical_researcher: 'researcher',
   medical_officer: 'medical_officer',
-  mission_control_admin: 'mission_control',
 };
 
 export function setupMockApi(): void {
@@ -41,9 +40,18 @@ export function setupMockApi(): void {
   afterAll(() => server.close());
 }
 
-export async function signInAs(role: Role): Promise<void> {
+export async function signInAs(role: DashboardRole): Promise<void> {
   const response = await authApi.login({ username: DEMO_USER[role], password: MOCK_DEMO_PASSWORD });
   useSession.getState().setSession(response);
+}
+
+/**
+ * Backend-only roles (the administrator) have no dashboard, so the session store
+ * refuses them; API-level tests still need their token.
+ */
+export async function signInBackendOnly(username: string): Promise<void> {
+  const response = await authApi.login({ username, password: MOCK_DEMO_PASSWORD });
+  useSession.setState({ token: response.access_token });
 }
 
 export function renderApp(path: string) {

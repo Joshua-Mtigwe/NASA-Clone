@@ -44,9 +44,11 @@ describe('header', () => {
       { timeout: 5000 },
     );
 
-    await userEvent.click(screen.getByRole('link', { name: 'Alerts' }));
-    expect(await screen.findByRole('heading', { level: 1, name: 'Alerts' })).toBeInTheDocument();
-    expect(router.state.location.pathname).toBe('/astronaut/alerts');
+    await userEvent.click(screen.getByRole('link', { name: 'My Schedule' }));
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'My Schedule' }),
+    ).toBeInTheDocument();
+    expect(router.state.location.pathname).toBe('/astronaut/schedule');
     expect(screen.getByRole('banner', { name: 'Mission status' })).toBe(header);
     expect(within(header).getByTestId('mission-day')).toHaveTextContent('Day 1 / 90');
     expect(stateRequests).toHaveLength(1);

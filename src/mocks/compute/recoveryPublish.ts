@@ -81,8 +81,41 @@ export async function publishRoutine(
     };
   }
 
+  const date = missionDayDate(state.mission.launch_date, recommendation.mission_day);
+  // Availability: anything committed in the slot. Unpublished routine drafts do not block.
+  const day = await astronautSchedule(recommendation.astronaut_id, date);
+  const committed = day.items
+    .filter((i) => !(i.kind === 'recovery' && i.approval_status !== 'approved'))
+    .filter((i) => i.ref_id !== schedule?.schedule_id);
+  const conflictsAt = (ms: number): RoutineConflict[] =>
+    committed
+      .filter((i) => {
+        const s = Date.parse(i.start_time);
+        const e = i.end_time ? Date.parse(i.end_time) : s + (i.duration_minutes ?? 15) * MIN;
+        return s < ms + duration * MIN && e > ms;
+      })
+      .map((i) => ({
+        kind: i.kind,
+        title: i.title,
+        start_time: i.start_time,
+        end_time: i.end_time,
+      }));
+
   const startRaw = body.scheduled_start ?? schedule?.start_time;
-  const startMs = startRaw ? Date.parse(startRaw) : NaN;
+  let startMs = startRaw ? Date.parse(startRaw) : NaN;
+  // No time chosen and the draft slot is taken: propose the next free 15-minute slot
+  // that day (from 06:00 UTC and not before the mission clock, ending by 22:00 UTC).
+  if (
+    body.scheduled_start === undefined &&
+    Number.isFinite(startMs) &&
+    conflictsAt(startMs).length
+  ) {
+    const step = 15 * MIN;
+    const latest = Date.parse(`${date}T22:00:00Z`) - duration * MIN;
+    let t = Math.max(Date.parse(`${date}T06:00:00Z`), Math.ceil(Date.parse(now) / step) * step);
+    while (t <= latest && conflictsAt(t).length) t += step;
+    if (t <= latest) startMs = t;
+  }
   if (!Number.isFinite(startMs)) {
     throw new HttpError(422, [
       {
@@ -94,7 +127,6 @@ export async function publishRoutine(
   }
   const start = iso(startMs);
   const end = iso(startMs + duration * MIN);
-  const date = missionDayDate(state.mission.launch_date, recommendation.mission_day);
   const reasons: string[] = [];
 
   const astronauts = await table('astronauts');
@@ -129,17 +161,7 @@ export async function publishRoutine(
     );
   }
 
-  // Availability: anything committed in the slot. Unpublished routine drafts do not block.
-  const day = await astronautSchedule(recommendation.astronaut_id, date);
-  const conflicts: RoutineConflict[] = day.items
-    .filter((i) => !(i.kind === 'recovery' && i.approval_status !== 'approved'))
-    .filter((i) => i.ref_id !== schedule?.schedule_id)
-    .filter((i) => {
-      const s = Date.parse(i.start_time);
-      const e = i.end_time ? Date.parse(i.end_time) : s + (i.duration_minutes ?? 15) * MIN;
-      return s < startMs + duration * MIN && e > startMs;
-    })
-    .map((i) => ({ kind: i.kind, title: i.title, start_time: i.start_time, end_time: i.end_time }));
+  const conflicts = conflictsAt(startMs);
   if (conflicts.length) reasons.push("The proposed time overlaps the astronaut's schedule.");
 
   const result: RoutinePublication = {

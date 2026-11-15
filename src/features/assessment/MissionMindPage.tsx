@@ -1,4 +1,5 @@
-import { CheckCircle2, Circle, Flame, Timer } from 'lucide-react';
+import { CheckCircle2, Circle, Flame, Gamepad2, Timer } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Link } from 'react-router';
 import { DataState, PageHeader } from '@/components/shared';
 import { Button } from '@/components/ui/button';
@@ -44,10 +45,14 @@ export function MissionMindPage() {
         {s && (
           <>
             <Card
-              className="grid gap-4 p-5 sm:grid-cols-3"
+              className="relative grid gap-4 overflow-hidden border-accent/30 bg-gradient-to-br from-navy-850 via-navy-900 to-indigo-950/60 p-5 shadow-glow sm:grid-cols-3"
               role="region"
               aria-label="Today's session"
             >
+              <div
+                className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-cyan-400/10 blur-3xl"
+                aria-hidden="true"
+              />
               <div>
                 <p className="text-caption uppercase text-ink-subtle">
                   Today · {formatDate(s.date)}
@@ -55,15 +60,26 @@ export function MissionMindPage() {
                 <p className="text-title text-ink" data-testid="session-status">
                   {s.sessions_completed_today} of {s.sessions_scheduled_today} complete
                 </p>
+                <div
+                  className="mt-2 h-1.5 overflow-hidden rounded-full bg-navy-700"
+                  aria-hidden="true"
+                >
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-violet-400 transition-[width] duration-700 motion-reduce:transition-none"
+                    style={{
+                      width: `${s.sessions_scheduled_today ? Math.min(100, (s.sessions_completed_today / s.sessions_scheduled_today) * 100) : 0}%`,
+                    }}
+                  />
+                </div>
               </div>
               <div className="flex items-center gap-2">
-                <Timer className="h-5 w-5 text-ink-muted" aria-hidden="true" />
+                <Timer className="h-5 w-5 text-cyan-300" aria-hidden="true" />
                 <p className="text-ink" data-testid="estimate">
                   About {Math.round(s.estimate_seconds / 60)} min
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <Flame className="h-5 w-5 text-ink-muted" aria-hidden="true" />
+                <Flame className="h-5 w-5 text-amber-300" aria-hidden="true" />
                 <p className="text-ink" data-testid="streak">
                   {s.streak_days} {s.streak_days === 1 ? 'day' : 'days'} in a row
                 </p>
@@ -81,12 +97,24 @@ export function MissionMindPage() {
                   return (
                     <li key={g.protocol_id}>
                       <Card
-                        className="flex h-full flex-col gap-2 p-4"
+                        className={cn(
+                          'hover-lift relative flex h-full flex-col gap-2 overflow-hidden p-4',
+                          g.completed_today && 'border-status-nominal/30',
+                          !g.completed_today && g.scheduled_today && 'border-accent/40',
+                        )}
                         data-testid="game-card"
                         aria-label={meta?.name ?? g.protocol_name}
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <h3 className="font-medium text-ink">{meta?.name ?? g.protocol_name}</h3>
+                          <h3 className="flex items-center gap-2 font-medium text-ink">
+                            <span
+                              className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400/25 to-violet-500/25 ring-1 ring-white/10"
+                              aria-hidden="true"
+                            >
+                              <Gamepad2 className="h-4 w-4 text-cyan-200" />
+                            </span>
+                            {meta?.name ?? g.protocol_name}
+                          </h3>
                           {g.completed_today ? (
                             <span className="inline-flex items-center gap-1 text-label text-status-nominal">
                               <CheckCircle2 className="h-4 w-4" aria-hidden="true" /> Done today
@@ -145,8 +173,8 @@ export function MissionMindPage() {
                     const d = describeResult(r);
                     return (
                       <li key={r.result_id}>
-                        <Card className="p-4">
-                          <p className="text-caption uppercase text-ink-subtle">
+                        <Card className="surface-glass p-4">
+                          <p className="text-caption uppercase text-accent-strong">
                             {DOMAIN_LABEL[r.cognitive_domain] ?? r.cognitive_domain}
                           </p>
                           <p className="text-ink">

@@ -5,7 +5,7 @@
  * one per assessment, and never an overall grade.
  */
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CloudOff, Pause } from 'lucide-react';
+import { CloudOff, Pause, Trophy } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { assessmentsApi } from '@/api/assessments';
 import type { AssessmentSessionsRow } from '@/types/tables';
@@ -13,6 +13,7 @@ import type { DueAssessment, InputDevice, TrialPhase } from '@/api/types';
 import { StatusBadge } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import { browserClock } from './engine/engine';
 import type { EngineTrialRecord } from './engine/types';
 import {
@@ -214,7 +215,15 @@ export function AssessmentRunner({ due, theme, deps, trialCounts, onExit }: Asse
   };
 
   return (
-    <Card className="space-y-5 p-5" role="region" aria-label={`${title} session`}>
+    <Card
+      className={cn(
+        'space-y-5 p-5',
+        theme === 'mission' &&
+          'border-accent/30 bg-gradient-to-b from-navy-850 to-navy-950 shadow-glow',
+      )}
+      role="region"
+      aria-label={`${title} session`}
+    >
       <div className="flex flex-wrap items-center gap-2">
         <h2 className="text-title">{title}</h2>
         <span className="rounded border px-2 py-0.5 text-caption text-ink-muted">
@@ -313,8 +322,14 @@ export function AssessmentRunner({ due, theme, deps, trialCounts, onExit }: Asse
       )}
 
       {step === 'done' && (
-        <div className="space-y-3" data-testid="completion">
-          <h3 className="text-label font-medium text-ink">Session complete</h3>
+        <div
+          className="space-y-3 rounded-xl border border-status-nominal/30 bg-gradient-to-br from-emerald-950/40 to-navy-900 p-5 motion-safe:animate-fade-up"
+          data-testid="completion"
+        >
+          <h3 className="flex items-center gap-2 text-label font-medium text-ink">
+            <Trophy className="h-5 w-5 text-amber-300" aria-hidden="true" />
+            Session complete
+          </h3>
           {completion ? (
             <>
               <ul className="space-y-1">

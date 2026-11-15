@@ -1,20 +1,18 @@
 import { screen, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import type { Role } from '@/api/types';
-import { NAV } from '@/app/navigation';
-import { ROLE_HOME } from '@/app/roles';
+import { navItems } from '@/app/navigation';
+import { ROLE_HOME, type DashboardRole } from '@/app/roles';
 import { renderApp, signInAs, setupMockApi } from '@/test/appHarness';
 import { useSession } from './sessionStore';
 
 setupMockApi();
 
 /** For each role: a page it owns and a page that belongs to another role. */
-const CASES: Array<[Role, string, string]> = [
-  ['astronaut', '/astronaut/health', '/planner/tasks'],
-  ['mission_leader', '/planner/schedule', '/astronaut/cognitive-trends'],
+const CASES: Array<[DashboardRole, string, string]> = [
+  ['astronaut', '/astronaut/health/trends', '/planner/tasks'],
+  ['mission_leader', '/planner/schedule', '/astronaut/cognition/trends'],
   ['medical_researcher', '/research/analyses', '/medical/access'],
-  ['medical_officer', '/medical/programmes', '/control/audit'],
-  ['mission_control_admin', '/control/simulation', '/research/reports'],
+  ['medical_officer', '/medical/programmes', '/research/reports'],
 ];
 
 describe('RequireRole', () => {
@@ -22,7 +20,7 @@ describe('RequireRole', () => {
     await signInAs(role);
 
     const first = renderApp(own);
-    const label = NAV[role].find((i) => i.path === own)!.label;
+    const label = navItems(role).find((i) => i.path === own)!.label;
     expect(await screen.findByRole('heading', { level: 1, name: label })).toBeInTheDocument();
     first.unmount();
 

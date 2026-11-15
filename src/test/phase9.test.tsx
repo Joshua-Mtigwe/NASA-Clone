@@ -15,7 +15,7 @@ import {
 import { realtimeUrl } from '@/features/realtime/url';
 import { mockState } from '@/mocks/db';
 import { shouldRegisterPwa } from '@/pwa';
-import { renderApp, setupMockApi, signInAs } from './appHarness';
+import { renderApp, setupMockApi, signInAs, signInBackendOnly } from './appHarness';
 
 setupMockApi();
 
@@ -178,7 +178,7 @@ describe('PWA, realtime and demo story', () => {
   });
 
   it('discards session changes and returns to the known demo state', async () => {
-    await signInAs('mission_control_admin');
+    await signInBackendOnly('mission_control');
     mockState.missionDayOverride = 60;
     await simulationApi.createRun({ run_name: 'Scratch', speed_multiplier: 10 });
     expect(await simulationApi.listRuns()).toHaveLength(2);

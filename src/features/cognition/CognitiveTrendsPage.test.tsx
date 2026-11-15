@@ -28,7 +28,7 @@ describe('Cognitive Trends', () => {
   it('requests comparisons for the selected domain up to the mission day', async () => {
     const urls = capture('/cognition/comparisons');
     await signInAs('astronaut');
-    renderApp('/astronaut/cognitive-trends');
+    renderApp('/astronaut/cognition/trends');
 
     await waitFor(() => expect(urls.length).toBeGreaterThan(0));
     expect(urls[0]!.searchParams.get('cognitive_domain')).toBe('vigilance');
@@ -45,7 +45,7 @@ describe('Cognitive Trends', () => {
   it('changes the window with the time-range selector', async () => {
     const urls = capture('/cognition/comparisons');
     await signInAs('astronaut');
-    renderApp('/astronaut/cognitive-trends');
+    renderApp('/astronaut/cognition/trends');
     await waitFor(() => expect(urls.length).toBeGreaterThan(0));
     expect(urls[0]!.searchParams.get('from')).toBe('2027-02-24');
 
@@ -62,7 +62,7 @@ describe('Cognitive Trends', () => {
 
   it('draws daily values against the matched reference with n, unit and flag count', async () => {
     await signInAs('astronaut');
-    renderApp('/astronaut/cognitive-trends');
+    renderApp('/astronaut/cognition/trends');
 
     const chart = await figure(/Vigilance over time/);
     await waitFor(() => expect(chart).toHaveTextContent('n = 25'));
@@ -79,7 +79,7 @@ describe('Cognitive Trends', () => {
 
   it('compares domains in separate panels, each in its own unit', async () => {
     await signInAs('astronaut');
-    renderApp('/astronaut/cognitive-trends');
+    renderApp('/astronaut/cognition/trends');
 
     const bars = await screen.findByTestId('domain-bars');
     const panels = await within(bars).findAllByRole('figure');
@@ -97,7 +97,7 @@ describe('Cognitive Trends', () => {
       from: '2027-02-24',
       to: '2027-03-25',
     });
-    renderApp('/astronaut/cognitive-trends');
+    renderApp('/astronaut/cognition/trends');
 
     const heatmap = await screen.findByTestId('completion-heatmap');
     const cells = within(heatmap).getAllByTestId('heatmap-cell');
@@ -116,7 +116,7 @@ describe('Cognitive Trends', () => {
       to: '2027-03-25',
     });
     const v = summary.domains.find((d) => d.cognitive_domain === 'vigilance')!;
-    renderApp('/astronaut/cognitive-trends');
+    renderApp('/astronaut/cognition/trends');
 
     const plot = await screen.findByTestId('distribution-plot');
     const pre = within(plot).getByTestId('distribution-preflight');
@@ -126,15 +126,23 @@ describe('Cognitive Trends', () => {
     expect(pre).toHaveTextContent(`n = ${v.n_preflight} · SD ${v.preflight_sd}`);
   });
 
-  it('lists each day in the detail table with condition, quality and the flag wording', async () => {
+  it('has no Daily Detail section on the astronaut page', async () => {
     await signInAs('astronaut');
+    renderApp('/astronaut/cognition/trends');
+    expect(await figure(/over time/)).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Daily detail' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Export CSV/ })).not.toBeInTheDocument();
+  });
+
+  it('lists each day in the Cognition Comparison detail table with condition, quality and the flag wording', async () => {
+    await signInAs('medical_researcher');
     const views = await cognitionApi.comparisons({
       astronaut_id: 'AST-001',
       cognitive_domain: 'vigilance',
       from: '2027-02-24',
       to: '2027-03-25',
     });
-    renderApp('/astronaut/cognitive-trends');
+    renderApp('/research/cognition');
 
     const rows = await screen.findAllByTestId('detail-row');
     expect(rows).toHaveLength(views.length);
@@ -158,8 +166,8 @@ describe('Cognitive Trends', () => {
     const click = vi
       .spyOn(HTMLAnchorElement.prototype, 'click')
       .mockImplementation(() => undefined);
-    await signInAs('astronaut');
-    renderApp('/astronaut/cognitive-trends');
+    await signInAs('medical_researcher');
+    renderApp('/research/cognition');
 
     await screen.findAllByTestId('detail-row');
     await userEvent.click(screen.getByRole('button', { name: /Export CSV/ }));

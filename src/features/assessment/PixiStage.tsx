@@ -13,6 +13,7 @@ import { parseRotation, ROTATION_SHAPE, type SwitchRule } from './battery/extend
 const CYAN = 0x22c3dd;
 const DIM = 0x1c2e4f;
 const INKC = 0xe6edf7;
+const VIOLET = 0x9a82f4;
 
 function drawShape(
   layer: Container,
@@ -61,9 +62,20 @@ function draw(
   const cx = w / 2;
   const cy = h / 2;
 
+  // Static backdrop: fixed star positions, redrawn identically every frame.
+  const stars = new Graphics();
+  for (let i = 0; i < 70; i += 1) {
+    const sx = ((i * 7919) % 1000) / 1000;
+    const sy = ((i * 104729) % 1000) / 1000;
+    stars.circle(16 + sx * (w - 32), 16 + sy * (h - 32), i % 9 === 0 ? 1.4 : 0.8);
+  }
+  stars.fill({ color: INKC, alpha: 0.35 });
+  layer.addChild(stars);
+
   const frame = new Graphics()
     .roundRect(8, 8, w - 16, h - 16, 14)
     .stroke({ width: 2, color: CYAN, alpha: 0.35 });
+  frame.roundRect(14, 14, w - 28, h - 28, 10).stroke({ width: 1, color: VIOLET, alpha: 0.2 });
   layer.addChild(frame);
   layer.addChild(label(`${title.toUpperCase()} · CONSOLE`, 12, CYAN, cx, 24));
 
