@@ -5,10 +5,7 @@ test('(a) astronaut completes a preflight session and a Mission Mind session, th
   page,
 }) => {
   await signIn(page, 'Astronaut');
-  await page
-    .getByRole('navigation', { name: 'Main navigation' })
-    .getByRole('link', { name: 'Mission Mind' })
-    .click();
+  await page.goto('/astronaut/cognition/mission-mind');
   await expect(page.getByTestId('session-status')).toHaveText('0 of 3 complete');
 
   // Mission Mind: Command Switch is one of today's two games.
@@ -35,12 +32,12 @@ test('(a) astronaut completes a preflight session and a Mission Mind session, th
   await expect(page.getByTestId('completion')).toContainText('Accuracy');
 
   // The comparison against the preflight reference.
-  await page
-    .getByRole('navigation', { name: 'Main navigation' })
-    .getByRole('link', { name: 'Cognitive Trends' })
-    .click();
+  await page.goto('/astronaut/cognition/trends');
   await expect(page.getByRole('figure', { name: /Vigilance over time/ })).toContainText('n = ');
-  await expect(page.getByTestId('detail-row').first()).toBeVisible();
+  await expect(
+    page.getByRole('img', { name: /daily results against the matched preflight reference/ }),
+  ).toBeVisible();
+  await expect(page.getByTestId('detail-row')).toHaveCount(0);
 });
 
 test('(b) leader generates, overrides and approves a schedule, and the astronaut sees it', async ({
@@ -75,13 +72,13 @@ test('(b) leader generates, overrides and approves a schedule, and the astronaut
     .getByRole('navigation', { name: 'Main navigation' })
     .getByRole('link', { name: 'My Schedule' })
     .click();
-  const tasks = page.getByTestId('schedule-item').filter({ hasText: /^Task/ });
+  const tasks = page.locator('[data-testid="schedule-item"][data-kind="task"]');
   await expect(tasks.first()).toBeVisible();
   await expect(tasks.filter({ hasText: 'Draft, not approved' })).toHaveCount(0);
 });
 
 test('(c) researcher runs an analysis and reads the report', async ({ page }) => {
-  await signIn(page, 'Medical Researcher');
+  await signIn(page, 'Impact Reviewer');
   await page
     .getByRole('navigation', { name: 'Main navigation' })
     .getByRole('link', { name: 'Analyses' })
@@ -93,7 +90,7 @@ test('(c) researcher runs an analysis and reads the report', async ({ page }) =>
   await expect(page.getByTestId('chart-scatter')).toBeVisible({ timeout: 30_000 });
   await expect(page.getByRole('figure').first()).toContainText(/Association r = .* \(95% CI/);
   const report = page.getByRole('region', { name: 'Report' });
-  await expect(report).toContainText('AI-drafted from computed results');
+  await expect(report).toContainText('Report from computed results');
   await expect(report).toContainText('This exploratory analysis of synthetic demonstration data');
   await expect(report).toContainText('not evidence of cause');
 });
@@ -103,7 +100,7 @@ test('(d) offline: complete a game with the network off, reconnect, and see it s
   context,
 }) => {
   await signIn(page, 'Astronaut');
-  await page.goto('/astronaut/mission-mind');
+  await page.goto('/astronaut/cognition/mission-mind');
   await page
     .getByRole('listitem')
     .filter({ has: page.getByRole('heading', { name: 'Command Switch' }) })

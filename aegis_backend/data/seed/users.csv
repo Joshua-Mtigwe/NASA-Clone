@@ -1,0 +1,9 @@
+user_id,username,email,password_hash,role_id,account_status,created_at,last_login_at
+USR-001,crew1,crew1@example.invalid,DEMO_ACCOUNT_NO_PASSWORD,ROLE-1,active,2027-02-01T00:00:00Z,
+USR-002,crew2,crew2@example.invalid,DEMO_ACCOUNT_NO_PASSWORD,ROLE-1,active,2027-02-01T00:00:00Z,
+USR-003,crew3,crew3@example.invalid,DEMO_ACCOUNT_NO_PASSWORD,ROLE-1,active,2027-02-01T00:00:00Z,
+USR-004,crew4,crew4@example.invalid,DEMO_ACCOUNT_NO_PASSWORD,ROLE-1,active,2027-02-01T00:00:00Z,
+USR-005,crew5,crew5@example.invalid,DEMO_ACCOUNT_NO_PASSWORD,ROLE-1,active,2027-02-01T00:00:00Z,
+USR-006,mission_leader,mission_leader@example.invalid,DEMO_ACCOUNT_NO_PASSWORD,ROLE-2,active,2027-02-01T00:00:00Z,
+USR-007,researcher,researcher@example.invalid,DEMO_ACCOUNT_NO_PASSWORD,ROLE-3,active,2027-02-01T00:00:00Z,
+USR-008,medical_officer,medical_officer@example.invalid,DEMO_ACCOUNT_NO_PASSWORD,ROLE-4,active,2027-02-01T00:00:00Z,

@@ -29,7 +29,7 @@ export function ReportsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Reports"
-        description="Plain-language summaries drafted by AI from computed results. Each one is exploratory."
+        description="Plain-language summaries from computed results. Each one is exploratory."
       />
       <DataState
         status={statusOf(analyses, drafted.length === 0)}
@@ -46,7 +46,11 @@ export function ReportsPage() {
                 >
                   {r.title}
                 </Link>
-                <p className="text-caption text-status-review">AI-drafted from computed results</p>
+                <p className="text-caption text-status-review">
+                  {r.model_id && !r.model_id.includes('template')
+                    ? 'AI-drafted from computed results'
+                    : 'Report from computed results'}
+                </p>
                 <p className="line-clamp-2 text-sm text-ink-muted">{r.report_text}</p>
               </Card>
             </li>

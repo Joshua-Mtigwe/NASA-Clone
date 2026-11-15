@@ -11,7 +11,7 @@ describe('VITE_API_MODE switching', () => {
     expect(resolveApiMode(live)).toBe('live');
     expect(resolveApiBaseUrl(live, 'live')).toBe('http://localhost:8000');
 
-    expect(() => resolveApiBaseUrl({ VITE_API_MODE: 'live' }, 'live')).toThrow(/VITE_API_BASE_URL/);
+    expect(resolveApiBaseUrl({ VITE_API_MODE: 'live' }, 'live')).toBe('');
     expect(() => resolveApiMode({ VITE_API_MODE: 'staging' })).toThrow(/Invalid VITE_API_MODE/);
   });
 });

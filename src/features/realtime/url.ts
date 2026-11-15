@@ -7,9 +7,10 @@ export function realtimeUrl(
   mock: boolean = isMockMode,
   base: string = apiBaseUrl,
 ): string {
-  if (mock || !base) {
+  if (mock) {
     const proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
     return `${proto}://${window.location.host}${API_PREFIX}/ws`;
   }
-  return `${base.replace(/^http/, 'ws')}${API_PREFIX}/ws?token=${encodeURIComponent(token ?? '')}`;
+  const origin = base || window.location.origin;
+  return `${origin.replace(/^http/, 'ws')}${API_PREFIX}/console/ws?token=${encodeURIComponent(token ?? '')}`;
 }

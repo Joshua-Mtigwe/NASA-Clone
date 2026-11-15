@@ -1,96 +1,132 @@
-# AEGIS Mission Console (frontend)
+# AEGIS — Autonomous Edge-Guided Intelligent Supervisor
 
-React 18 + TypeScript frontend for AEGIS: astronaut health monitoring, cognitive assessment (preflight battery and the Mission Mind games), mission planning, medical research, medical oversight and mission control.
+Offline-first astronaut health, cognitive assessment, supportive routines, mission planning, and exploratory research for the NASA Space Apps Challenge. The existing React/TypeScript dashboards are preserved. FastAPI, SQLite, the mission CSV datasets, the constraint scheduler, and the Mind Companion service run together locally.
 
-The frontend displays and collects. Every score, baseline, statistic, eligibility decision and schedule comes from the backend. In mock mode those calculations are stubbed in `src/mocks/` only.
+The four passwordless demo roles are **Astronaut**, **Mission Planning Leader**, **Impact Reviewer**, and **Medical Officer**. Role selection is a demonstration viewpoint, not secure authentication. Use synthetic data only. Task Readiness is an unvalidated demonstration indicator, not medical clearance.
 
-All bundled data is **synthetic demonstration data**, generated from the 49 CSV tables in `data/csv/`. A badge in the header says so on every page.
+## Run the integrated application
 
-## Setup
+Requirements: Python 3.11+, Node.js **24.15+** (tested with 24.22.1), npm. Ollama is optional for numerical/operational features and required for genuine model generation.
 
-Requirements: Node.js 20 or later (developed on Node 24) and npm.
+From this repository's root on Linux/macOS:
 
 ```bash
-npm install
-npm run fixtures      # converts data/csv/*.csv into src/mocks/fixtures/*.json and src/types/tables.ts
-npm run dev           # http://localhost:5173 (mock mode, mission day 25)
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r aegis_backend/requirements.txt pytest
+npm ci
+cp .env.example .env
+python aegis_backend/scripts/import_csvs.py
+# Explicit demo setup: optional; existing databases are never reset automatically.
+python scripts/demo-clock.py --day 25 --hour 9
+npm run dev:integrated
 ```
 
-If `data/csv/` only contains `AEGIS_49_Updated_CSV_Tables_Only.zip`, extract it in that folder first; `npm run fixtures` reads the `.csv` files. The fixtures are generated (gitignored); `npm run check` regenerates them automatically.
+Open **http://localhost:5173**. The command starts Vite, FastAPI on **127.0.0.1:8010**, and Mind Companion on **127.0.0.1:8787**. Activate the Python virtual environment first, or set `AEGIS_PYTHON` to its interpreter. Stop all services with Ctrl+C. A child service's startup failure stops the other services.
 
-## Scripts
+The importer is safe to repeat. Do not use `--reset` on a database containing records you want to keep. The seed clock is initially day 1 at midnight, so early views correctly have no inflight readings. The demo-clock command intentionally positions the simulator; it does not manufacture measurements or assessment results.
 
-| Script | What it does |
+The historical CSV assessment sessions are already completed. To take a new assessment in live mode, use **Medical Officer → Assessment Programmes** to create an inflight programme and assign it to an astronaut for the active mission date/hour. Its one-hour access window must include the mission clock. Switch to that astronaut and open **Mission Mind**. Practice trials are kept separately and never scored. The extended battery preserves the frontend's prototype definitions; no preflight baselines are invented for tests without baseline observations.
+
+## Genuine Gemma inference
+
+For an installed Ollama CLI, run the following once while online, and keep Ollama running:
+
+```bash
+ollama serve
+# In another terminal:
+ollama pull gemma3:4b
+```
+
+The shared `.env` configures `AEGIS_GEMMA_URL`, `AEGIS_GEMMA_MODEL`, `MIND_CHAT_MODEL_URL`, and `MIND_CHAT_MODEL`. Use a model identifier actually installed on your server. Restart the development command after configuration changes. Backend-only launches retain the backend's original defaults unless overridden.
+
+Mind Companion supports Ollama (`MIND_CHAT_MODEL_API=ollama`, POST `/api/chat`) or compatible OpenAI chat completion servers (`openai`, POST `/v1/chat/completions`). Keys remain server-side. Its messages come only from genuine inference; configuration failures, timeouts, and outages return explicit errors. Conversation JSON persists under `server/mind-chat/data/` by default and is ignored by Git. Demo conversations are separated by astronaut; there is no Medical Officer access to this service's conversations.
+
+Mission Planning's selected assignment includes **Ask Gemma to explain**. Research analyses include **Ask Gemma to draft report**. These call the original backend AI services, which verify generated text against stored decisions/results. They explicitly label rule/template text when the model is unavailable. Assignment, eligibility, and mathematical results remain the responsibility of the backend services, never the language model.
+
+## Architecture and API routing
+
+```text
+React + TypeScript → shared typed API client → Vite/reverse proxy
+  /api/v1/console/* → FastAPI dashboard adapters → existing scientific services → SQLite
+  /api/v1/ai/*      → existing checked Gemma explanation/report services
+  /api/v1/mind-chat/* → Node Mind Companion → Ollama/compatible model + conversation storage
+  /api/v1/console/ws → mission-state messages
+```
+
+The explicit `/console` namespace adapts frontend composite responses without changing legacy API schemas. The main backend's original simulation, administration, audit, research, wellbeing, journal, and synchronization APIs remain available. No administrator dashboard was restored. The console currently follows `RUN-DEMO-001`; native simulator APIs still support independent runs.
+
+See [API compatibility matrix](docs/integration/API_MATRIX.md), [integration contract](docs/integration/CONTRACT.md), [backend guide](aegis_backend/README.md), and [implementation report](docs/integration/IMPLEMENTATION_REPORT.md).
+
+Important environment variables:
+
+| Variable | Purpose |
 |---|---|
-| `npm run dev` | Dev server in mock mode (MSW + CSV fixtures) |
-| `npm run dev:live` | Dev server against the real FastAPI backend (`.env.live`) |
-| `npm run check` | `tsc --noEmit` + `eslint . --max-warnings 0` + `vitest run` + `vite build` (runs `fixtures` first) |
-| `npm test` | Unit and component tests (Vitest + Testing Library) |
-| `npm run e2e` | Playwright end-to-end tests (starts the dev server on port 5174; run `npx playwright install chromium` once) |
-| `npm run build` / `npm run preview` | Production build and local preview |
-| `npm run format` | Prettier |
+| `VITE_API_MODE` | `mock` or `live`; integrated command uses live mode |
+| `VITE_API_BASE_URL` | Blank for same-origin routing, or a full main API origin |
+| `VITE_DEMO_MODE` | `true` enables the passwordless role selector |
+| `AEGIS_AUTH_MODE` | `open` for this demo; token mode disables demo sessions |
+| `AEGIS_BACKEND_PORT` / `AEGIS_BACKEND_URL` | Main service port / Vite proxy target; defaults to 8010 |
+| `AEGIS_PYTHON` | Optional Python executable for the unified launcher |
+| `AEGIS_DATABASE_PATH` / `AEGIS_SEED_DIR` | Optional database / validated seed directory overrides |
+| `VITE_MIND_CHAT_URL` | Optional separate browser-accessible chat origin; blank uses proxy |
+| `MIND_CHAT_PROXY_TARGET` | Chat development proxy target; defaults to 127.0.0.1:8787 |
+| `MIND_CHAT_DEMO_AUTH` | Explicitly accept demo identity handles; not production authentication |
+| `MIND_CHAT_MODEL_*` | Inference API, URL, model identifier, and optional server-side API key |
 
-## Environment variables
+Process variables win over `.env`. The backend reads its own `.env`, then the shared root `.env` as defaults. The Node launcher and standalone chat command load the shared root `.env`.
 
-| Variable | Values | Meaning |
-|---|---|---|
-| `VITE_API_MODE` | `mock` (default) or `live` | `mock`: MSW handlers backed by the CSV fixtures. `live`: the real backend. |
-| `VITE_API_BASE_URL` | e.g. `http://localhost:8000` | Required in live mode. All calls go to `<base>/api/v1/...`; realtime uses `ws(s)://<base>/api/v1/ws?token=...`. |
-| `VITE_MOCK_MISSION_DAY` | `1` to `90` | Mock mode only: puts the mission clock at 12:00 UTC on that day. `.env.development` sets 25. Unset = the clock in `simulation_runs.csv` (day 1, paused). |
+## Data and persistence
 
-Files: `.env.example` (template), `.env.development` (used by `npm run dev`), `.env.live` (used by `npm run dev:live`). Tests and production builds read neither of the last two.
+Live mode imports the **49 validated CSV tables in `aegis_backend/data/seed`** with foreign-key, type, unit, and provenance checks. The frontend's `data/csv` copies are retained for mock demonstrations. Almost all CSV content agrees; frontend line-ending changes invalidate their recorded byte checksums, and metric definitions differ. The validated backend seed therefore supplies live mission records. No checksum verification was bypassed.
 
-## Switching between mock and live
+Fixed measurements are filtered against the mission clock. External reference radiation records never become crew dose measurements. Gy, mSv, dose rate, accumulated dose, and modelled organ estimates remain distinct. Blood pressure stays missing because no source measurement exists. Personal physiological references use observed first-week mission records and are labelled as prototype references, not preflight clinical norms.
 
-- **Mock (default):** `npm run dev`. A **Mock API** badge is shown in the header and on the login page. Data lives in the browser's memory: a full page reload starts again from the CSVs. The mock behaves like an unreachable server when the browser is offline, so the offline queue can be demonstrated.
-- **Live:** set `VITE_API_BASE_URL` in `.env.live` (or the environment), then `npm run dev:live`, or build with `VITE_API_MODE=live VITE_API_BASE_URL=... npm run build`. Live builds contain no mock code or fixtures, and they register the service worker (PWA) for offline app-shell loading.
+Assignments, trials, scored results, schedules, supportive routines, task forms, and analysis jobs persist in SQLite. Optional prototype protocol and metric definitions are registered from the existing frontend battery; no synthetic baseline/results are added. Additional console tables store practice data, assessment metadata, programme collection windows, and proposed task-form fields.
 
-The full API contract (every route, endpoint, request and response type, and source table) is in [`docs/FRONTEND_CONTRACT.md`](docs/FRONTEND_CONTRACT.md).
+## Mock mode and offline operation
 
-## Demo accounts (mock mode)
-
-The login page shows one card per role. The password for every account is `demo`.
-
-| Role | Username | Home |
-|---|---|---|
-| Astronaut | `crew1` (also `crew2`…`crew5`) | `/astronaut` |
-| Mission Planning Leader | `mission_leader` | `/planner` |
-| Medical Researcher | `researcher` | `/research` |
-| Medical Officer | `medical_officer` | `/medical` |
-| Mission Control Administrator | `mission_control` | `/control` |
-
-`mission_control` is a mock-only seed: `roles.csv` and `users.csv` have no administrator. See `src/mocks/seeds.ts`.
-
-## Demo story
-
-Sign in as **Mission Control Administrator**, open **Mission State** and press **Start demo story**. This resets the mock to a known state: mission day 25 at 12:00 UTC, simulation paused, every change from the session discarded, and this device's offline queue cleared. The Playwright suite in `e2e/demo-story.spec.ts` walks through it:
-
-1. The astronaut completes a preflight session and a Mission Mind game, then opens Cognitive Trends.
-2. The leader generates a plan, overrides an assignment (a reason is required), approves it, and the astronaut sees the approved plan in My Schedule.
-3. The researcher runs an analysis and reads the AI-drafted report.
-4. Offline: a game is completed with the network off, then syncs on reconnect.
-
-## Offline
-
-Assessment trials, session completions, check-ins and schedule overrides are written to IndexedDB (Dexie) first. They are sent in order now, on reconnect, and every 30 s. The header shows **Offline**, **Syncing** (requests in flight or items queued) or **Synced**. In live builds the PWA service worker caches the app shell, so the app loads with the network off.
-
-## Project layout
-
-```
-src/api/          typed clients, one per backend area, and the endpoint registry
-src/app/          routes (lazy, one chunk per area), navigation, query client
-src/components/   shadcn/ui primitives, shared primitives (DataState, ChartFrame, ...), charts
-src/features/     auth, shell, health, bodymap, assessment, cognition, planning,
-                  research, medical, control, realtime
-src/mocks/        MSW handlers, mock-only seeds and stub calculations (compute/)
-src/types/        tables.ts, generated from the CSV headers
-scripts/          csv-to-fixtures
-e2e/              Playwright tests
-docs/             BUILD_PLAN.md, FRONTEND_CONTRACT.md
+```bash
+npm run fixtures
+npm run dev
 ```
 
-## Known limitations
+Mock mode is explicit and shows its badge. `.env.development` selects mock mode and mission day 25. It does not silently take over when a live request fails. Mock state and local demonstration publications use the existing browser storage workflow.
 
-- No real backend was available during the build, so the live-mode contract pass (build plan Phase 9, item 2) has not been run. Live mode is wired and builds, but every endpoint is so far verified only against the mock.
-- Several fields the plan asks for have no CSV column; they are sent as proposed request fields and listed under "Open questions" in the contract.
-- Stroop relies on ink colour by design.
+Assessment trials/completions/check-ins, manual overrides, and supportive-routine publications use the persistent IndexedDB outbox. A network failure leaves an item pending. Routine publication displays **Pending Synchronization**, retries after reconnection, revalidates constraints, and surfaces conflicts. It is marked published only after the backend confirms persistence. Replay does not duplicate a routine and does not replay a leader's publication under another selected persona.
+
+Live production builds register the PWA app-shell cache. Development mode does not provide a production service worker. Initial role selection and starting a new assessment still require a reachable backend. Pending records remain local until synchronization succeeds.
+
+## Validation and builds
+
+```bash
+npm run fixtures
+npm run typecheck
+npm run lint
+npm test
+python -m pytest aegis_backend/tests -c aegis_backend/pyproject.toml
+npm run build:live
+npm run build
+```
+
+`build:live` excludes mock modules/CSV fixture chunks. Deploy its static `dist/` through a reverse proxy that routes the API paths above. `vite preview` alone is not a production API reverse proxy. To build explicitly for mock demonstrations, use `VITE_API_MODE=mock npm run build`.
+
+Browser checks:
+
+```bash
+# If Playwright's browser is not already installed:
+npx playwright install chromium
+npm run e2e
+# Starts an isolated live stack and temporary database automatically:
+npm run e2e:live
+```
+
+For an existing system Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium`. The original suite uses a separate mock server on port 5174. Live tests start isolated services on ports 5175/8011/8788, use a temporary validated database at day 25, and remove it afterwards. Set `AEGIS_E2E_URL` only to target an intentionally disposable existing stack. Optional CP-SAT tests require `ortools`; the built-in constraint solver works without it.
+
+## Current limits
+
+- This is an open, synthetic-data demo, not a production clinical system or authenticated private service. Mind Companion's production token verifier is not implemented.
+- Genuine model generation could not be verified in the integration environment because no Ollama service/model was available. Real service outages and conversation isolation were verified.
+- Preflight sessions require a prelaunch clock/window. Existing historical sessions and personal baselines are retained. Extended tests without baseline observations report no comparison rather than invented reference values.
+- Research currently supports valid inflight observations; unsupported mission-phase/quality filters are rejected explicitly. Domain filters must match the selected cognitive dependent variable. The six chart types use backend calculations and the stored job's cutoff. Associations are exploratory, not causal.
+- Console endpoints use one mission/run. Multi-run operations remain available through the original backend APIs.

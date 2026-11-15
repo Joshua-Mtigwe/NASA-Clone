@@ -32,12 +32,14 @@ beforeEach(() => {
 afterAll(() => server.close());
 
 describe('mock API', () => {
-  it('has a handler for every endpoint in the contract except the unmocked Mind Companion', () => {
+  it('has a handler for every endpoint in the contract except genuine AI service endpoints', () => {
     const mocked = Object.keys(ENDPOINTS).filter(
       (k) => !(UNMOCKED_ENDPOINTS as readonly string[]).includes(k),
     );
     expect([...handledEndpoints].sort()).toEqual(mocked.sort());
-    expect(UNMOCKED_ENDPOINTS.every((k) => k.startsWith('mindChat.'))).toBe(true);
+    expect(UNMOCKED_ENDPOINTS.every((k) => k.startsWith('mindChat.') || k.startsWith('ai.'))).toBe(
+      true,
+    );
   });
 
   it('logs in a CSV demo account, rejects a wrong password, and serves synthetic mission state', async () => {

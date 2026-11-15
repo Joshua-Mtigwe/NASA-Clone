@@ -6,6 +6,9 @@
  */
 import { useLiveQuery } from 'dexie-react-hooks';
 import { assessmentsApi } from '@/api/assessments';
+import { recoveryApi } from '@/api/recovery';
+import { useSession } from '@/features/auth/sessionStore';
+import { ApiError } from '@/api/client';
 import { planningApi } from '@/api/planning';
 import { isApiError } from '@/api/client';
 import type {
@@ -13,6 +16,7 @@ import type {
   ContextInput,
   ScheduleOverrideRequest,
   SubmitTrialsRequest,
+  PublishRoutineRequest,
 } from '@/api/types';
 import { localDb, type OutboxItem } from './db';
 
@@ -77,6 +81,27 @@ export async function enqueueOverride(
   });
 }
 
+/** Persist a routine publication until the same leader reconnects. */
+export async function enqueuePublication(
+  recommendationId: string,
+  payload: PublishRoutineRequest,
+): Promise<void> {
+  const ownerUserId = useSession.getState().user?.user_id;
+  if (!ownerUserId) throw new Error('Select a demo role before publishing.');
+  const existing = await localDb.outbox.where('sessionId').equals(recommendationId).toArray();
+  if (existing.some((i) => i.kind === 'publish' && i.ownerUserId === ownerUserId)) return;
+  await localDb.outbox.add({
+    kind: 'publish',
+    sessionId: recommendationId,
+    payload,
+    ownerUserId,
+    createdAt: nowIso(),
+    attempts: 0,
+    status: 'pending',
+    lastError: null,
+  });
+}
+
 export interface FlushResult {
   sent: number;
   remaining: number;
@@ -84,7 +109,18 @@ export interface FlushResult {
 }
 
 async function send(item: OutboxItem): Promise<void> {
-  if (item.kind === 'trials') {
+  if (item.kind === 'publish') {
+    const result = await recoveryApi.publish(item.sessionId, item.payload);
+    if (result.state !== 'published') {
+      throw new ApiError({
+        status: 409,
+        kind: 'conflict',
+        message: result.reasons.join('; ') || 'Routine could not be published',
+        method: 'POST',
+        path: '/recovery',
+      });
+    }
+  } else if (item.kind === 'trials') {
     await assessmentsApi.submitTrials(item.sessionId, item.payload);
   } else if (item.kind === 'context') {
     await assessmentsApi.submitContext(item.payload);
@@ -110,6 +146,8 @@ export function flushQueue(): Promise<FlushResult> {
     const blocked = new Set<string>();
     const items = await localDb.outbox.orderBy('seq').toArray();
     for (const item of items) {
+      if (item.kind === 'publish' && item.ownerUserId !== useSession.getState().user?.user_id)
+        continue;
       if (item.status === 'failed') {
         blocked.add(item.sessionId);
         continue;
@@ -141,8 +179,13 @@ export function flushQueue(): Promise<FlushResult> {
 }
 
 /** Flush now, whenever the browser comes back online, and every 30 s. */
-export function startQueueSync(intervalMs = 30_000): () => void {
-  const flush = () => void flushQueue().catch(() => undefined);
+export function startQueueSync(intervalMs = 30_000, onSynced?: () => void): () => void {
+  const flush = () =>
+    void flushQueue()
+      .then((r) => {
+        if (r.sent) onSynced?.();
+      })
+      .catch(() => undefined);
   window.addEventListener('online', flush);
   const timer = window.setInterval(flush, intervalMs);
   flush();

@@ -22,6 +22,14 @@ import type {
 } from './types';
 
 export const planningApi = {
+  explainAssignment: (assignmentId: string) =>
+    callEndpoint<{
+      entity_id: string;
+      source: 'gemma' | 'rules';
+      text: string;
+      model_id: string | null;
+      note?: string;
+    }>('ai.explainTask', { assignmentId }),
   listTaskSets: (query: { mission_day?: number } = {}) =>
     callEndpoint<DailyTaskSetsRow[]>('planning.listTaskSets', {}, { query }),
   getTaskSet: (taskSetId: string) =>

@@ -3,7 +3,7 @@ import { signIn } from './helpers';
 
 test('the 3D body map renders a WebGL canvas and selects regions', async ({ page }) => {
   await signIn(page, 'Astronaut');
-  await page.goto('/astronaut/body-map');
+  await page.goto('/astronaut/health/body-map');
   await page.getByRole('radio', { name: '3D' }).click();
   const canvas = page.getByTestId('body-map-3d').locator('canvas');
   await expect(canvas).toBeVisible({ timeout: 30_000 });
@@ -15,7 +15,7 @@ test('the 3D body map renders a WebGL canvas and selects regions', async ({ page
 
 test('Mission Mind draws the game stage with PixiJS', async ({ page }) => {
   await signIn(page, 'Astronaut');
-  await page.goto('/astronaut/mission-mind');
+  await page.goto('/astronaut/cognition/mission-mind');
   await page
     .getByRole('listitem')
     .filter({ has: page.getByRole('heading', { name: 'Signal Response' }) })

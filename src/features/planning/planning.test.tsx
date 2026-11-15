@@ -168,11 +168,11 @@ describe('Crew Schedule', () => {
     expect(issues).toHaveTextContent(detail.issues[0]!.reason);
   });
 
-  it('shows Gemma’s explanation beside the selected recommendation', async () => {
+  it('labels the scheduler explanation beside the selected recommendation', async () => {
     await openSchedule();
     await userEvent.click(screen.getAllByTestId('task-bar')[0]!);
     const panel = screen.getByRole('region', { name: 'Selected assignment' });
-    expect(within(panel).getByText('Explanation from Gemma (AI)')).toBeInTheDocument();
+    expect(within(panel).getByText('Assignment explanation')).toBeInTheDocument();
     expect(panel).toHaveTextContent('NOT a validated health allocation');
   });
 

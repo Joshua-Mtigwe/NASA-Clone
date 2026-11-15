@@ -16,7 +16,11 @@
     "check": "tsc --noEmit && eslint . --max-warnings 0 && vitest run && vite build",
     "e2e": "playwright test",
     "dev:live": "vite --mode live",
-    "mind-chat": "tsx server/mind-chat/main.ts"
+    "mind-chat": "node --env-file-if-exists=.env --import tsx server/mind-chat/main.ts",
+    "dev:integrated": "node --env-file-if-exists=.env scripts/dev-integrated.mjs",
+    "build:live": "vite build --mode live",
+    "test:backend": "python -m pytest aegis_backend/tests -c aegis_backend/pyproject.toml",
+    "e2e:live": "playwright test -c playwright.live.config.ts"
   },
   "msw": {
     "workerDirectory": [

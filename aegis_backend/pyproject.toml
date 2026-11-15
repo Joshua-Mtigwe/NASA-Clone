@@ -1,0 +1,10 @@
+[project]
+name = "aegis-backend"
+version = "0.1.0"
+description = "AEGIS crew health-aware mission planning backend (prototype, synthetic demo data)"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"

@@ -1,0 +1,4 @@
+template_id,mission_phase,assessment_condition,local_hour,protocol_ids,recurrence,description
+TPL-PRE-AM,preflight,morning,8,PVT|NBACK|STROOP|SURVEY,daily,Baseline morning
+TPL-PRE-PM,preflight,evening,20,PVT|NBACK|STROOP|SURVEY,daily,Baseline evening
+TPL-FLIGHT,inflight,morning,8,PVT|NBACK|STROOP|SURVEY,daily,Daily Mission Mind

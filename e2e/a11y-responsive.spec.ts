@@ -3,17 +3,17 @@ import { expect, test, type Page } from '@playwright/test';
 import { signIn, type DemoRole } from './helpers';
 
 const PAGES: Array<{ role: DemoRole; path: string; ready: RegExp }> = [
-  { role: 'Astronaut', path: '/astronaut', ready: /Daily readiness summary/ },
-  { role: 'Astronaut', path: '/astronaut/health', ready: /Health Monitoring/ },
-  { role: 'Astronaut', path: '/astronaut/mission-mind', ready: /Games/ },
+  { role: 'Astronaut', path: '/astronaut', ready: /Task Readiness Score/ },
+  { role: 'Astronaut', path: '/astronaut/health/vitals', ready: /Current Vitals/ },
+  { role: 'Astronaut', path: '/astronaut/cognition/mission-mind', ready: /Games/ },
   { role: 'Mission Planning Leader', path: '/planner/schedule', ready: /Duty limits/ },
   {
-    role: 'Medical Researcher',
+    role: 'Impact Reviewer',
     path: '/research/analyses',
     ready: /Analysis builder|Run analysis/,
   },
   { role: 'Medical Officer', path: '/medical/programmes', ready: /Conditions and the tests/ },
-  { role: 'Mission Control Administrator', path: '/control', ready: /Demo story/ },
+  { role: 'Astronaut', path: '/astronaut/schedule', ready: /My Schedule/ },
 ];
 
 async function open(page: Page, role: DemoRole, path: string, ready: RegExp) {
@@ -24,9 +24,7 @@ async function open(page: Page, role: DemoRole, path: string, ready: RegExp) {
 
 test('login page has no serious accessibility violations', async ({ page }) => {
   await page.goto('/login');
-  await expect(
-    page.getByRole('region', { name: 'Demo accounts' }).getByRole('button').first(),
-  ).toBeVisible();
+  await expect(page.getByTestId('role-cards').getByRole('button').first()).toBeVisible();
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
   expect(
     results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical'),

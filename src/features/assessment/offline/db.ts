@@ -5,6 +5,7 @@ import type {
   ScheduleOverrideRequest,
   SessionCompletion,
   SubmitTrialsRequest,
+  PublishRoutineRequest,
 } from '@/api/types';
 
 interface OutboxBase {
@@ -19,6 +20,7 @@ interface OutboxBase {
 
 /** Queued writes: assessment trials and completions, check-ins and schedule overrides. */
 export type OutboxItem =
+  | (OutboxBase & { kind: 'publish'; payload: PublishRoutineRequest; ownerUserId: string })
   | (OutboxBase & { kind: 'context'; payload: ContextInput })
   | (OutboxBase & { kind: 'override'; payload: ScheduleOverrideRequest })
   | {

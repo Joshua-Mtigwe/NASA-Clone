@@ -1,5 +1,7 @@
 # AEGIS frontend contract
 
+> Live integration is implemented. See [the integrated contract](integration/CONTRACT.md) and [compatibility matrix](integration/API_MATRIX.md) for the current API adapters, passwordless four-role UI, and tested backend behavior. The Phase 9 proposal below is retained as historical frontend design context; removed administrator/login interfaces are not restored.
+
 Status: **Phase 9** (all phases built; verified against the mock only, see "Live mode"). Derived from `docs/BUILD_PLAN.md` and the headers of the 49 CSVs in `data/csv/`. No blueprint documents were present in `docs/blueprints/` and there is no `docs/openapi.json`, so this is the frontend's proposal for the backend contract. It will be reconciled against the real FastAPI service in Phase 9.
 
 Sources of truth in code:

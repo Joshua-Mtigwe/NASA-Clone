@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Sparkles } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { isMockMode } from '@/config/env';
 import { planningApi } from '@/api/planning';
 import type { PipelineStage, ScheduleIssueKind } from '@/api/types';
 import { DataState, PageHeader, StatusBadge } from '@/components/shared';
@@ -69,13 +70,14 @@ export function CrewSchedulePage() {
 
   const schedule = useSchedule(versionId);
   const detail = schedule.data;
-  const approved = detail?.version.status === 'approved';
+  const approved = detail?.version.status === 'approved' || detail?.version.status === 'published';
 
   const pipeline = useQuery({
     queryKey: ['planning', 'optimize', runId],
     queryFn: () => planningApi.optimizeStatus(runId!),
     enabled: !!runId,
-    refetchInterval: (q) => (q.state.data?.run.status === 'completed' ? false : PIPELINE_POLL_MS),
+    refetchInterval: (q) =>
+      ['completed', 'failed'].includes(q.state.data?.run.status ?? '') ? false : PIPELINE_POLL_MS,
   });
   useEffect(() => {
     const done =
@@ -91,6 +93,10 @@ export function CrewSchedulePage() {
     onSuccess: (run) => setRunId(run.optimization_run_id),
   });
 
+  const explain = useMutation({
+    mutationFn: (assignmentId: string) => planningApi.explainAssignment(assignmentId),
+  });
+  const explanation = explain.data?.entity_id === selected ? explain.data : null;
   const selectedAssignment =
     detail?.assignments.find((a) => a.task_assignment_id === selected) ?? null;
   useEffect(() => {
@@ -174,7 +180,7 @@ export function CrewSchedulePage() {
             <option key={v.schedule_version_id} value={v.schedule_version_id}>
               Version {v.version_number}{' '}
               {v.version_number === 1 ? '(preloaded draft)' : '(alternative)'} ·{' '}
-              {v.status === 'approved' ? 'approved' : 'draft'}
+              {['approved', 'published'].includes(v.status) ? 'approved' : 'draft'}
             </option>
           ))}
         </select>
@@ -200,7 +206,7 @@ export function CrewSchedulePage() {
           disabled={
             !taskSetId ||
             generate.isPending ||
-            (!!runId && pipeline.data?.run.status !== 'completed')
+            (!!runId && !['completed', 'failed'].includes(pipeline.data?.run.status ?? ''))
           }
         >
           <Sparkles aria-hidden="true" /> Generate plan
@@ -231,7 +237,7 @@ export function CrewSchedulePage() {
       )}
 
       <DataState
-        status={statusOf(schedule, !detail)}
+        status={!versionId && !versions.isPending ? 'empty' : statusOf(schedule, !detail)}
         error={schedule.error}
         onRetry={() => void schedule.refetch()}
         emptyMessage="No schedule for this day."
@@ -345,19 +351,40 @@ export function CrewSchedulePage() {
                 </p>
                 <div className="rounded-md border border-accent/30 p-3 text-sm">
                   <p className="text-caption uppercase text-accent-strong">
-                    Explanation from Gemma (AI)
+                    {explanation?.source === 'gemma'
+                      ? 'Explanation from Gemma (AI)'
+                      : 'Assignment explanation'}
                   </p>
                   <p className="text-ink">
-                    {rec?.recommendation_reason ??
+                    {explanation?.text ??
+                      rec?.recommendation_reason ??
                       'No explanation was returned for this assignment.'}
                   </p>
                   {rec && (
                     <p className="text-caption text-ink-subtle">
-                      Model {rec.model_version} · constraint check{' '}
+                      Source {explanation?.model_id ?? rec.model_version} · constraint check{' '}
                       {humanise(rec.constraint_check_status)}
                     </p>
                   )}
                 </div>
+                {!isMockMode && (
+                  <div className="space-y-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={explain.isPending}
+                      onClick={() => explain.mutate(selectedAssignment.task_assignment_id)}
+                    >
+                      {explain.isPending ? 'Asking Gemma…' : 'Ask Gemma to explain'}
+                    </Button>
+                    {explanation?.note && (
+                      <p role="status" className="text-sm text-ink-muted">
+                        {explanation.note}
+                      </p>
+                    )}
+                    {explain.isError && <p role="alert">{explain.error.message}</p>}
+                  </div>
+                )}
                 {!approved && (
                   <form
                     className="grid gap-3 sm:grid-cols-4"

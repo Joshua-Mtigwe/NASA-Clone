@@ -1,0 +1,4 @@
+analysis_id,researcher_user_id,mission_id,analysis_type,research_question,independent_variable,dependent_variable,analysis_method,date_range_start,date_range_end,created_at
+ANL-001,USR-007,MIS-001,sleep_vs_attention,Exploratory simulated data analysis,total_sleep_minutes,median_reaction_time_ms,descriptive,2027-03-01,2027-05-29,2027-03-01T00:00:00Z
+ANL-002,USR-007,MIS-001,radiation_vs_cognition,Exploratory simulated data analysis,accumulated_dose,median_reaction_time_ms,descriptive,2027-03-01,2027-05-29,2027-03-01T00:00:00Z
+ANL-003,USR-007,MIS-001,workload_vs_fatigue,Exploratory simulated data analysis,cognitive_workload,fatigue_score,descriptive,2027-03-01,2027-05-29,2027-03-01T00:00:00Z

@@ -160,12 +160,12 @@ describe('Analysis results', () => {
     expect(within(heatmap).getAllByTestId('heatmap-value').length).toBe(5 * 4);
   });
 
-  it('shows the AI-drafted report with the standing exploratory line and no causal wording', async () => {
+  it('labels the template report accurately with the standing exploratory line and no causal wording', async () => {
     await signInAs('medical_researcher');
     const id = await runAnalysis('scatter');
     renderApp(`/research/analyses/${id}`);
     const report = await screen.findByRole('region', { name: 'Report' });
-    expect(within(report).getByText('AI-drafted from computed results')).toBeInTheDocument();
+    expect(await within(report).findByText('Report from computed results')).toBeInTheDocument();
     await waitFor(() =>
       expect(report).toHaveTextContent('This exploratory analysis of synthetic demonstration data'),
     );
@@ -183,7 +183,7 @@ describe('Analysis results', () => {
     renderApp('/research/reports');
     const items = await screen.findAllByTestId('report-item');
     expect(items).toHaveLength(1);
-    expect(items[0]).toHaveTextContent('AI-drafted from computed results');
+    expect(items[0]).toHaveTextContent('Report from computed results');
   });
 });
 

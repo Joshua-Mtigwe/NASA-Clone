@@ -1,18 +1,14 @@
 import { expect, type Page } from '@playwright/test';
 
 export type DemoRole =
-  | 'Astronaut'
-  | 'Mission Planning Leader'
-  | 'Medical Researcher'
-  | 'Medical Officer'
-  | 'Mission Control Administrator';
+  'Astronaut' | 'Mission Planning Leader' | 'Impact Reviewer' | 'Medical Officer';
 
 /** Sign in with a mock-mode demo card. */
 export async function signIn(page: Page, role: DemoRole) {
   // A full reload resets the in-browser mock data, so only navigate when needed
   // (after signOut the app is already on /login).
   if (!new URL(page.url(), 'http://x').pathname.endsWith('/login')) await page.goto('/login');
-  const cards = page.getByRole('region', { name: 'Demo accounts' });
+  const cards = page.getByTestId('role-cards');
   const card = cards.getByRole('button', { name: new RegExp(`^${role}`) });
   // A cold dev server optimises dependencies on first load and reloads the page,
   // which can cut the first request short. Reload until the cards are there.
@@ -25,13 +21,18 @@ export async function signIn(page: Page, role: DemoRole) {
     await page.goto('/login').catch(() => undefined);
   }
   await card.click();
+  if (role === 'Astronaut')
+    await page
+      .getByRole('region', { name: 'Which astronaut are you?' })
+      .getByRole('button', { name: /^AST-001/ })
+      .click();
   await expect(page.getByRole('banner', { name: 'Mission status' })).toBeVisible();
 }
 
 /** Sign out through the header (keeps the in-page mock data: no reload). */
 export async function signOut(page: Page) {
-  await page.getByRole('button', { name: 'Sign out' }).click();
-  await expect(page.getByRole('heading', { name: 'AEGIS Mission Console' })).toBeVisible();
+  await page.getByRole('button', { name: 'Switch role' }).click();
+  await expect(page.getByTestId('role-cards')).toBeVisible();
 }
 
 /**

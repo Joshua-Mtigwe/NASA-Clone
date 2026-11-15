@@ -173,7 +173,7 @@ async function analysisOrThrow(analysisId: string) {
 }
 
 /** Mind Companion endpoints are served by server/mind-chat and are never mocked. */
-type MockedEndpoint = Exclude<EndpointKey, `mindChat.${string}`>;
+type MockedEndpoint = Exclude<EndpointKey, `mindChat.${string}` | `ai.${string}`>;
 
 const routes: Record<MockedEndpoint, RouteSpec> = {
   // ---------------- auth ----------------

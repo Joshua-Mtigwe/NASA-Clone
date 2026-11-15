@@ -17,12 +17,12 @@ export function resolveApiMode(env: RuntimeEnv): ApiMode {
 
 /**
  * Mock mode talks to the same origin (MSW intercepts in the browser).
- * Live mode requires VITE_API_BASE_URL, for example http://localhost:8000.
+ * Live mode uses the same-origin API proxy, or an optional VITE_API_BASE_URL.
  */
 export function resolveApiBaseUrl(env: RuntimeEnv, mode: ApiMode): string {
   if (mode === 'mock') return '';
   const base = env.VITE_API_BASE_URL?.trim();
-  if (!base) throw new Error('VITE_API_BASE_URL is required when VITE_API_MODE=live.');
+  if (!base) return ''; // Same-origin /api proxy (development and deployed reverse proxy).
   return base.replace(/\/+$/, '');
 }
 

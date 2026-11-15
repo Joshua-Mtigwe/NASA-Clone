@@ -15,6 +15,7 @@ export default defineConfig({
   reporter: [['list']],
   use: {
     baseURL: 'http://localhost:5174',
+    launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE },
     trace: 'retain-on-failure',
     serviceWorkers: 'allow',
   },

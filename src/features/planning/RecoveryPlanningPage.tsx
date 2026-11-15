@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CalendarCheck2, CheckCircle2, CircleDot, Send, TriangleAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { isApiError } from '@/api/client';
+import { enqueuePublication } from '@/features/assessment/offline/queue';
+import { localDb } from '@/features/assessment/offline/db';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { recoveryApi } from '@/api/recovery';
 import type { RoutinePublicationState } from '@/api/types';
 import type { RecoveryRecommendationsRow } from '@/types/tables';
@@ -48,10 +52,26 @@ function ReviewPanel({
     if (c && time === null) setTime(formatClock(c.scheduled_start));
   }, [c, time]);
 
+  const queued = useLiveQuery(
+    () => localDb.outbox.where('sessionId').equals(rec.recommendation_id).toArray(),
+    [rec.recommendation_id],
+  );
+  const pendingPublication = queued?.some((i) => i.kind === 'publish' && i.status === 'pending');
+  const publicationConflict = queued?.find((i) => i.kind === 'publish' && i.status === 'failed');
   const publish = useMutation({
-    mutationFn: () =>
-      recoveryApi.publish(rec.recommendation_id, { scheduled_start: start ?? c!.scheduled_start }),
-    onSuccess: () => {
+    networkMode: 'always',
+    mutationFn: async () => {
+      const body = { scheduled_start: start ?? c!.scheduled_start };
+      try {
+        return await recoveryApi.publish(rec.recommendation_id, body);
+      } catch (error) {
+        if (!isApiError(error) || error.kind !== 'network') throw error;
+        await enqueuePublication(rec.recommendation_id, body);
+        return null;
+      }
+    },
+    onSuccess: (result) => {
+      if (result?.state !== 'published') return;
       void queryClient.invalidateQueries({ queryKey: ['recovery'] });
       void queryClient.invalidateQueries({ queryKey: ['astronauts'] });
       onPublished();
@@ -124,6 +144,23 @@ function ReviewPanel({
                 ))}
               </ul>
             )}
+            {pendingPublication && (
+              <p role="status" className="text-sm text-ink-muted">
+                Pending Synchronization
+              </p>
+            )}
+            {publicationConflict && (
+              <p role="alert" className="text-sm text-danger">
+                Publication conflict: {publicationConflict.lastError}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => void localDb.outbox.delete(publicationConflict.seq!)}
+                >
+                  Discard queued request
+                </Button>
+              </p>
+            )}
             {publish.isError && (
               <p role="alert" className="text-sm text-status-action">
                 {publish.error.message}
@@ -138,7 +175,10 @@ function ReviewPanel({
               <Button
                 onClick={() => publish.mutate()}
                 disabled={
-                  shown.state !== 'ready_to_publish' || publish.isPending || check.isFetching
+                  shown.state !== 'ready_to_publish' ||
+                  publish.isPending ||
+                  check.isFetching ||
+                  pendingPublication
                 }
               >
                 <Send aria-hidden="true" />
@@ -153,6 +193,7 @@ function ReviewPanel({
 }
 
 export function RecoveryPlanningPage() {
+  const queryClient = useQueryClient();
   const mission = useMissionState();
   const crew = useCrew();
   const catalogue = useRecoveryCatalogue();
@@ -166,9 +207,25 @@ export function RecoveryPlanningPage() {
   const date = launch ? shiftDate(launch, missionDay - 1) : null;
   const selected = astronaut || crew.data?.[0]?.astronaut_id || '';
 
+  const stored = useQuery({
+    queryKey: ['recovery', 'recommendations', selected, missionDay],
+    queryFn: () => recoveryApi.recommendations({ astronaut_id: selected, mission_day: missionDay }),
+    enabled: !!selected,
+  });
   const recommend = useMutation({
     mutationFn: () => recoveryApi.recommend({ astronaut_id: selected, mission_day: missionDay }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['recovery', 'recommendations'] });
+    },
   });
+  const routines = (recommend.data ?? stored.data ?? []).map((r) => ({
+    ...r,
+    approval_status:
+      stored.data?.find((s) => s.recommendation_id === r.recommendation_id)?.approval_status ===
+      'published'
+        ? 'published'
+        : r.approval_status,
+  }));
   const activities = new Map((catalogue.data ?? []).map((a) => [a.recovery_activity_id, a]));
   const [publishedIds, setPublishedIds] = useState<string[]>([]);
 
@@ -224,7 +281,7 @@ export function RecoveryPlanningPage() {
         </Button>
       </Card>
 
-      {(recommend.isPending || recommend.isError || recommend.data) && (
+      {(recommend.isPending || recommend.isError || recommend.data || stored.data) && (
         <section aria-labelledby="rec-title" className="space-y-3">
           <h2 id="rec-title" className="text-title">
             Recommended supportive routines
@@ -234,12 +291,18 @@ export function RecoveryPlanningPage() {
             review a routine and publish it.
           </p>
           <DataState
-            status={statusOf(recommend, (recommend.data ?? []).length === 0)}
-            error={recommend.error}
+            status={statusOf(
+              {
+                isPending: recommend.isPending || stored.isPending,
+                isError: recommend.isError || stored.isError,
+              },
+              routines.length === 0,
+            )}
+            error={recommend.error ?? stored.error}
             emptyMessage="No supportive routines are recommended for this day."
           >
             <ol className="space-y-2" data-testid="recommendations">
-              {(recommend.data ?? []).map((r, i) => {
+              {routines.map((r, i) => {
                 const a = activities.get(r.recovery_activity_id);
                 const isPublished =
                   r.approval_status === 'published' || publishedIds.includes(r.recommendation_id);

@@ -1,0 +1,3 @@
+# Seed CSVs are verified byte-for-byte against data_lineage.csv (SHA-256).
+# Never let git change their line endings, or the importer will refuse them.
+data/seed/*.csv -text whitespace=cr-at-eol

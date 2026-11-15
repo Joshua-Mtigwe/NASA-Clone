@@ -173,7 +173,7 @@ describe('PWA, realtime and demo story', () => {
   it('builds the realtime URL for mock and live backends', () => {
     expect(realtimeUrl('t1', true, '')).toMatch(/^ws:\/\/localhost(:\d+)?\/api\/v1\/ws$/);
     expect(realtimeUrl('a b', false, 'https://api.example.org')).toBe(
-      'wss://api.example.org/api/v1/ws?token=a%20b',
+      'wss://api.example.org/api/v1/console/ws?token=a%20b',
     );
   });
 

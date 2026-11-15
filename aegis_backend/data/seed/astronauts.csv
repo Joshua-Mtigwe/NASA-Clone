@@ -1,0 +1,6 @@
+astronaut_id,user_id,astronaut_code,specialization,mission_id,crew_role,medical_clearance_status,created_at
+AST-001,USR-001,AST-001,Systems,MIS-001,Flight Engineer,demo_eligible,2027-02-01T00:00:00Z
+AST-002,USR-002,AST-002,Science,MIS-001,Science Specialist,demo_eligible,2027-02-01T00:00:00Z
+AST-003,USR-003,AST-003,Flight,MIS-001,Mission Specialist,demo_eligible,2027-02-01T00:00:00Z
+AST-004,USR-004,AST-004,Medical,MIS-001,Medical Specialist,demo_eligible,2027-02-01T00:00:00Z
+AST-005,USR-005,AST-005,Engineering,MIS-001,Systems Engineer,demo_eligible,2027-02-01T00:00:00Z

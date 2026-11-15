@@ -1,3 +1,6 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { isMockMode } from '@/config/env';
+import { researchApi } from '@/api/research';
 import { Bot } from 'lucide-react';
 import { useState } from 'react';
 import { useParams } from 'react-router';
@@ -14,6 +17,13 @@ export const EXPLORATORY_LINE = 'Associations are exploratory and are not eviden
 
 export function AnalysisPage() {
   const { analysisId } = useParams();
+  const queryClient = useQueryClient();
+  const draft = useMutation({
+    mutationFn: () => researchApi.draftReport(analysisId!),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['research', 'report', analysisId] });
+    },
+  });
   const [view, setView] = useState<AnalysisView>('within_person');
   const status = useAnalysis(analysisId);
   const job = status.data?.job ?? null;
@@ -76,9 +86,29 @@ export function AnalysisPage() {
               <h2 className="flex flex-wrap items-center gap-2 text-title">
                 <Bot className="h-5 w-5 text-accent" aria-hidden="true" /> Report
                 <span className="rounded border border-status-review/50 px-1.5 py-0.5 text-caption text-status-review">
-                  AI-drafted from computed results
+                  {report.data?.model_id && !report.data.model_id.includes('template')
+                    ? 'AI-drafted from computed results'
+                    : 'Report from computed results'}
                 </span>
               </h2>
+              {!isMockMode && (
+                <div className="space-y-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={draft.isPending}
+                    onClick={() => draft.mutate()}
+                  >
+                    {draft.isPending ? 'Drafting…' : 'Ask Gemma to draft report'}
+                  </Button>
+                  {draft.data?.note && (
+                    <p role="status" className="text-sm text-ink-muted">
+                      {draft.data.note}
+                    </p>
+                  )}
+                  {draft.isError && <p role="alert">{draft.error.message}</p>}
+                </div>
+              )}
               <DataState
                 status={statusOf(report, !report.data, 'empty')}
                 error={report.error}

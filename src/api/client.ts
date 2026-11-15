@@ -3,7 +3,7 @@
  * normalisation. 401 and 403 responses notify registered handlers (the session
  * store signs out on 401; the router shows the 403 page) and always throw ApiError.
  */
-import { apiBaseUrl } from '@/config/env';
+import { apiBaseUrl, isMockMode } from '@/config/env';
 import { buildPath, ENDPOINTS, type EndpointKey } from './endpoints';
 import type { ApiErrorBody } from './types';
 
@@ -88,7 +88,9 @@ export function normaliseError(
   let message = DEFAULT_MESSAGES[kind];
   let fieldErrors: FieldError[] = [];
 
-  const detail = (body as ApiErrorBody | null | undefined)?.detail;
+  const detail =
+    (body as ApiErrorBody | null | undefined)?.detail ??
+    (body as { message?: string } | null)?.message;
   if (typeof detail === 'string' && detail.trim()) {
     message = detail;
   } else if (Array.isArray(detail)) {
@@ -172,7 +174,12 @@ export async function apiRequest<T>(
 ): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' };
   const token = options.getToken();
-  if (token) headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+    if (!isMockMode && token.startsWith('mock-token.')) {
+      headers['X-AEGIS-User'] = token.slice('mock-token.'.length);
+    }
+  }
   if (body !== undefined) headers['Content-Type'] = 'application/json';
 
   const doFetch = options.fetchImpl ?? globalThis.fetch.bind(globalThis);
@@ -212,5 +219,9 @@ export function callEndpoint<T>(
   init: RequestOptions = {},
 ): Promise<T> {
   const def = ENDPOINTS[key];
-  return apiRequest<T>(def.method, buildPath(def.path, params), init);
+  return apiRequest<T>(
+    def.method,
+    `${!isMockMode && !key.startsWith('mindChat.') && !key.startsWith('ai.') ? '/console' : ''}${buildPath(def.path, params)}`,
+    init,
+  );
 }

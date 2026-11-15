@@ -16,6 +16,12 @@ import type {
 } from './types';
 
 export const researchApi = {
+  draftReport: (analysisId: string) =>
+    callEndpoint<ResearchReportsRow & { source: 'gemma' | 'template'; note?: string }>(
+      'ai.draftReport',
+      {},
+      { body: { analysis_id: analysisId } },
+    ),
   overview: () => callEndpoint<ResearchOverview>('research.overview'),
   variables: () => callEndpoint<ResearchVariable[]>('research.variables'),
   listAnalyses: () => callEndpoint<ResearchAnalysesRow[]>('research.listAnalyses'),

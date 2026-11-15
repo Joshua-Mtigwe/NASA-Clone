@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Rocket } from 'lucide-react';
 import { Suspense, useEffect } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router';
@@ -30,6 +30,7 @@ function Brand() {
  */
 export function AppShell() {
   const { role, user, astronautId } = useSession();
+  const queryClient = useQueryClient();
   const mobileOpen = useUi((s) => s.mobileNavOpen);
   const setMobileOpen = useUi((s) => s.setMobileNavOpen);
   const logout = useLogout();
@@ -39,7 +40,13 @@ export function AppShell() {
   useQuery({ queryKey: queryKeys.me, queryFn: () => authApi.me(), staleTime: 5 * 60_000 });
 
   // Send queued assessment data now, on reconnect, and every 30 s.
-  useEffect(() => startQueueSync(), []);
+  useEffect(
+    () =>
+      startQueueSync(30_000, () => {
+        void queryClient.invalidateQueries();
+      }),
+    [queryClient],
+  );
 
   if (!role || !user) return <Navigate to="/login" replace />;
 

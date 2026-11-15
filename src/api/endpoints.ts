@@ -142,6 +142,9 @@ export const ENDPOINTS = {
   'simulation.triggerEvent': { method: 'POST', path: '/simulation/events/:eventId/trigger' },
   'simulation.demoStory': { method: 'POST', path: '/simulation/demo-story' },
 
+  'ai.explainTask': { method: 'POST', path: '/ai/task-assignments/:assignmentId/explain' },
+  'ai.draftReport': { method: 'POST', path: '/ai/reports' },
+
   // mind chat: served by the AEGIS Mind Companion service (server/mind-chat), never
   // by the MSW mock, so a reply can only ever come from the real model.
   'mindChat.status': { method: 'GET', path: '/mind-chat/status' },
@@ -163,7 +166,7 @@ export type EndpointKey = keyof typeof ENDPOINTS;
 /** Endpoints with no MSW handler on purpose (see the mind chat block above). */
 export const UNMOCKED_ENDPOINTS: readonly EndpointKey[] = (
   Object.keys(ENDPOINTS) as EndpointKey[]
-).filter((k) => k.startsWith('mindChat.'));
+).filter((k) => k.startsWith('mindChat.') || k.startsWith('ai.'));
 
 /** Fill :params in a path template. Values are URI-encoded. */
 export function buildPath(template: string, params: Record<string, string> = {}): string {
